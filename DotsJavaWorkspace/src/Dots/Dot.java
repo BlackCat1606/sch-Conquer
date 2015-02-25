@@ -1,9 +1,11 @@
 package Dots;
 
+import java.io.Serializable;
+
 /**
  * Created by JiaHao on 10/2/15.
  */
-public class Dot {
+public class Dot implements Serializable {
 
     public final DotColor color;
 

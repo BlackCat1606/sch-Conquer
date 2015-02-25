@@ -160,12 +160,14 @@ public class DotsBoard {
 
     }
 
-    /**
-     * Even nicer method to print the board with index numbers
-     */
-    public void printWithIndex() {
 
-        String[][] printArray = new String[boardArray.length + 1][boardArray.length + 1];
+    /**
+     * Static Method to print board nicely from other classes
+     * @param inputBoard Dot[][] array
+     */
+    public static void printBoardWithIndex(Dot[][] inputBoard) {
+
+        String[][] printArray = new String[inputBoard.length + 1][inputBoard.length + 1];
 
         for (int i = 0; i < printArray.length; i++) {
             int newI = i;
@@ -185,7 +187,7 @@ public class DotsBoard {
 
         for (int i = 1; i < printArray.length; i++) {
             for (int j = 1; j < printArray.length; j++) {
-                printArray[i][j] = boardArray[i - 1][j - 1].toString();
+                printArray[i][j] = inputBoard[i - 1][j - 1].toString();
             }
         }
 
@@ -205,9 +207,39 @@ public class DotsBoard {
         }
 
         System.out.println(result);
-
     }
 
+    /**
+     * Even nicer method to print the board with index numbers
+     */
+    public void printWithIndex() {
+        printBoardWithIndex(this.boardArray);
+    }
+
+    /**
+     * Makes a copy of the current board and returns it
+     * @return
+     */
+    public Dot[][] getBoardArray() {
+
+        return this.copy2dArray(this.boardArray);
+    }
+
+
+    private Dot[][] copy2dArray(Dot[][] input) {
+
+        Dot[][] copy = new Dot[input.length][input[0].length];
+
+        for (int i = 0; i < input.length; i++) {
+            for (int j = 0; j < input[0].length; j++) {
+                copy[i][j] = input[i][j];
+            }
+        }
+
+        return copy;
+
+
+    }
 
     // TODO find out how to generalise this
 //    private String formattedForPrinting(Class[][] inpArray, Class type) {

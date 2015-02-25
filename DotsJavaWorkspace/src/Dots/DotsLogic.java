@@ -59,7 +59,7 @@ public class DotsLogic {
      * @param inputMoves chronologically ordered arrayList of points
      * @return validity of move
      */
-    private boolean checkMove(ArrayList<Point> inputMoves) {
+    public boolean checkMove(ArrayList<Point> inputMoves) {
 
         for (int i = 0; i < inputMoves.size() - 1; i++) {
             Point startPoint = inputMoves.get(i);

@@ -1,66 +1,65 @@
 package Dots;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 
 /**
- * For Testing
- * Created by JiaHao on 10/2/15.
+ * Created by JiaHao on 25/2/15.
  */
 public class DotsGame {
-    public static void main(String[] args) {
 
 
-        // Initialize
+    private final int BOARD_SIZE = 5;
+    private final DotsBoard dotsBoard;
+    private final DotsLogic dotsLogic;
 
-        DotsBoard board = new DotsBoard(5);
-//        System.out.println(board);
-        board.printWithIndex();
-        DotsLogic logic = new DotsLogic(board);
+    private ArrayList<Point> player0Moves;
+    private ArrayList<Point> player1Moves;
 
-//        Scanner scanner = new Scanner(System.in);
-//        while (true) {
-//            System.out.println("Enter x");
-//            String xString = scanner.nextLine();
-//            System.out.println("Enter y");
-//            String yString = scanner.nextLine();
-//
-//            Point startPoint = new Point(Integer.parseInt(xString), Integer.parseInt(yString));
-//
-//            System.out.println("Enter x");
-//            xString = scanner.nextLine();
-//            System.out.println("Enter y");
-//            yString = scanner.nextLine();
-//
-//            Point endPoint = new Point(Integer.parseInt(xString), Integer.parseInt(yString));
-//
-//            System.out.println(logic.checkAdjacency(startPoint, endPoint));
-//
-//        }
+    private boolean gameRunning;
 
+    public DotsGame() {
+        this.dotsBoard = new DotsBoard(BOARD_SIZE);
+        this.dotsLogic = new DotsLogic(this.dotsBoard);
 
-        // Test code
-        Point point1 = new Point(0, 1);
-        Point point2 = new Point(1,1);
-        Point point3 = new Point(1,2);
-        Point point4 = new Point(1,3);
-        Point point5 = new Point(0,3);
+        this.player0Moves = new ArrayList<Point>();
+        this.player1Moves = new ArrayList<Point>();
 
-        ArrayList<Point> pointList = new ArrayList<Point>();
-        pointList.add(point1);
-        pointList.add(point2);
-        pointList.add(point3);
-        pointList.add(point4);
-        pointList.add(point5);
-
-
-//        System.out.println(board.getElement(startPoint));
-//        System.out.println(board.getElement(endPoint));
-//        System.out.println(logic.checkAdjacency(startPoint, endPoint));
-        logic.moveCompleted(pointList);
-        System.out.println(board.toString());
-
+        this.gameRunning = true;
 
     }
+
+
+    public boolean isGameRunning() {
+        return gameRunning;
+    }
+
+    public synchronized Dot[][] getBoardArray() {
+        return this.dotsBoard.getBoardArray();
+    }
+
+    public synchronized boolean doMove(int player, Point point) {
+        ArrayList<Point> playerPoints;
+
+        if (player == 0) {
+            playerPoints = player0Moves;
+        } else if (player == 1) {
+            playerPoints = player1Moves;
+        } else {
+            System.err.println("No such player");
+            return false;
+        }
+
+
+        boolean moveResult = this.dotsLogic.checkMove(playerPoints);
+
+        if (moveResult) {
+
+            playerPoints.add(point);
+        }
+
+        return moveResult;
+
+    }
+
+
 }
