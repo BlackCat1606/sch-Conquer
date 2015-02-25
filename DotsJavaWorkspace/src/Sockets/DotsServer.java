@@ -4,9 +4,6 @@ import AwesomeSockets.AwesomeServerSocket;
 import Dots.*;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -14,68 +11,118 @@ import java.util.Scanner;
  */
 public class DotsServer {
 
+    // static variable for threads to keep track of whether the board has changed
+    // init as true so that the board will print it in the first time it listens for change
+    public static boolean boardChanged = true;
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
         final int PORT = 4321;
 
+        // initialize server
         AwesomeServerSocket server = new AwesomeServerSocket(PORT);
 //        server.debugMode = false;
-
         server.acceptClient();
 
+        // initialize game object
         DotsGame dotsGame = new DotsGame();
 
-        DotsSocketHelper.sendBoardToClient(server, dotsGame.getBoardArray());
-        DotsBoard.printBoardWithIndex(dotsGame.getBoardArray());
+//        // initial printing of board to client
+//        DotsSocketHelper.sendBoardToClient(server, dotsGame.getBoardArray());
 
-        DotsMessageListener dotsMessageListener = new DotsMessageListener(server, 0);
-        dotsMessageListener.setDotsGame(dotsGame);
 
-        Thread listenerThread = new Thread(dotsMessageListener);
-        listenerThread.start();
 
+        // init listener thread
+        DotsServerClientListener dotsClientListener = new DotsServerClientListener(server, dotsGame);
+        Thread listenerThread = new Thread(dotsClientListener);
+
+
+
+        // init scanner thread
         Scanner scanner = new Scanner(System.in);
+        DotsServerScannerListener dotsScannerListener = new DotsServerScannerListener(dotsGame, scanner);
+        Thread scannerThread = new Thread(dotsScannerListener);
+
+        // starts threads
+        listenerThread.start();
+        scannerThread.start();
+
+        // block while game is running and listens for messages
+        // TODO is there a better way to implement a listener for a changed board?
+        try {
+
+            while (dotsGame.isGameRunning()) {
+
+                if (boardChanged) {
+                    DotsBoard.printBoardWithIndex(dotsGame.getBoardArray());
+                    DotsSocketHelper.sendBoardToClient(server, dotsGame.getBoardArray());
+                    boardChanged = false;
+                }
 
 
-        while (dotsGame.isGameRunning()) {
+                // Sleep here to avoid the process consuming the cpu
+                Thread.sleep(100);
 
+            }
 
-            Point inputPoint = DotsSocketHelper.getPointFromScanner(scanner);
-
-
-            boolean result = dotsGame.doMove(0, inputPoint);
-
-            System.out.println(result);
-
-            DotsBoard.printBoardWithIndex(dotsGame.getBoardArray());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
+        // closes server and clients when game over
         server.closeServer();
 
+        System.out.println("Game over");
     }
-
-
 
 }
 
-class DotsMessageListener implements Runnable {
 
-    private final AwesomeServerSocket serverSocket;
-    private final ArrayList<String> messages;
-    private final int clientNumber;
+class DotsServerScannerListener implements Runnable {
 
-    private DotsGame dotsGame = null;
+    private final Scanner scanner;
+    private final DotsGame dotsGame;
 
-    public DotsMessageListener(AwesomeServerSocket serverSocket, int clientNumber) {
-        this.serverSocket = serverSocket;
-        this.messages = new ArrayList<String>();
-        this.clientNumber = clientNumber;
-    }
-
-
-    public void setDotsGame(DotsGame dotsGame) {
+    public DotsServerScannerListener(DotsGame dotsGame, Scanner scanner) {
+        this.scanner = scanner;
         this.dotsGame = dotsGame;
     }
+
+    @Override
+    public void run() {
+
+        while (this.dotsGame.isGameRunning()) {
+
+            Point inputPoint = DotsSocketHelper.getPointFromScanner(this.scanner);
+
+
+            boolean result = this.dotsGame.doMove(0, inputPoint);
+
+            // we assume that the board is changed whenever a move is made now
+
+
+
+            DotsServer.boardChanged = true;
+
+            System.out.println(result);
+
+        }
+
+        System.out.println("Game over!");
+    }
+}
+
+class DotsServerClientListener implements Runnable {
+
+    private final AwesomeServerSocket serverSocket;
+
+    private final DotsGame dotsGame;
+
+    public DotsServerClientListener(AwesomeServerSocket serverSocket, DotsGame dotsGame) {
+        this.serverSocket = serverSocket;
+        this.dotsGame = dotsGame;
+
+    }
+
 
     @Override
     public void run() {
@@ -96,8 +143,11 @@ class DotsMessageListener implements Runnable {
                 this.dotsGame.doMove(1, receivedPoint);
 
                 Dot[][] boardArray = this.dotsGame.getBoardArray();
-                DotsSocketHelper.sendBoardToClient(serverSocket, boardArray);
+//                DotsSocketHelper.sendBoardToClient(serverSocket, boardArray);
 
+
+                // we assume that the board is changed whenever a move is made now
+                DotsServer.boardChanged = true;
             }
 
 
@@ -107,10 +157,6 @@ class DotsMessageListener implements Runnable {
             e.printStackTrace();
         }
 
-
-        //... close socket, etc.
-
-
-
+        System.out.println("Game over!");
     }
 }
