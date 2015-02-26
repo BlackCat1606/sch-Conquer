@@ -31,10 +31,13 @@ public class DotsClient {
 
         // Init scanner thread
         Scanner scanner = new Scanner(System.in);
+        DotsClientScannerListener dotsClientScannerListener = new DotsClientScannerListener(clientSocket, scanner);
+        Thread scannerThread = new Thread(dotsClientScannerListener);
 
 
         // start threads
         listenerThread.start();
+        scannerThread.start();
 //
 
 
@@ -44,6 +47,7 @@ public class DotsClient {
             while (gameIsRunning) {
                 // sleep first so client has time to get board from server
                 // also sleep here to avoid the process consuming the cpu
+                // TODO fix infinite loop here when server closes before client
                 Thread.sleep(100);
 
                 if (boardChanged) {
@@ -130,10 +134,8 @@ class DotsClientServerListener implements Runnable {
 //                }
 
                 // check for board
-                System.out.println("waiting for board");
                 this.boardArray = DotsSocketHelper.readBoardFromServer(this.clientSocket);
                 DotsClient.boardChanged = true;
-                System.out.println("board received");
 
 
 
