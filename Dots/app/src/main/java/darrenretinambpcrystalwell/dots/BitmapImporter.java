@@ -2,13 +2,23 @@ package darrenretinambpcrystalwell.dots;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import java.io.*;
+
+import java.io.InputStream;
+
+
 /**
  * Created by DarrenRetinaMBP on 13/3/15.
+ *
+ * Class to help resize and format images in Resource Folder
+ *
  */
 public class BitmapImporter {
 
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
-                                                         int reqWidth, int reqHeight) {
+                                                         float reqWidth, float reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -24,7 +34,7 @@ public class BitmapImporter {
     }
 
     public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+            BitmapFactory.Options options, float reqWidth, float reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -45,6 +55,7 @@ public class BitmapImporter {
 
         return inSampleSize;
     }
+
 
 
 }

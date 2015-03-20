@@ -1,19 +1,14 @@
 package darrenretinambpcrystalwell.dots;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import java.util.ArrayList;
+import Game.Dot;
+import Game.DotColor;
+import Game.DotsBoard;
+import Game.DotsLogic;
 
 /**
  * Created by DarrenRetinaMBP on 13/3/15.
@@ -22,45 +17,47 @@ import java.util.ArrayList;
  * Takes in 1st randomised matrix from randomiser class
  *
  */
-public class DotsScreen extends Activity {
+public class DotsScreen {
 
-    private static final float  SCREEN_WIDTH_PERCENTAGE = .8f;
-    private static final float  SCREEN_Y_PERCENTAGE = .2f;
-    private float               x,y;
-    private static String[][]   order = {{"R","R","B","G","R","B"},
-                                        {"G","G","G","G","B","R"},
-                                        {"B","B","B","G","R","G"},
-                                        {"B","B","B","R","R","G"},
-                                        {"R","G","G","G","R","G"},
-                                        {"B","B","G","G","R","R"},
-                                        {"R","B","G","R","R","B"},
-                                        {"R","G","B","B","R","B"}};
+    private static final float SCREEN_WIDTH_PERCENTAGE = .8f;
+    private static final float SCREEN_Y_PERCENTAGE = .2f;
+    private float x, y;
+    DotView[] dotsList = new DotView[36];
+    private BlueDotView      blue;
+    private RedDotView       red;
+    private GreenDotView     green;
+    private YellowDotView    yellow;
 
     // Standard Variables call
-    RelativeLayout           relativeLayout;
-    Context                  context;
-    RelativeLayout           dotsLayout;
-    int                      screenWidth;
-    int                      screenHeight;
+    RelativeLayout  relativeLayout;
+    Context         context;
+    RelativeLayout  dotsLayout;
+    int             screenWidth;
+    int             screenHeight;
 
-    // Variables for dag motion
-    private int              dragStatus;
-    private static final int STOP_DRAGGING = 0;
-    private static final int CURRENTLY_DRAGGING = 1;
-    private static final int START_DRAGGING = 2;
-    int                      currentIndex;
-    float                    intersectDistSqThreshold;
-    ArrayList<Integer>       visitedIndexes;
+    float           intersectDistSqThreshold;
 
-    Dot []                   dots;
-    float                    dotWidth;
+    DotView[]       dotViews;
+    float           dotWidth;
+    final DotsBoard board;
+    final DotsLogic logic;
+    DotView         dotView;
+
+
+
 
     // Standard Initialising Constructor
     public DotsScreen(RelativeLayout relativeLayout, Context context) {
+        this.context =        context;
         this.relativeLayout = relativeLayout;
-        this.context = context;
+        this.dotView = new    DotView(context);
 
-        this.screenWidth = ScreenDimensions.getWidth(context);
+        red    = new    RedDotView(context);
+        blue   = new    BlueDotView(context);
+        green  = new    GreenDotView(context);
+        yellow = new    YellowDotView(context);
+
+        this.screenWidth =  ScreenDimensions.getWidth(context);
         this.screenHeight = ScreenDimensions.getHeight(context);
 
         this.dotsLayout = new RelativeLayout(context);
@@ -71,50 +68,97 @@ public class DotsScreen extends Activity {
         this.dotWidth = SCREEN_WIDTH_PERCENTAGE * screenWidth / 6.f;
         this.intersectDistSqThreshold = (dotWidth * .5f) * (dotWidth * .5f);
 
-        float dotsXOffset = (1.f-SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth;
+        float dotsXOffset = (1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth;
         float dotsYOffset = SCREEN_Y_PERCENTAGE * screenHeight;
 
-        this.visitedIndexes = new ArrayList<>();
+        this.board = new DotsBoard(6);
+        this.logic = new DotsLogic(board);
+        Dot[][] dotBoard = board.getBoardArray();
 
-        dots = new Dot[36];
-        for (int index=0; index<36; ++index) {
+
+
+        Log.d("Screen", board.toString());
+        dotViews = new DotView[36];
+        for (int index = 0; index < 36; ++index) {
             // i == row number (0-5)
             // j == col number (0-5)
-            int i = index/6;
-            int j = index%6;
-
-            //Need to change to compare with randomiser class function
-            if(order[i][j] == "R") {
-                Dot d = new RedDot(context);
-                d.setX(dotsXOffset + j*dotWidth);
-                d.setY(dotsYOffset + i*dotWidth);
-                d.setLayoutParams(new ViewGroup.LayoutParams((int)dotWidth, (int)dotWidth));
-                dots[index] = d;
+            int i = index / 6;
+            int j = index % 6;
+            if (dotBoard[i][j].color == DotColor.RED) {
+                DotView d = new RedDotView(context);
+                d.setX(dotsXOffset + j * dotWidth);
+                d.setY(dotsYOffset + i * dotWidth);
+                d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+                dotViews[index] = d;
+                dotsList[index] = d;
                 dotsLayout.addView(d);
-            }
-            else if (order[i][j] == "B") {
-                Dot d = new BlueDot(context);
-                d.setX(dotsXOffset + j*dotWidth);
-                d.setY(dotsYOffset + i*dotWidth);
-                d.setLayoutParams(new ViewGroup.LayoutParams((int)dotWidth, (int)dotWidth));
-                dots[index] = d;
+            } else if (dotBoard[i][j].color == DotColor.BLUE) {
+                DotView d = new BlueDotView(context);
+                d.setX(dotsXOffset + j * dotWidth);
+                d.setY(dotsYOffset + i * dotWidth);
+                d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+                dotViews[index] = d;
+                dotsList[index] = d;
                 dotsLayout.addView(d);
-            }
-            else if (order[i][j] == "G") {
-                Dot d = new GreenDot(context);
-                d.setX(dotsXOffset + j*dotWidth);
-                d.setY(dotsYOffset + i*dotWidth);
-                d.setLayoutParams(new ViewGroup.LayoutParams((int)dotWidth, (int)dotWidth));
-                dots[index] = d;
+            } else if (dotBoard[i][j].color == DotColor.GREEN) {
+                DotView d = new GreenDotView(context);
+                d.setX(dotsXOffset + j * dotWidth);
+                d.setY(dotsYOffset + i * dotWidth);
+                d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+                dotViews[index] = d;
+                dotsList[index] = d;
+                dotsLayout.addView(d);
+            } else if (dotBoard[i][j].color == DotColor.YELLOW) {
+                DotView d = new YellowDotView(context);
+                d.setX(dotsXOffset + j * dotWidth);
+                d.setY(dotsYOffset + i * dotWidth);
+                d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+                dotViews[index] = d;
+                dotsList[index] = d;
                 dotsLayout.addView(d);
             }
         }
     }
 
-    public Dot[] getDots() {
-        return dots;
+    public float getDotWidth() {
+        return dotWidth;
+    }
+
+    public void updateScreen() {
+        this.board.initializeBoard(6);
+        Dot[][] dotBoard = board.getBoardArray();
+
+        Log.d("Screen", board.toString());
+        dotViews = new DotView[36];
+        for (int index = 0; index < 36; ++index) {
+
+            int i = index / 6;
+            int j = index % 6;
+            if (dotBoard[i][j].color == DotColor.RED) {
+                if (!dotsList[index].getColor().equals("red")) {
+                    dotsList[index].setRed();
+                }
+            } else if (dotBoard[i][j].color == DotColor.BLUE) {
+                if (!dotsList[index].getColor().equals("blue")) {
+                    dotsList[index].setBlue();
+                }
+            } else if (dotBoard[i][j].color == DotColor.GREEN) {
+                if (!dotsList[index].getColor().equals("green")) {
+                    dotsList[index].setGreen();
+                }
+            } else if (dotBoard[i][j].color == DotColor.YELLOW) {
+                if (!dotsList[index].getColor().equals("yellow")) {
+                    dotsList[index].setYellow();
+                }
+            }
+        }
+    }
+
+    public DotView[] getDotList() {
+        return dotsList;
     }
 
 
-
 }
+
+
