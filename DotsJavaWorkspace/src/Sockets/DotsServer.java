@@ -7,8 +7,8 @@
 //import java.util.Scanner;
 //
 ///**
-// * Created by JiaHao on 25/2/15.
-// */
+//* Created by JiaHao on 25/2/15.
+//*/
 //public class DotsServer {
 //
 //    // static variable for threads to keep track of whether the board has changed
@@ -53,7 +53,9 @@
 //            while (dotsGame.isGameRunning()) {
 //
 //                if (boardChanged) {
-//                    DotsBoard.printBoardWithIndex(dotsGame.getBoardArray());
+//
+//                    dotsGame.getDotsBoard().printWithIndex();
+////                    DotsBoard.printBoardWithIndex(dotsGame.getBoardArray());
 //                    DotsSocketHelper.sendBoardToClient(server, dotsGame.getBoardArray());
 //                    boardChanged = false;
 //                }

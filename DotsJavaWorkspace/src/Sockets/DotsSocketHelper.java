@@ -4,6 +4,7 @@ import AwesomeSockets.AwesomeClientSocket;
 import AwesomeSockets.AwesomeServerSocket;
 import Dots.Dot;
 import Dots.Point;
+import Model.DotsMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,50 +21,81 @@ public class DotsSocketHelper {
 
     // Server calls these
 
-    public static void sendBoardToClient(AwesomeServerSocket server, Dot[][] board) throws IOException {
+    public static void sendMessageToClient(AwesomeServerSocket server, DotsMessage message) throws IOException {
         ObjectOutputStream serverObjectOutputStream = new ObjectOutputStream(server.getServerOutputStreamForClient(0));
-        sendBoardToClient(serverObjectOutputStream, board);
+        serverObjectOutputStream.writeObject(message);
+
     }
 
-    private static void sendBoardToClient(ObjectOutputStream serverOutputStream, Dot[][] board) throws IOException {
-        serverOutputStream.writeObject(board);
-    }
-
-    private static Point readMoveFromClient(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-
-        return (Point)ois.readObject();
-    }
-
-    public static Point readMoveFromClient(AwesomeServerSocket server) throws IOException, ClassNotFoundException {
+    public static DotsMessage readMessageFromClient(AwesomeServerSocket server) throws IOException, ClassNotFoundException {
 
         ObjectInputStream serverObjectInputStream = new ObjectInputStream(server.getServerInputStreamForClient(0));
 
-        return readMoveFromClient(serverObjectInputStream);
+        return (DotsMessage)serverObjectInputStream.readObject();
+
     }
+
+
+
+//
+//    public static void sendBoardToClient(AwesomeServerSocket server, Dot[][] board) throws IOException {
+//        ObjectOutputStream serverObjectOutputStream = new ObjectOutputStream(server.getServerOutputStreamForClient(0));
+//        sendBoardToClient(serverObjectOutputStream, board);
+//    }
+//
+//    private static void sendBoardToClient(ObjectOutputStream serverOutputStream, Dot[][] board) throws IOException {
+//        serverOutputStream.writeObject(board);
+//    }
+//
+//    private static Point readMoveFromClient(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+//
+//        return (Point)ois.readObject();
+//    }
+//
+//    public static Point readMoveFromClient(AwesomeServerSocket server) throws IOException, ClassNotFoundException {
+//
+//        ObjectInputStream serverObjectInputStream = new ObjectInputStream(server.getServerInputStreamForClient(0));
+//
+//        return readMoveFromClient(serverObjectInputStream);
+//    }
 
     // Client calls these
+    public static void sendMessageToServer(AwesomeClientSocket client, DotsMessage message) throws IOException {
+        ObjectOutputStream clientObjectOutputStream = new ObjectOutputStream(client.getClientOutputStream());
+        clientObjectOutputStream.writeObject(message);
 
-    public static Dot[][] readBoardFromServer(AwesomeClientSocket client) throws IOException, ClassNotFoundException {
+    }
+
+
+    public static DotsMessage readMessageFromServer(AwesomeClientSocket client) throws IOException, ClassNotFoundException {
 
         ObjectInputStream clientObjectInputStream = new ObjectInputStream(client.getClientInputStream());
-
-        return readBoardFromServer(clientObjectInputStream);
+        return (DotsMessage)clientObjectInputStream.readObject();
 
     }
 
-    private static Dot[][] readBoardFromServer(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        return (Dot[][])ois.readObject();
-    }
-
-    public static void sendMoveToServer(AwesomeClientSocket client, Point point) throws IOException {
-        ObjectOutputStream clientObjectOutputStream = new ObjectOutputStream(client.getClientOutputStream());
-        sendMoveToServer(clientObjectOutputStream, point);
-    }
-
-    private static void sendMoveToServer(ObjectOutputStream oos, Point point) throws IOException {
-        oos.writeObject(point);
-    }
-
+//
+//    public static Dot[][] readBoardFromServer(AwesomeClientSocket client) throws IOException, ClassNotFoundException {
+//
+//        ObjectInputStream clientObjectInputStream = new ObjectInputStream(client.getClientInputStream());
+//
+//        return readBoardFromServer(clientObjectInputStream);
+//
+//    }
+//
+//    private static Dot[][] readBoardFromServer(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+//        return (Dot[][])ois.readObject();
+//    }
+//
+//    public static void sendMoveToServer(AwesomeClientSocket client, Point point) throws IOException {
+//        ObjectOutputStream clientObjectOutputStream = new ObjectOutputStream(client.getClientOutputStream());
+//        sendMoveToServer(clientObjectOutputStream, point);
+//    }
+//
+//    private static void sendMoveToServer(ObjectOutputStream oos, Point point) throws IOException {
+//        oos.writeObject(point);
+//    }
+//
 
     public static Point getPointFromScanner(Scanner scanner) {
 

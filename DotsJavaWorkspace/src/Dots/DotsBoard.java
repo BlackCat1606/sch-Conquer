@@ -1,12 +1,13 @@
 package Dots;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * Created by JiaHao on 10/2/15.
  */
-public class DotsBoard {
+public class DotsBoard implements Serializable {
 
     // swap comments here to use default randomised board
     // private Dot[][] boardArray;

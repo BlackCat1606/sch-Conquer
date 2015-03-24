@@ -1,10 +1,11 @@
 package Sockets;
 
 import AwesomeSockets.AwesomeServerSocket;
-import Dots.Dot;
-import Dots.DotsBoard;
-import Dots.DotsLogic;
-import Dots.Point;
+import Constants.DotsConstants;
+import Dots.*;
+import Model.DotsMessage;
+import Model.DotsMessageBoard;
+import Model.DotsMessageResponse;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,7 +16,7 @@ import java.io.ObjectOutputStream;
  */
 public class TestDotsServer {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
         final int PORT = 4321;
 
@@ -25,35 +26,48 @@ public class TestDotsServer {
         server.acceptClient();
 
 
-        DotsBoard board = new DotsBoard(5);
-//        board.printWithIndex();
+        DotsGame dotsGame = new DotsGame();
 
-        DotsLogic logic = new DotsLogic(board);
-
-
-        // sends the board to the player
-
-//        Scanner scanner = new Scanner(System.in);
-
-        boolean gameRunning = true;
-
-//        while (gameRunning) {
-//
-////            scanner.nextLine();
-
-//
-//        }
+        DotsBoard board = dotsGame.getDotsBoard();
 
 
-        Dot[][] boardArray = board.getBoardArray();
-        DotsSocketHelper.sendBoardToClient(server, boardArray);
 
 
-        Point receivedPoint = DotsSocketHelper.readMoveFromClient(server);
-        System.out.println("Received point:");
+        // Send to client
+        DotsMessageBoard messageBoard = new DotsMessageBoard(board);
+        DotsSocketHelper.sendMessageToClient(server, messageBoard);
 
-        System.out.println(receivedPoint);
+        DotsMessageResponse messageResponse = new DotsMessageResponse(true);
+        DotsSocketHelper.sendMessageToClient(server, messageResponse);
 
+
+
+
+        Thread.sleep(2000);
+        // Read from client
+
+        // read from server
+        for (int i = 0; i < 2; i++) {
+
+            DotsMessage message = DotsSocketHelper.readMessageFromClient(server);
+
+            if (message instanceof DotsMessageBoard) {
+                DotsBoard receivedBoard = ((DotsMessageBoard) message).getDotsBoard();
+                receivedBoard.printWithIndex();
+
+            } else if (message instanceof DotsMessageResponse) {
+                boolean response = ((DotsMessageResponse) message).getResponse();
+                System.out.println("Received Response: ");
+                System.out.println(response);
+
+            } else {
+
+                System.err.println("Unknown message type");
+            }
+        }
+
+
+        Thread.sleep(10000);
 
         server.closeServer();
 

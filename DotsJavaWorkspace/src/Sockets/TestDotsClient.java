@@ -3,7 +3,11 @@ package Sockets;
 import AwesomeSockets.AwesomeClientSocket;
 import Dots.Dot;
 import Dots.DotsBoard;
+import Dots.DotsGame;
 import Dots.Point;
+import Model.DotsMessage;
+import Model.DotsMessageBoard;
+import Model.DotsMessageResponse;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,7 +18,7 @@ import java.io.ObjectOutputStream;
  */
 public class TestDotsClient {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
         final int PORT = 4321;
         final String SERVER_ADDRESS = "localhost";
@@ -23,25 +27,57 @@ public class TestDotsClient {
 
 
 
-        boolean gameRunning = true;
+        // read from server
+        for (int i = 0; i < 2; i++) {
 
-//        while (gameRunning) {
+            DotsMessage message = DotsSocketHelper.readMessageFromServer(clientSocket);
 
-//            System.out.println("endloop");
-//        }
+            if (message instanceof DotsMessageBoard) {
+                DotsBoard receivedBoard = ((DotsMessageBoard) message).getDotsBoard();
+                receivedBoard.printWithIndex();
 
-        Dot[][] receivedBoard = DotsSocketHelper.readBoardFromServer(clientSocket);
-//            System.out.println(Arrays.deepToString(receivedBoard));
+            } else if (message instanceof DotsMessageResponse) {
+                boolean response = ((DotsMessageResponse) message).getResponse();
+                System.out.println("Received Response: ");
+                System.out.println(response);
 
-        DotsBoard.printBoardWithIndex(receivedBoard);
+            } else {
 
-        Point testPoint = new Point(1,2, 1);
-        DotsSocketHelper.sendMoveToServer(clientSocket, testPoint);
+                System.err.println("Unknown message type");
+            }
+        }
+
+        // send to server
+
+        DotsGame dotsGame = new DotsGame();
+        DotsBoard board = dotsGame.getDotsBoard();
+
+        DotsMessageBoard messageBoard = new DotsMessageBoard(board);
+        DotsSocketHelper.sendMessageToServer(clientSocket, messageBoard);
 
 
-        clientSocket.closeClient();
+        DotsMessageResponse messageResponse = new DotsMessageResponse(true);
+        DotsSocketHelper.sendMessageToServer(clientSocket, messageResponse);
 
 
+
+
+
+
+        Thread.sleep(10000);
+//
+//
+////            System.out.println(Arrays.deepToString(receivedBoard));
+//
+//        DotsBoard.printBoardWithIndex(receivedBoard);
+//
+//        Point testPoint = new Point(1,2, 1);
+//        DotsSocketHelper.sendMoveToServer(clientSocket, testPoint);
+//
+//
+//        clientSocket.closeClient();
+//
+//
 
 
     }
