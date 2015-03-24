@@ -112,4 +112,9 @@ public class AwesomeClientSocket {
             System.out.println(message);
         }
     }
+
+    @Override
+    public String toString() {
+        return this.serverSocket.toString();
+    }
 }

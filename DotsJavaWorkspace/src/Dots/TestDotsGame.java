@@ -14,7 +14,7 @@ public class TestDotsGame {
 
         // Initialize
 
-        DotsBoard board = new DotsBoard(5);
+        DotsBoard board = new DotsBoard(6);
 //        System.out.println(board);
         board.printWithIndex();
         DotsLogic logic = new DotsLogic(board);

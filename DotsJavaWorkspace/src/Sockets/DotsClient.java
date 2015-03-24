@@ -4,6 +4,7 @@ import AwesomeSockets.AwesomeClientSocket;
 import Dots.Dot;
 import Dots.DotsBoard;
 import Dots.Point;
+import Model.DotsLocks;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -13,25 +14,30 @@ import java.util.Scanner;
  */
 public class DotsClient {
     // start as false here, as
-    public static boolean boardChanged = false;
-    public static boolean gameIsRunning = true;
+
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
         final int PORT = 4321;
         final String SERVER_ADDRESS = "localhost";
 
+        // Initialise Locks
+
+        DotsLocks dotsLocks = new DotsLocks();
+
+
+
         // Initialize client socket
         AwesomeClientSocket clientSocket = new AwesomeClientSocket(SERVER_ADDRESS, PORT);
 
 
         // Init server listener thread
-        DotsClientServerListener dotsServerListener = new DotsClientServerListener(clientSocket);
+        DotsClientServerListener dotsServerListener = new DotsClientServerListener(clientSocket, dotsLocks);
         Thread listenerThread = new Thread(dotsServerListener);
 
         // Init scanner thread
         Scanner scanner = new Scanner(System.in);
-        DotsClientScannerListener dotsClientScannerListener = new DotsClientScannerListener(clientSocket, scanner);
+        DotsClientScannerListener dotsClientScannerListener = new DotsClientScannerListener(scanner, clientSocket, dotsLocks);
         Thread scannerThread = new Thread(dotsClientScannerListener);
 
 
@@ -40,27 +46,34 @@ public class DotsClient {
         scannerThread.start();
 //
 
-
-
+        // sleep first so client has time to get board from server
         try {
-
-            while (gameIsRunning) {
-                // sleep first so client has time to get board from server
-                // also sleep here to avoid the process consuming the cpu
-                // TODO fix infinite loop here when server closes before client
-                Thread.sleep(100);
-
-                if (boardChanged) {
-                    DotsBoard.printBoardWithIndex(dotsServerListener.getBoardArray());
-                    boardChanged = false;
-                }
-
-
-
-            }
-
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+
+        while (dotsLocks.isGameRunning()) {
+
+            synchronized (dotsLocks) {
+                System.out.println(dotsLocks.isBoardChanged());
+                while (!dotsLocks.isBoardChanged()) {
+
+                    try {
+                        System.out.println("Waiting");
+                        dotsLocks.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                DotsBoard.printBoardWithIndex(dotsServerListener.getBoardArray());
+                dotsLocks.setBoardChanged(false);
+                System.out.println("HELLO");
+//                    boardChanged = false;
+            }
         }
 
         clientSocket.closeClient();
@@ -72,27 +85,31 @@ class DotsClientScannerListener implements Runnable {
 
     private final Scanner scanner;
     private final AwesomeClientSocket clientSocket;
+    private final DotsLocks locks;
 
-    public DotsClientScannerListener(AwesomeClientSocket clientSocket, Scanner scanner) {
+    public DotsClientScannerListener(Scanner scanner, AwesomeClientSocket clientSocket, DotsLocks locks) {
         this.scanner = scanner;
         this.clientSocket = clientSocket;
+        this.locks = locks;
     }
 
     @Override
     public void run() {
 
-        while (DotsClient.gameIsRunning) {
+        while (this.locks.isGameRunning()) {
 
             Point inputPoint = DotsSocketHelper.getPointFromScanner(this.scanner);
 
-//
             try {
                 DotsSocketHelper.sendMoveToServer(this.clientSocket, inputPoint);
 
                 // TODO get response from server
 
+//                System.out.println(this.clientSocket.readMessageLine());
+
                 // we assume that the board is changed whenever a move is made now
-                DotsServer.boardChanged = true;
+//                this.locks.setBoardChanged(true);
+
 
 
             } catch (IOException e) {
@@ -109,10 +126,12 @@ class DotsClientServerListener implements Runnable {
 
     private Dot[][] boardArray;
     private final AwesomeClientSocket clientSocket;
+    private final DotsLocks locks;
 
 
-    public DotsClientServerListener(AwesomeClientSocket clientSocket) {
+    public DotsClientServerListener(AwesomeClientSocket clientSocket, DotsLocks locks) {
         this.clientSocket = clientSocket;
+        this.locks = locks;
     }
 
     public Dot[][] getBoardArray() {
@@ -123,7 +142,7 @@ class DotsClientServerListener implements Runnable {
     @Override
     public void run() {
 
-        while (DotsClient.gameIsRunning) {
+        while (this.locks.isGameRunning()) {
 
             try {
                 // TODO protocol to read messages from server
@@ -135,14 +154,14 @@ class DotsClientServerListener implements Runnable {
 
                 // check for board
                 this.boardArray = DotsSocketHelper.readBoardFromServer(this.clientSocket);
-                DotsClient.boardChanged = true;
-
-
+                this.locks.setBoardChanged(true);
 
             } catch (IOException e) {
                 e.printStackTrace();
+                break;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+                break;
             }
 
 

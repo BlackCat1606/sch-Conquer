@@ -49,7 +49,6 @@ public class DotsGame {
             return false;
         }
 
-
         boolean moveResult = this.dotsLogic.checkMove(playerPoints);
 
         if (moveResult) {

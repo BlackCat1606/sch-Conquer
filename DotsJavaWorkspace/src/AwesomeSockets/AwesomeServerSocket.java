@@ -327,6 +327,19 @@ public class AwesomeServerSocket {
             System.out.println(message);
         }
     }
+
+    @Override
+    public String toString() {
+        String result = "";
+
+        result += this.serverSocket.toString() + "\n";
+        result += "Clients: ";
+
+        for (Socket client : clients) {
+            result += client.toString() + " ";
+        }
+        return result;
+    }
 }
 
 

@@ -136,7 +136,6 @@ class DotsServerClientListener implements Runnable {
             while (this.dotsGame.isGameRunning()) {
 //                String message = this.serverSocket.readMessageLineForClient(this.clientNumber);
 
-
                 Point receivedPoint = DotsSocketHelper.readMoveFromClient(serverSocket);
                 System.out.println("Received point: " + receivedPoint);
 
