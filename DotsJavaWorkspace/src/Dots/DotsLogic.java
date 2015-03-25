@@ -19,11 +19,18 @@ public class DotsLogic {
     /**
      * Takes an input move sequence and clear the dots if it is a valid move
      * @param inputMoves chronologically ordered arrayList of points
+     * @return true if board needs to be updated
      */
-    public void moveCompleted(ArrayList<Point> inputMoves) {
-        if (checkMove(inputMoves)) {
+    public boolean moveCompleted(ArrayList<Point> inputMoves) {
+
+        boolean needToUpdateBoard = checkMove(inputMoves);
+
+
+        if (needToUpdateBoard) {
             board.clearDots(inputMoves);
         }
+
+        return needToUpdateBoard;
     }
 
 

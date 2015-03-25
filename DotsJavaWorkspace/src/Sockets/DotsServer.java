@@ -219,7 +219,7 @@ class DotsServerClientListener implements Runnable {
 
             // Package and send a response to the client
             DotsMessageResponse dotsMessageResponse = new DotsMessageResponse(response);
-            DotsSocketHelper.sendMessageToClient(serverSocket, dotsMessageResponse);
+            DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageResponse);
 
         } else {
 
