@@ -2,10 +2,12 @@ package Model;
 
 import Dots.Point;
 
+import java.io.Serializable;
+
 /**
  * Created by JiaHao on 24/3/15.
  */
-public class DotsInteraction {
+public class DotsInteraction implements Serializable {
 
 
     private final DotsInteractionStates state;
