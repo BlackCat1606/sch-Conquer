@@ -8,6 +8,8 @@ import Model.DotsLocks;
 import java.util.ArrayList;
 
 /**
+ * The general dots game, that wraps the board, logic and locks together
+ *
  * Created by JiaHao on 25/2/15.
  */
 public class DotsGame {
@@ -15,10 +17,7 @@ public class DotsGame {
 
     private final DotsBoard dotsBoard;
     private final DotsLogic dotsLogic;
-
     private final DotsLocks dotsLocks;
-
-
 
     private ArrayList<Point>[] playerMoves;
 
@@ -39,14 +38,9 @@ public class DotsGame {
 
     }
 
-
     public boolean isGameRunning() {
         return this.dotsLocks.isGameRunning();
     }
-
-//    public synchronized Dot[][] getBoardArray() {
-//        return this.dotsBoard.getBoardArray();
-//    }
 
     public synchronized DotsBoard getDotsBoard() {
         return dotsBoard;
@@ -61,7 +55,7 @@ public class DotsGame {
     }
 
     /**
-     * The main method that we will call on our game, to update the game based on
+     * The primary method that we will call on our game, to update the game based on
      * an input DotsInteraction
      *
      * In this method, we will also check for a change for the board, when the interaction is touchUp
@@ -70,17 +64,23 @@ public class DotsGame {
      * If so, this method will notify the dotsLock, which will in turn awaken the main thread to update
      * the screen
      *
-     * @param interaction
-     * @return
+     * @param interaction touch interaction
+     * @return true if valid, false if invalid
      */
     public synchronized boolean doMove(DotsInteraction interaction) {
 
         // TODO Check for conflicts between two player points
 
+        // if conflict detected
+        if (conflictIsDetected(interaction)) {
+            // invalid move
+            return false;
+
+        }
+
         // gets details from the interaction
         int player = interaction.getPlayerId();
         Point point = interaction.getPoint();
-
 
         // if its a new touch down, recreate the array list
         if (interaction.getState() == DotsInteractionStates.TOUCH_DOWN) {
@@ -118,7 +118,6 @@ public class DotsGame {
 
             boolean needToUpdateBoard = this.dotsLogic.moveCompleted(this.playerMoves[player]);
 
-
             // if the board is changed, notify lock
             if (needToUpdateBoard) {
 
@@ -130,10 +129,42 @@ public class DotsGame {
 
             }
 
-
         }
 
         return true;
+    }
+
+    /**
+     * This method will check for any conflicts in touches between players.
+     * I.e. if player0 is holding on to a point, player1 will not be allowed to select that point
+     * @param dotsInteraction interaction of a particular player
+     * @return false if no conflict, true if there is a conflict
+     */
+    private boolean conflictIsDetected(DotsInteraction dotsInteraction) {
+
+        ArrayList<Point> otherPlayerPoints;
+
+        if (dotsInteraction.getPlayerId() == 0) {
+
+            otherPlayerPoints = this.playerMoves[1];
+        } else if (dotsInteraction.getPlayerId() == 1) {
+            otherPlayerPoints = this.playerMoves[0];
+        } else {
+            System.err.println("No such player");
+            return false;
+        }
+
+
+        for (Point otherPlayerPoint : otherPlayerPoints) {
+
+            if (otherPlayerPoint.compareWith(dotsInteraction.getPoint())) {
+                return true;
+            }
+
+        }
+
+        return false;
+
     }
 
 
