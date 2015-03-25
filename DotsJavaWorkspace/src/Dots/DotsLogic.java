@@ -3,6 +3,8 @@ package Dots;
 import java.util.ArrayList;
 
 /**
+ * A logical checker to perform operations on the board
+ *
  * Created by JiaHao on 10/2/15.
  */
 public class DotsLogic {

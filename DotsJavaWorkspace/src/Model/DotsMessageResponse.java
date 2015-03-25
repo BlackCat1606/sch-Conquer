@@ -1,6 +1,8 @@
 package Model;
 
 /**
+ * Container for a message that holds a boolean response
+ *
  * Created by JiaHao on 24/3/15.
  */
 public class DotsMessageResponse implements DotsMessage {

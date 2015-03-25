@@ -5,6 +5,11 @@ import Dots.Point;
 import java.io.Serializable;
 
 /**
+ * A object to represent touches on the screen
+ * When implementing in android, we will simply have to make a function that converts the detected touches
+ * into this object, before dealing with it in the client/server
+ *
+ *
  * Created by JiaHao on 24/3/15.
  */
 public class DotsInteraction implements Serializable {

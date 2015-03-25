@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
+ * A wrapper for a 2D array representing the board, with some helper functions
+ *
  * Created by JiaHao on 10/2/15.
  */
 public class DotsBoard implements Serializable {
@@ -12,10 +14,12 @@ public class DotsBoard implements Serializable {
     // swap comments here to use default randomised board
     // private Dot[][] boardArray;
     private Dot[][] boardArray = {
-            {new Dot(DotColor.RED), new Dot(DotColor.YELLOW), new Dot(DotColor.BLUE), new Dot(DotColor.RED)},
-            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.GREEN)},
-            {new Dot(DotColor.GREEN), new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN)},
-            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.GREEN)},
+            {new Dot(DotColor.RED), new Dot(DotColor.YELLOW), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.RED), new Dot(DotColor.RED)},
+            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.GREEN), new Dot(DotColor.RED), new Dot(DotColor.RED)},
+            {new Dot(DotColor.GREEN), new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.RED), new Dot(DotColor.RED)},
+            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.GREEN), new Dot(DotColor.RED), new Dot(DotColor.RED)},
+            {new Dot(DotColor.GREEN), new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.RED), new Dot(DotColor.RED)},
+            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.GREEN), new Dot(DotColor.RED), new Dot(DotColor.RED)},
     };
 
     /**

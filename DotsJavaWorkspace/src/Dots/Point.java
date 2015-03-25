@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Object to store a point nicely
+ *
  * Created by JiaHao on 10/2/15.
  */
 public class Point implements Serializable {
@@ -26,8 +27,8 @@ public class Point implements Serializable {
 
     /**
      * Method to compare points
-     * @param point
-     * @return
+     * @param point other point
+     * @return true if the same coordinates, false otherwise
      */
     public boolean compareWith(Point point) {
 
