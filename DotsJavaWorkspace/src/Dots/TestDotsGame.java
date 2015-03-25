@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 /**
- * For Testing
+ * For single player of how the game might work
  * Created by JiaHao on 10/2/15.
  */
 public class TestDotsGame {
@@ -44,32 +44,26 @@ public class TestDotsGame {
 //        }
 
 
+        // Initialise the game
         DotsGame dotsGame = new DotsGame();
+
+        // first print the generated board
         dotsGame.getDotsBoard().printWithIndex();
 
-        // Test code
+        // testing points that are adjacent and have the same color
         Point point0 = new Point(0, 1);
         Point point1 = new Point(1,1);
         Point point2 = new Point(1,2);
         Point point3 = new Point(1,3);
         Point point4 = new Point(0,3);
 
-//        ArrayList<Point> pointList = new ArrayList<Point>();
-//        pointList.add(point1);
-//        pointList.add(point2);
-//        pointList.add(point3);
-//        pointList.add(point4);
-//        pointList.add(point5);
-
-
         int PLAYER_0 = 0;
 
 
+        // Simulation of interactions
         DotsInteraction interaction0 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_DOWN, point0);
 //        dotsGame.getDotsBoard().printWithIndex();
         System.out.println(dotsGame.doMove(interaction0));
-
-
 
         DotsInteraction interaction1 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_MOVE, point1);
         System.out.println(dotsGame.doMove(interaction1));
@@ -82,18 +76,9 @@ public class TestDotsGame {
 
         DotsInteraction interaction4 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_UP, point4);
         System.out.println(dotsGame.doMove(interaction4));
+
+        // print the final board after the interactions are complete
         dotsGame.getDotsBoard().printWithIndex();
-
-
-
-
-
-
-//        System.out.println(board.getElement(startPoint));
-//        System.out.println(board.getElement(endPoint));
-//        System.out.println(logic.checkAdjacency(startPoint, endPoint));
-//        logic.moveCompleted(pointList);
-//        System.out.println(board.toString());
 
 
     }

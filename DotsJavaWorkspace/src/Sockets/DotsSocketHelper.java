@@ -15,6 +15,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 /**
+ * Helper methods to make dealing with sockets easier
  * Created by JiaHao on 25/2/15.
  */
 public class DotsSocketHelper {

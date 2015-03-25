@@ -1,6 +1,7 @@
 package Sockets;
 
 import AwesomeSockets.AwesomeServerSocket;
+import Constants.DotsConstants;
 import Dots.*;
 import Model.*;
 
@@ -12,32 +13,22 @@ import java.util.Scanner;
 */
 public class DotsServer {
 
-    // static variable for threads to keep track of whether the board has changed
-
-//    public static boolean boardChanged = true;
+    // TODO translate the main thread into a instantiated object that we can call start() on to start the game on the client
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
-        final int PORT = 4321;
+        final int PORT = DotsConstants.CLIENT_PORT;
 
         // initialize server
         AwesomeServerSocket server = new AwesomeServerSocket(PORT);
-//        server.debugMode = false;
         server.acceptClient();
 
         // initialize game object
         DotsGame dotsGame = new DotsGame();
         DotsLocks dotsLocks = dotsGame.getGameLocks();
 
-//        // initial printing of board to client
-//        DotsSocketHelper.sendBoardToClient(server, dotsGame.getBoardArray());
-
-
-
         // init listener thread
         DotsServerClientListener dotsClientListener = new DotsServerClientListener(server, dotsGame);
         Thread listenerThread = new Thread(dotsClientListener);
-
-
 
         // init scanner thread
         Scanner scanner = new Scanner(System.in);
@@ -47,9 +38,6 @@ public class DotsServer {
         // starts threads
         listenerThread.start();
         scannerThread.start();
-
-
-
 
         // block for game sequence
         while (dotsGame.isGameRunning()) {
@@ -83,7 +71,13 @@ public class DotsServer {
         System.out.println("Game over");
     }
 
-
+    /**
+     * This function is called when the main thread is notified and awakened, indicating that
+     * the board has been changed and the screen needs updating
+     * @param serverSocket server to send the board to
+     * @param dotsGame the game object
+     * @throws IOException if sending message through the socket fails
+     */
     private static void doBoardUpdating(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
 
         // update the board on the current device
@@ -96,6 +90,9 @@ public class DotsServer {
 
     }
 
+    /**
+     * Helper method to package and send the board to the client
+     */
     private static void sendBoardToClient(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
 
         DotsMessageBoard messageBoard = new DotsMessageBoard(dotsGame.getDotsBoard());
@@ -105,7 +102,10 @@ public class DotsServer {
 
 }
 
-
+/**
+ * Thread to listen for input from the scanner
+ * TODO translate the scanner to system.in or something to parse touches on android to maintain modularity?
+ */
 class DotsServerScannerListener implements Runnable {
 
     private final Scanner scanner;
@@ -120,9 +120,6 @@ class DotsServerScannerListener implements Runnable {
     public void run() {
 
         while (this.dotsGame.isGameRunning()) {
-
-//            Point inputPoint = DotsSocketHelper.getPointFromScanner(this.scanner);
-
 
             DotsInteraction dotsInteraction = DotsSocketHelper.getInteractionFromScanner(0, this.scanner);
 
@@ -147,12 +144,7 @@ class DotsServerScannerListener implements Runnable {
                  *
                  */
 
-
-
             }
-
-
-
 
         }
 
@@ -160,6 +152,9 @@ class DotsServerScannerListener implements Runnable {
     }
 }
 
+/**
+ * Thread to listen and deal with messages from the client
+ */
 class DotsServerClientListener implements Runnable {
 
     private final AwesomeServerSocket serverSocket;
@@ -183,9 +178,8 @@ class DotsServerClientListener implements Runnable {
 
             while (this.dotsGame.isGameRunning()) {
 
-
+                // read and deal with messages from the client
                 DotsMessage message = DotsSocketHelper.readMessageFromClient(serverSocket);
-
                 this.dealWithMessage(message);
 
 
@@ -208,7 +202,6 @@ class DotsServerClientListener implements Runnable {
      */
     private void dealWithMessage(DotsMessage message) throws IOException {
 
-
         // Right now, only one case of the message, which is an interaction.
         // The response here would be to respond with a boolean indicating the validity of the interaction
         if (message instanceof DotsMessageInteraction) {
@@ -226,10 +219,5 @@ class DotsServerClientListener implements Runnable {
             System.err.println("Invalid message type");
 
         }
-
-
-
     }
-
-
 }

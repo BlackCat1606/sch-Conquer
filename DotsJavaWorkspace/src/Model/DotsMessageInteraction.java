@@ -1,8 +1,8 @@
 package Model;
 
-import Dots.DotsBoard;
-
 /**
+ * Container for a message that holds a DotsInteraction
+ *
  * Created by JiaHao on 25/3/15.
  */
 public class DotsMessageInteraction implements DotsMessage {

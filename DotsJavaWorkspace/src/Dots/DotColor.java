@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * Possible colors that can be used for the dots
+ *
  * Created by JiaHao on 10/2/15.
  */
 public enum DotColor {

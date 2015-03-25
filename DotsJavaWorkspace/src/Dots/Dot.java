@@ -3,6 +3,8 @@ package Dots;
 import java.io.Serializable;
 
 /**
+ * A container for a colored dot on a board
+ *
  * Created by JiaHao on 10/2/15.
  */
 public class Dot implements Serializable {
