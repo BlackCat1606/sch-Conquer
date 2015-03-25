@@ -25,8 +25,6 @@ public class TestDotsClient {
 
         AwesomeClientSocket clientSocket = new AwesomeClientSocket(SERVER_ADDRESS, PORT);
 
-
-
         // read from server
         for (int i = 0; i < 2; i++) {
 
@@ -48,20 +46,14 @@ public class TestDotsClient {
         }
 
         // send to server
-
         DotsGame dotsGame = new DotsGame();
         DotsBoard board = dotsGame.getDotsBoard();
 
         DotsMessageBoard messageBoard = new DotsMessageBoard(board);
         DotsSocketHelper.sendMessageToServer(clientSocket, messageBoard);
 
-
         DotsMessageResponse messageResponse = new DotsMessageResponse(true);
         DotsSocketHelper.sendMessageToServer(clientSocket, messageResponse);
-
-
-
-
 
 
         Thread.sleep(10000);

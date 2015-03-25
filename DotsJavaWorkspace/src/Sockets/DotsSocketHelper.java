@@ -4,6 +4,8 @@ import AwesomeSockets.AwesomeClientSocket;
 import AwesomeSockets.AwesomeServerSocket;
 import Dots.Dot;
 import Dots.Point;
+import Model.DotsInteraction;
+import Model.DotsInteractionStates;
 import Model.DotsMessage;
 
 import java.io.IOException;
@@ -96,8 +98,46 @@ public class DotsSocketHelper {
 //        oos.writeObject(point);
 //    }
 //
+//
+//    @Deprecated
+//    public static Point getPointFromScanner(Scanner scanner) {
+//
+//        // change largest number here to match size of board - 1
+//        final String REG_EX = "[0-4][0-4][0-1]";
+//
+//        String playerPointString = "";
+//        boolean correctInput = false;
+//        while (!correctInput) {
+//
+//            System.out.println("Enter move x, y, state without spaces:");
+//
+//            playerPointString = scanner.nextLine();
+//
+//            if (!(correctInput = Pattern.matches(REG_EX, playerPointString))) {
+//                System.out.println("Invalid entry.");
+//            }
+//        }
+//
+//        return parseStringToPoint(playerPointString);
+//    }
+//
+//    @Deprecated
+//    private static Point parseStringToPoint(String inp) {
+//
+//        final int NO_OF_PARAMETERS = 3;
+//        int[] pointParameters = new int[NO_OF_PARAMETERS];
+//
+//        for (int i = 0; i < 3; i++) {
+//            char currentChar = inp.charAt(i);
+//            pointParameters[i] = Character.getNumericValue(currentChar);
+//        }
+//
+//        return new Point(pointParameters[0], pointParameters[1], pointParameters[2]);
+//
+//    }
 
-    public static Point getPointFromScanner(Scanner scanner) {
+
+    public static DotsInteraction getInteractionFromScanner(int player, Scanner scanner) {
 
         // change largest number here to match size of board - 1
         final String REG_EX = "[0-4][0-4][0-1]";
@@ -115,11 +155,12 @@ public class DotsSocketHelper {
             }
         }
 
-        return parseStringToPoint(playerPointString);
+        return parseStringToInteraction(player, playerPointString);
+
+
     }
 
-
-    private static Point parseStringToPoint(String inp) {
+    private static DotsInteraction parseStringToInteraction(int player, String inp) {
 
         final int NO_OF_PARAMETERS = 3;
         int[] pointParameters = new int[NO_OF_PARAMETERS];
@@ -129,9 +170,32 @@ public class DotsSocketHelper {
             pointParameters[i] = Character.getNumericValue(currentChar);
         }
 
-        return new Point(pointParameters[0], pointParameters[1], pointParameters[2]);
+        Point point = new Point(pointParameters[0], pointParameters[1]);
+
+        DotsInteraction interaction = new DotsInteraction(player, DotsInteractionStates.values()[pointParameters[2]], point);
+
+        return interaction;
 
     }
 
+
+    public static void main(String[] args) {
+        // testing code for interaction scanner parsing
+        Scanner scanner = new Scanner(System.in);
+
+
+        while (true) {
+
+            DotsInteraction interaction = getInteractionFromScanner(0, scanner);
+
+            System.out.println(interaction);
+
+        }
+
+
+
+
+
+    }
 
 }

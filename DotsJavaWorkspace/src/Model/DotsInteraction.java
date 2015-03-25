@@ -32,6 +32,11 @@ public class DotsInteraction {
     public int getPlayerId() {
         return playerId;
     }
+
+    @Override
+    public String toString() {
+        return "Player: " + this.getPlayerId() + " State: " + this.getState() + " Point: " + point.toString();
+    }
 }
 
 
