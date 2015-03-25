@@ -50,11 +50,14 @@ public class DotsClient {
         // create an object here to block on while the game is running
         Object gameRunningLock = new Object();
 
-        while (dotsLocks.isGameRunning()) {
+        synchronized (gameRunningLock) {
 
-            gameRunningLock.wait();
+            while (dotsLocks.isGameRunning()) {
 
+                gameRunningLock.wait();
+            }
         }
+
 
 //        // sleep first so client has time to get board from server
 //        try {

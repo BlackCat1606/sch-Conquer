@@ -23,6 +23,10 @@ public class DotsLogic {
      */
     public boolean moveCompleted(ArrayList<Point> inputMoves) {
 
+        if (inputMoves.size() <= 1) {
+            return false;
+        }
+
         boolean needToUpdateBoard = checkMove(inputMoves);
 
 
@@ -43,13 +47,18 @@ public class DotsLogic {
      */
     private boolean checkAdjacency(Point start, Point end) {
 
+        // If the points are the same, we return true right away
+        if (start.compareWith(end)) {
+            return true;
+        }
+
         double x1 = start.x;
         double y1 = start.y;
         double x2 = end.x;
         double y2 = end.y;
         if (Math.sqrt(Math.pow(y1 - y2, 2) + Math.pow(x1 - x2, 2)) != 1) {
 //            throw new UnsupportedOperationException("dots must be vertically or horizontally adjacent");
-            System.err.println("Points not vertically or horizontally adjacent or same point");
+            System.err.println("Points not vertically or horizontally adjacent");
             return false;
         }
 
@@ -68,7 +77,9 @@ public class DotsLogic {
      */
     public boolean checkMove(ArrayList<Point> inputMoves) {
 
+        System.out.println(inputMoves);
         for (int i = 0; i < inputMoves.size() - 1; i++) {
+
             Point startPoint = inputMoves.get(i);
             Point endPoint = inputMoves.get(i + 1);
 

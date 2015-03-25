@@ -75,6 +75,8 @@ public class DotsGame {
      */
     public synchronized boolean doMove(DotsInteraction interaction) {
 
+        // TODO Check for conflicts between two player points
+
         // gets details from the interaction
         int player = interaction.getPlayerId();
         Point point = interaction.getPoint();
@@ -88,15 +90,28 @@ public class DotsGame {
 
 
         // we temporarily add the new point to the current list of points and perform a check for adjacency
-        this.playerMoves[player].add(point);
-        boolean moveResult = this.dotsLogic.checkMove(this.playerMoves[player]);
+
+        boolean pointAlreadyRecorded = false;
+        for (Point storedPoints : this.playerMoves[player]) {
+
+            if (storedPoints.compareWith(point)) {
+                pointAlreadyRecorded = true;
+            }
+        }
+
+        if (!pointAlreadyRecorded) {
+
+            this.playerMoves[player].add(point);
+            boolean moveResult = this.dotsLogic.checkMove(this.playerMoves[player]);
 
 
-        // remove the point if it is invalid
-        if (!moveResult) {
+            // remove the point if it is invalid
+            if (!moveResult) {
 
-            this.playerMoves[player].remove(this.playerMoves[player].size()-1);
-            return false;
+                this.playerMoves[player].remove(this.playerMoves[player].size()-1);
+                return false;
+            }
+
         }
 
         if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
@@ -118,7 +133,7 @@ public class DotsGame {
 
         }
 
-        return moveResult;
+        return true;
     }
 
 

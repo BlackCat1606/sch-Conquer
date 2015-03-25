@@ -22,4 +22,20 @@ public class Point implements Serializable {
 
         return "(" + this.x + ", " + this.y + ")";
     }
+
+
+    /**
+     * Method to compare points
+     * @param point
+     * @return
+     */
+    public boolean compareWith(Point point) {
+
+        if (this.x == point.x && this.y == point.y) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }
