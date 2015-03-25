@@ -13,8 +13,8 @@ import java.util.Scanner;
 public class DotsServer {
 
     // static variable for threads to keep track of whether the board has changed
-    // init as true so that the board will print it in the first time it listens for change
-    public static boolean boardChanged = true;
+
+//    public static boolean boardChanged = true;
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
         final int PORT = 4321;
@@ -26,6 +26,7 @@ public class DotsServer {
 
         // initialize game object
         DotsGame dotsGame = new DotsGame();
+        DotsLocks dotsLocks = dotsGame.getGameLocks();
 
 //        // initial printing of board to client
 //        DotsSocketHelper.sendBoardToClient(server, dotsGame.getBoardArray());
@@ -47,37 +48,32 @@ public class DotsServer {
         listenerThread.start();
         scannerThread.start();
 
-        final Object boardChangedLock = new Object();
 
 
 
         // block for game sequence
         while (dotsGame.isGameRunning()) {
 
+            // we acquire a lock and wait upon the game locks here.
+            synchronized (dotsLocks) {
 
-            // gets a lock for waiting
-            synchronized (boardChangedLock) {
-
-                while (!boardChanged) {
+                while (!dotsLocks.isBoardChanged()) {
 
                     try {
-                        boardChangedLock.wait();
+                        dotsLocks.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
 
 
+                // when we are notified, we will do board updating,
                 doBoardUpdating(server, dotsGame);
 
-
-//                DotsMessageBoard messageBoard = new DotsMessageBoard(dotsGame.getDotsBoard());
-//                DotsSocketHelper.sendMessageToClient(server, messageBoard);
+                // and reset the boardchanged variable in dotsLocks to false.
+                dotsLocks.setBoardChanged(false);
 
             }
-
-
-
 
         }
 
@@ -97,8 +93,6 @@ public class DotsServer {
 
         // update the board on the remote device
         sendBoardToClient(serverSocket, dotsGame);
-
-        boardChanged = false;
 
     }
 
@@ -134,8 +128,31 @@ class DotsServerScannerListener implements Runnable {
 
             boolean result = this.dotsGame.doMove(dotsInteraction);
 
-            // we assume that the board is changed whenever a move is made now
-            DotsServer.boardChanged = true;
+
+            if (result) {
+
+                // update the android screen with the corresponding method
+
+                /**
+                 * There are two types of game screen updates:
+                 * 1. Update to show user touches when touch down and dragged
+                 * 2. Update the entire board when elements are cleared
+                 *
+                 * In this function, we only update the first case, which is to show valid touches
+                 * on user interaction
+                 *
+                 * The second case is dealt directly in the dotsGame object itself, which will notify the locks
+                 * when the board needs to be updated, and will hence trigger the main thread where doBoardUpdating()
+                 * will be triggered.
+                 *
+                 */
+
+
+
+            }
+
+
+
 
         }
 
@@ -155,7 +172,6 @@ class DotsServerClientListener implements Runnable {
 
     }
 
-
     @Override
     public void run() {
 
@@ -172,11 +188,8 @@ class DotsServerClientListener implements Runnable {
 
                 this.dealWithMessage(message);
 
-                // we assume that the board is changed whenever a move is made now
-                DotsServer.boardChanged = true;
 
             }
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -188,21 +201,25 @@ class DotsServerClientListener implements Runnable {
     }
 
 
+    /**
+     * This method deals with messages sent from the client.
+     * @param message
+     * @throws IOException
+     */
     private void dealWithMessage(DotsMessage message) throws IOException {
 
 
+        // Right now, only one case of the message, which is an interaction.
+        // The response here would be to respond with a boolean indicating the validity of the interaction
         if (message instanceof DotsMessageInteraction) {
-
 
             // process the interaction
             DotsInteraction receivedInteraction = ((DotsMessageInteraction) message).getDotsInteraction();
             boolean response = this.dotsGame.doMove(receivedInteraction);
 
-            // send a response to the client
+            // Package and send a response to the client
             DotsMessageResponse dotsMessageResponse = new DotsMessageResponse(response);
-
             DotsSocketHelper.sendMessageToClient(serverSocket, dotsMessageResponse);
-
 
         } else {
 

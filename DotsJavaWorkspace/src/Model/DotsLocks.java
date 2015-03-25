@@ -9,7 +9,8 @@ public class DotsLocks {
     private boolean gameRunning;
 
     public DotsLocks() {
-        this.boardChanged = false;
+        // init as true so that the board will print it in the first time it listens for change
+        this.boardChanged = true;
         this.gameRunning = true;
     }
 
