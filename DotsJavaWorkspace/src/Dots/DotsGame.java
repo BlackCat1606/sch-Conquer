@@ -135,12 +135,39 @@ public class DotsGame {
     }
 
     /**
+     * General method to check for conflicts in the same point selected
+     * and when points are selected above points that can be cleared
+     * @param dotsInteraction
+     * @return
+     */
+    private boolean conflictIsDetected(DotsInteraction dotsInteraction) {
+
+        boolean samePointConflict = this.samePointConflict(dotsInteraction);
+        boolean cascadingConflict = this.cascadingConflict(dotsInteraction);
+
+        return samePointConflict || cascadingConflict;
+
+    }
+
+    /**
+     * Helper method to check for an interaction that selects points
+     * which are above the points another player has selected
+     * @param dotsInteraction interaction of a particular player
+     * @return false if no conflict, true if there is a conflict
+     */
+    private boolean cascadingConflict(DotsInteraction dotsInteraction) {
+        // TODO cascading conflict
+        return false;
+
+    }
+
+    /**
      * This method will check for any conflicts in touches between players.
      * I.e. if player0 is holding on to a point, player1 will not be allowed to select that point
      * @param dotsInteraction interaction of a particular player
      * @return false if no conflict, true if there is a conflict
      */
-    private boolean conflictIsDetected(DotsInteraction dotsInteraction) {
+    private boolean samePointConflict(DotsInteraction dotsInteraction) {
 
         ArrayList<Point> otherPlayerPoints;
 
@@ -164,7 +191,6 @@ public class DotsGame {
         }
 
         return false;
-
     }
 
 
