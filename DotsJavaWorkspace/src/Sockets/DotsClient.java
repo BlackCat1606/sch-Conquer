@@ -16,18 +16,22 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class DotsClient {
 
-    // TODO translate the main thread into a instantiated object that we can call start() on to start the game on the client
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+    private final String serverAddress;
+    private final int port;
 
-        final int PORT = DotsConstants.CLIENT_PORT;
-        final String SERVER_ADDRESS = DotsConstants.SERVER_ADDRESS;
+    public DotsClient(String serverAddress, int port) {
+        this.serverAddress = serverAddress;
+        this.port = port;
+    }
+
+    public void start() throws IOException, InterruptedException {
 
         // Initialise Model
         DotsLocks dotsLocks = new DotsLocks();
         LinkedBlockingQueue<Boolean> responseQueue = new LinkedBlockingQueue<Boolean>();
 
         // Initialize client socket
-        AwesomeClientSocket clientSocket = new AwesomeClientSocket(SERVER_ADDRESS, PORT);
+        AwesomeClientSocket clientSocket = new AwesomeClientSocket(this.serverAddress, this.port);
 
 
         // Init server listener thread
@@ -54,41 +58,17 @@ public class DotsClient {
                 gameRunningLock.wait();
             }
         }
-
-
-//        // sleep first so client has time to get board from server
-//        try {
-//            Thread.sleep(100);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-
-//        while (dotsLocks.isGameRunning()) {
-//
-//            synchronized (dotsLocks) {
-//                System.out.println(dotsLocks.isBoardChanged());
-//                while (!dotsLocks.isBoardChanged()) {
-//
-//                    try {
-//                        System.out.println("Waiting");
-//                        dotsLocks.wait();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//
-//                }
-//
-//                DotsBoard.printBoardWithIndex(dotsServerListener.getBoardArray());
-//                dotsLocks.setBoardChanged(false);
-//                System.out.println("HELLO");
-////                    boardChanged = false;
-//            }
-//        }
-
+        
         clientSocket.closeClient();
 
+    }
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+
+
+        DotsClient dotsClient = new DotsClient(DotsConstants.SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
+
+        dotsClient.start();
     }
 }
 

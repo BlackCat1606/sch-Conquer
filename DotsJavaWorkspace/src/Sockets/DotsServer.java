@@ -9,17 +9,22 @@ import java.io.IOException;
 import java.util.Scanner;
 
 /**
-* Created by JiaHao on 25/2/15.
-*/
+ *
+ * Primary object to be run by the server for the game
+ * Created by JiaHao on 25/2/15.
+ */
 public class DotsServer {
 
-    // TODO translate the main thread into a instantiated object that we can call start() on to start the game on the client
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    private final int port;
 
-        final int PORT = DotsConstants.CLIENT_PORT;
+    public DotsServer(int port) {
+        this.port = port;
+    }
+
+    public void start() throws IOException {
 
         // initialize server
-        AwesomeServerSocket server = new AwesomeServerSocket(PORT);
+        AwesomeServerSocket server = new AwesomeServerSocket(port);
         server.acceptClient();
 
         // initialize game object
@@ -69,6 +74,14 @@ public class DotsServer {
         server.closeServer();
 
         System.out.println("Game over");
+    }
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+
+        DotsServer dotsServer = new DotsServer(DotsConstants.CLIENT_PORT);
+        dotsServer.start();
+        System.out.println("Ended");
+
     }
 
     /**
