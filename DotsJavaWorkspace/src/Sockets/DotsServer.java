@@ -95,6 +95,7 @@ public class DotsServer {
 
         // update the board on the current device
         // TODO change this to a method to update the screen when on android
+        // TODO use a interface callback here to make it more modular
         dotsGame.getDotsBoard().printWithIndex();
 
 
@@ -141,7 +142,7 @@ class DotsServerScannerListener implements Runnable {
 
             if (result) {
 
-                // update the android screen with the corresponding method
+                // TODO update the android screen with the corresponding method
 
                 /**
                  * There are two types of game screen updates:
@@ -156,6 +157,8 @@ class DotsServerScannerListener implements Runnable {
                  * will be triggered.
                  *
                  */
+
+                // TODO send the valid interaction to the client player so that the client can see the move made by the other player
 
             }
 

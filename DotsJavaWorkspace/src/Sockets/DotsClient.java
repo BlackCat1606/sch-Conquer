@@ -58,7 +58,7 @@ public class DotsClient {
                 gameRunningLock.wait();
             }
         }
-        
+
         clientSocket.closeClient();
 
     }
@@ -67,7 +67,6 @@ public class DotsClient {
 
 
         DotsClient dotsClient = new DotsClient(DotsConstants.SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
-
         dotsClient.start();
     }
 }
@@ -138,6 +137,7 @@ class DotsClientScannerListener implements Runnable {
     private void updateScreenForTouchInteractions(DotsInteraction dotsInteraction) {
 
         // TODO add android to update screen for the touch interactions
+        // TODO use a interface callback here to make it more modular
         // debug method to print valid interaction
         System.out.println("DRAW on screen interaction: " + dotsInteraction.toString());
 
@@ -206,6 +206,8 @@ class DotsClientServerListener implements Runnable {
             this.responseQueue.put(response);
         }
 
+        // TODO deal with server player interactions (draw them on the screen)
+
     }
 
     /**
@@ -216,6 +218,7 @@ class DotsClientServerListener implements Runnable {
 
         // update the board on the current device
         // TODO change this to a method to update the screen when on android
+        // TODO use a interface callback here to make it more modular
 
         // Debug method to print the board to the console
         dotsBoard.printWithIndex();
