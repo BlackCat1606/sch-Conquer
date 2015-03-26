@@ -10,6 +10,8 @@ import java.util.ArrayList;
 /**
  * The general dots game, that wraps the board, logic and locks together
  *
+ * Stores information about the points that are held by each player
+ *
  * Created by JiaHao on 25/2/15.
  */
 public class DotsGame {
@@ -157,6 +159,23 @@ public class DotsGame {
      */
     private boolean cascadingConflict(DotsInteraction dotsInteraction) {
         // TODO cascading conflict
+
+        Point interactionPoint = dotsInteraction.getPoint();
+
+        ArrayList<Point> otherPlayerPoints = this.getOtherPlayerPoints(dotsInteraction.getPlayerId());
+
+        for (Point otherPlayerPoint : otherPlayerPoints) {
+
+            // same column
+            if (otherPlayerPoint.x == interactionPoint.x) {
+
+                // interaction point is above the other player point
+                if (otherPlayerPoint.y > interactionPoint.y) {
+                    return true;
+                }
+            }
+        }
+
         return false;
 
     }
@@ -169,30 +188,45 @@ public class DotsGame {
      */
     private boolean samePointConflict(DotsInteraction dotsInteraction) {
 
-        ArrayList<Point> otherPlayerPoints;
+        ArrayList<Point> otherPlayerPoints = this.getOtherPlayerPoints(dotsInteraction.getPlayerId());
 
-        if (dotsInteraction.getPlayerId() == 0) {
+        // null if no such player
+        if (!(otherPlayerPoints == null)) {
 
-            otherPlayerPoints = this.playerMoves[1];
-        } else if (dotsInteraction.getPlayerId() == 1) {
-            otherPlayerPoints = this.playerMoves[0];
-        } else {
-            System.err.println("No such player");
-            return false;
-        }
+            for (Point otherPlayerPoint : otherPlayerPoints) {
 
+                if (otherPlayerPoint.compareWith(dotsInteraction.getPoint())) {
+                    return true;
+                }
 
-        for (Point otherPlayerPoint : otherPlayerPoints) {
-
-            if (otherPlayerPoint.compareWith(dotsInteraction.getPoint())) {
-                return true;
             }
 
         }
 
+
         return false;
     }
 
+    /**
+     * Returns an arraylist of points held by the other player
+     * @param player current player
+     * @return
+     */
+    private ArrayList<Point> getOtherPlayerPoints(int player) {
+        ArrayList<Point> otherPlayerPoints;
+
+        if (player == 0) {
+
+            otherPlayerPoints = this.playerMoves[1];
+        } else if (player == 1) {
+            otherPlayerPoints = this.playerMoves[0];
+        } else {
+            System.err.println("No such player");
+            return null;
+        }
+        return otherPlayerPoints;
+
+    }
 
 
 }
