@@ -139,7 +139,7 @@ class DotsClientScannerListener implements Runnable {
         // TODO add android to update screen for the touch interactions
         // TODO use a interface callback here to make it more modular
         // debug method to print valid interaction
-        System.out.println("DRAW on screen interaction: " + dotsInteraction.toString());
+        System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
 
     }
 }
@@ -168,7 +168,6 @@ class DotsClientServerListener implements Runnable {
 
                 // Read message from server
                 DotsMessage message = DotsSocketHelper.readMessageFromServer(clientSocket);
-                System.out.println("Received message!");
                 this.dealWithMessage(message);
 
             } catch (IOException e) {
