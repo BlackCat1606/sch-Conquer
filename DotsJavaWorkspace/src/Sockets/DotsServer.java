@@ -158,6 +158,9 @@ class DotsServerScannerListener implements Runnable {
                  *
                  */
 
+                updateScreenForTouchInteractions(dotsInteraction);
+
+
                 // TODO send the valid interaction to the client player so that the client can see the move made by the other player
 
             }
@@ -166,6 +169,19 @@ class DotsServerScannerListener implements Runnable {
 
         System.out.println("Game over!");
     }
+
+    /**
+     * Method here to update the screen for touch interaction, i.e. reflect touches
+     * @param dotsInteraction interaction object
+     */
+    private void updateScreenForTouchInteractions(DotsInteraction dotsInteraction) {
+
+        // TODO add android to update screen for the touch interactions
+        // TODO use a interface callback here to make it more modular
+        // debug method to print valid interaction
+        System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
+    }
+
 }
 
 /**
