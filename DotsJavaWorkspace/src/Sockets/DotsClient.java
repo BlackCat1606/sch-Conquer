@@ -39,7 +39,7 @@ public class DotsClient extends DotsServerClientParent {
 
 
         // Init server listener thread
-        DotsClientServerListener dotsServerListener = new DotsClientServerListener(clientSocket, dotsLocks, responseQueue, this.getBoardViewListener());
+        DotsClientServerListener dotsServerListener = new DotsClientServerListener(clientSocket, dotsLocks, responseQueue, this.getBoardViewListener(), this.getPlayerMovesListener());
         Thread listenerThread = new Thread(dotsServerListener);
 
         // Init scanner thread
@@ -179,17 +179,20 @@ class DotsClientServerListener implements Runnable {
     private final DotsLocks locks;
     private final LinkedBlockingQueue<Boolean> responseQueue;
     private final DotsBoardViewListener boardViewListener;
+    private final DotsPlayerMovesListener playerMovesListener;
 
     public DotsClientServerListener(
             AwesomeClientSocket clientSocket,
             DotsLocks locks,
             LinkedBlockingQueue<Boolean> responseQueue,
-            DotsBoardViewListener boardViewListener) {
+            DotsBoardViewListener boardViewListener,
+            DotsPlayerMovesListener playerMovesListener) {
 
         this.clientSocket = clientSocket;
         this.locks = locks;
         this.responseQueue = responseQueue;
         this.boardViewListener = boardViewListener;
+        this.playerMovesListener = playerMovesListener;
 
     }
 
@@ -237,17 +240,23 @@ class DotsClientServerListener implements Runnable {
             DotsMessageResponse receivedResponse = (DotsMessageResponse) message;
             boolean response = receivedResponse.getResponse();
             this.responseQueue.put(response);
+
+        } else if (message instanceof DotsMessageInteraction) {
+            // deal with interactions from the other player (server player)
+            DotsMessageInteraction receivedInteractionMessage = (DotsMessageInteraction) message;
+            DotsInteraction receivedInteraction = receivedInteractionMessage.getDotsInteraction();
+            this.updateScreenWithInteraction(receivedInteraction);
+
         } else {
             System.err.println("Unknown message type: ");
             System.err.println(message.toString());
         }
 
-        // TODO deal with server player interactions (draw them on the screen)
 
     }
 
     /**
-     * Android method to update the screen with the board
+     * Method to update the screen with the board using a callback
      * @param dotsBoard board
      */
     private void updateScreenWithNewBoard(DotsBoard dotsBoard) {
@@ -259,6 +268,18 @@ class DotsClientServerListener implements Runnable {
         // update the board on the current device
         this.boardViewListener.onBoardUpdate();
 
+
+    }
+
+    /**
+     * Method to update the screen with the moves of the other player
+     * @param interaction Interactions here should be all valid moves from the other player. This is checked in dealWithMessage()
+     */
+    private void updateScreenWithInteraction(DotsInteraction interaction) {
+        
+        System.out.println("Interaction received from server: ");
+        System.out.println(interaction);
+        this.playerMovesListener.onValidInteraction();
 
     }
 }

@@ -19,4 +19,5 @@ public class DotsMessageInteraction implements DotsMessage {
     public DotsInteraction getDotsInteraction() {
         return dotsInteraction;
     }
+
 }

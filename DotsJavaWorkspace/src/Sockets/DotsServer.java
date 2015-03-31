@@ -40,7 +40,7 @@ public class DotsServer extends DotsServerClientParent{
 
         // init scanner thread
         Scanner scanner = new Scanner(System.in);
-        DotsServerScannerListener dotsScannerListener = new DotsServerScannerListener(scanner, dotsGame, this.getPlayerMovesListener());
+        DotsServerScannerListener dotsScannerListener = new DotsServerScannerListener(scanner, server, dotsGame, this.getPlayerMovesListener());
         Thread scannerThread = new Thread(dotsScannerListener);
 
         // starts threads
@@ -61,7 +61,6 @@ public class DotsServer extends DotsServerClientParent{
                         e.printStackTrace();
                     }
                 }
-
 
                 // when we are notified, we will do board updating,
                 this.doBoardUpdating(server, dotsGame);
@@ -89,8 +88,6 @@ public class DotsServer extends DotsServerClientParent{
     private void doBoardUpdating(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
 
         // update the board on the current device
-        // TODO change this to a method to update the screen when on android
-        // TODO use a interface callback here to make it more modular
         dotsGame.getDotsBoard().printWithIndex();
 
         this.getBoardViewListener().onBoardUpdate();
@@ -142,11 +139,13 @@ public class DotsServer extends DotsServerClientParent{
 class DotsServerScannerListener implements Runnable {
 
     private final Scanner scanner;
+    private final AwesomeServerSocket serverSocket;
     private final DotsGame dotsGame;
     private final DotsPlayerMovesListener playerMovesListener;
 
-    public DotsServerScannerListener(Scanner scanner, DotsGame dotsGame, DotsPlayerMovesListener playerMovesListener) {
+    public DotsServerScannerListener(Scanner scanner, AwesomeServerSocket serverSocket, DotsGame dotsGame, DotsPlayerMovesListener playerMovesListener) {
         this.scanner = scanner;
+        this.serverSocket = serverSocket;
         this.dotsGame = dotsGame;
         this.playerMovesListener = playerMovesListener;
     }
@@ -182,7 +181,14 @@ class DotsServerScannerListener implements Runnable {
                 updateScreenForTouchInteractions(dotsInteraction);
 
 
-                // TODO send the valid interaction to the client player so that the client can see the move made by the other player
+                // Sends the valid interaction to the client player so that the client can see the move made by the other player
+                DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
+                try {
+                    DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
+                } catch (IOException e) {
+                    System.err.println("Cannot send interaction to server");
+                    e.printStackTrace();
+                }
 
             }
 
