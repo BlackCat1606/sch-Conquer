@@ -24,7 +24,9 @@ public class DotsSocketHelper {
 
     // Server calls these
 
-    public static void sendMessageToClient(AwesomeServerSocket server, DotsMessage message) throws IOException {
+    public synchronized static void sendMessageToClient(AwesomeServerSocket server, DotsMessage message) throws IOException {
+        System.out.println("Sending message: ");
+        System.out.println(message);
         ObjectOutputStream serverObjectOutputStream = new ObjectOutputStream(server.getServerOutputStreamForClient(0));
         serverObjectOutputStream.writeObject(message);
 

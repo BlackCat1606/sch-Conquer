@@ -209,10 +209,11 @@ class DotsClientServerListener implements Runnable {
 
                 // Read message from server
                 DotsMessage message = DotsSocketHelper.readMessageFromServer(clientSocket);
+                System.out.println(message);
                 this.dealWithMessage(message);
 
             } catch (IOException e) {
-//                e.printStackTrace();
+                e.printStackTrace();
                 System.err.println("Server is closed!");
 
                 break;
