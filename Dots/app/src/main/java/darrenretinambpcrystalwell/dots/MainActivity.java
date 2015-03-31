@@ -1,21 +1,16 @@
 package darrenretinambpcrystalwell.dots;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.drawable.PaintDrawable;
+
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import Game.DotsGame;
@@ -39,11 +34,20 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SurfaceView v = (SurfaceView) findViewById(R.id.surfaceView);
+
+        GifRun gifRun = new GifRun(this);
+
+        gifRun.LoadGiff(v, this, R.drawable.my_animated_gif);
+
+
         RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         dotsScreen = new DotsScreen(rootLayout, this);
-        dotView = new DotView(this);
+        //dotView = new DotView(this);
         surfaceViewDots = new SurfaceViewDots(this, rootLayout);
-        dotsGame = new DotsGame();
+//        GifWebView view = new GifWebView(this, "/Users/DarrenRetinaMBP/AndroidStudioProjects/dotsMultiplayer/Dots/app/src/main/assets/my_animated_gif.gif");
+//        setContentView(view);
+
 
     }
 
@@ -71,9 +75,12 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateScreenButton(View view) {
+    public void updateScreenButton(View view) throws InterruptedException {
+//        Effects.castFadeOutEffect(dotsScreen.getDotList()[24], 500, false, false);
+//        Effects.castFadeOutEffect(dotsScreen.getDotList()[25], 500, false, false);
 
         dotsScreen.updateScreen();
+
     }
 
     public ArrayList<Point> getMoves() {

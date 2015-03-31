@@ -26,18 +26,22 @@ class DotView extends ImageView {
     private Drawable blue;
     private Drawable yellow;
     private Drawable black;
+    private Drawable crosshair;
+    private Drawable cleardot;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public DotView(Context context) {
         super(context);
-        Drawable a = getDrawable(R.drawable.dot);
+        Drawable a = getDrawable(R.drawable.bluedot);
         setBackground(a);
         red = getDrawable(R.drawable.reddot);
         blue = getDrawable(R.drawable.bluedot);
         green = getDrawable(R.drawable.greendot);
         yellow = getDrawable(R.drawable.yellowdot);
-        black = getDrawable(R.drawable.dotcopy);
-        black.setAlpha(150);
+//        black = getDrawable(R.drawable.dotcopy);
+//        black.setAlpha(150);
+        crosshair = getDrawable(R.drawable.crosshair);
+//        cleardot = getDrawable(R.drawable.cleareddot);
     }
     public float getSqDist(float x, float y) {
         float a = x - getX() + getHeight() * .5f;
@@ -75,6 +79,9 @@ class DotView extends ImageView {
     }
     public void setYellow(){setDrawable(yellow);}
     public void setBlack(){setDrawable(black);}
+    public void setCrosshair(){setDrawable(crosshair);}
+    public void setClearDot(){setDrawable(cleardot);}
+
 
     public void setColor(String color){this.color = color;}
     public String getColor(){return color;}
@@ -117,13 +124,31 @@ class YellowDotView extends DotView {
     }
 }
 
-class BlackDotView extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public BlackDotView(Context context) {
-        super(context);
-        super.setBlack();
-        super.setColor("black");
-    }
+//class BlackDotView extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public BlackDotView(Context context) {
+//        super(context);
+//        super.setBlack();
+//        super.setColor("black");
+//    }
+//
+//}
 
+class CrossHairView extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public CrossHairView(Context context) {
+        super(context);
+        super.setCrosshair();
+        super.setColor("crosshair");
+    }
 }
+
+//class ClearDot extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public ClearDot(Context context) {
+//        super(context);
+//        super.setCrosshair();
+//        super.setColor("cleardot");
+//    }
+//}
 

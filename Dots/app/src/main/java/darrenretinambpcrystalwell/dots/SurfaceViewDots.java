@@ -3,7 +3,6 @@ package darrenretinambpcrystalwell.dots;
 
 import android.graphics.Bitmap;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,9 @@ public class SurfaceViewDots extends RelativeLayout
     private static final Bitmap BLANK_BITMAP
             = Bitmap.createBitmap(1,1, Bitmap.Config.ARGB_8888);
 
-    BlackDotView blackDotView;
+//    BlackDotView blackDotView;
+    CrossHairView blackDotView;
+
     float           dotWidth;
 
     public SurfaceViewDots(Context context, RelativeLayout relativeLayout) {
@@ -52,14 +53,14 @@ public class SurfaceViewDots extends RelativeLayout
         float dotsXOffset = (1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * ScreenDimensions.getWidth(context);
         float dotsYOffset = SCREEN_Y_PERCENTAGE * ScreenDimensions.getHeight(context);
         this.dotWidth = SCREEN_WIDTH_PERCENTAGE * ScreenDimensions.getWidth(context) / 6.f;
-        LayoutParams layoutParams = new LayoutParams(ScreenDimensions.getWidth(context)-(int)(2.4*dotsXOffset),
-                ScreenDimensions.getWidth(context)-(int)(2*dotsXOffset));
+        LayoutParams layoutParams = new LayoutParams(ScreenDimensions.getWidth(context)-(int)(dotsXOffset),
+                ScreenDimensions.getHeight(context)-(int)(8*dotsXOffset));
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         setLayoutParams(layoutParams);
 
         relativeLayout.addView(this);
-        blackDotView = new BlackDotView(context);
+        blackDotView = new CrossHairView(context);
 
         blackDotView.setX(dotsXOffset + dotWidth);
         blackDotView.setY(dotsYOffset + dotWidth);

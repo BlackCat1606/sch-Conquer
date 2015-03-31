@@ -9,6 +9,7 @@ import Game.Dot;
 import Game.DotColor;
 import Game.DotsBoard;
 import Game.DotsLogic;
+import Game.Point;
 
 /**
  * Created by DarrenRetinaMBP on 13/3/15.
@@ -127,6 +128,12 @@ public class DotsScreen {
     public void updateScreen() {
         this.board.initializeBoard(6);
         Dot[][] dotBoard = board.getBoardArray();
+//        for (int i=1; i< 5; i++) {
+//            for (int j=0; j<1; j++) {
+//                dotBoard[i][j] = dotBoard[i-1][j];
+//            }
+//        }
+
 
         Log.d("Screen", board.toString());
         dotViews = new DotView[36];
@@ -136,18 +143,27 @@ public class DotsScreen {
             int j = index % 6;
             if (dotBoard[i][j].color == DotColor.RED) {
                 if (!dotsList[index].getColor().equals("red")) {
+                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
+                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
                     dotsList[index].setRed();
                 }
             } else if (dotBoard[i][j].color == DotColor.BLUE) {
                 if (!dotsList[index].getColor().equals("blue")) {
+                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
+                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
                     dotsList[index].setBlue();
+
                 }
             } else if (dotBoard[i][j].color == DotColor.GREEN) {
                 if (!dotsList[index].getColor().equals("green")) {
+                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
+                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
                     dotsList[index].setGreen();
                 }
             } else if (dotBoard[i][j].color == DotColor.YELLOW) {
                 if (!dotsList[index].getColor().equals("yellow")) {
+                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
+                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
                     dotsList[index].setYellow();
                 }
             }
@@ -157,6 +173,7 @@ public class DotsScreen {
     public DotView[] getDotList() {
         return dotsList;
     }
+
 
 
 }
