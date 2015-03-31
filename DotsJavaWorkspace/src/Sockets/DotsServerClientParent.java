@@ -6,6 +6,11 @@ import ListenerInterface.DotsPlayerMovesListener;
 import java.io.IOException;
 
 /**
+ * Parent class of Dots Server and Client, so that code duplication is eliminated.
+ *
+ * Primarily for instantiating of the server and client, and to throw an exception if no listeners are set for the server
+ * and client
+ *
  * Created by JiaHao on 31/3/15.
  */
 public class DotsServerClientParent {
