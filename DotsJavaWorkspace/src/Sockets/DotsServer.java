@@ -3,6 +3,8 @@ package Sockets;
 import AwesomeSockets.AwesomeServerSocket;
 import Constants.DotsConstants;
 import Dots.*;
+import ListenerInterface.DotsBoardViewListener;
+import ListenerInterface.DotsPlayerMovesListener;
 import Model.*;
 
 import java.io.IOException;
@@ -13,7 +15,7 @@ import java.util.Scanner;
  * Primary object to be run by the server for the game
  * Created by JiaHao on 25/2/15.
  */
-public class DotsServer {
+public class DotsServer extends DotsServerClientParent{
 
     private final int port;
 
@@ -21,8 +23,9 @@ public class DotsServer {
         this.port = port;
     }
 
-    public void start() throws IOException {
+    public void start() throws IOException, InstantiationException, InterruptedException {
 
+        super.start();
         // initialize server
         AwesomeServerSocket server = new AwesomeServerSocket(port);
         server.acceptClient();
@@ -37,7 +40,7 @@ public class DotsServer {
 
         // init scanner thread
         Scanner scanner = new Scanner(System.in);
-        DotsServerScannerListener dotsScannerListener = new DotsServerScannerListener(dotsGame, scanner);
+        DotsServerScannerListener dotsScannerListener = new DotsServerScannerListener(scanner, dotsGame, this.getPlayerMovesListener());
         Thread scannerThread = new Thread(dotsScannerListener);
 
         // starts threads
@@ -61,9 +64,9 @@ public class DotsServer {
 
 
                 // when we are notified, we will do board updating,
-                doBoardUpdating(server, dotsGame);
+                this.doBoardUpdating(server, dotsGame);
 
-                // and reset the boardchanged variable in dotsLocks to false.
+                // and reset the board changed variable in dotsLocks to false.
                 dotsLocks.setBoardChanged(false);
 
             }
@@ -76,14 +79,6 @@ public class DotsServer {
         System.out.println("Game over");
     }
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-
-        DotsServer dotsServer = new DotsServer(DotsConstants.CLIENT_PORT);
-        dotsServer.start();
-        System.out.println("Ended");
-
-    }
-
     /**
      * This function is called when the main thread is notified and awakened, indicating that
      * the board has been changed and the screen needs updating
@@ -91,29 +86,53 @@ public class DotsServer {
      * @param dotsGame the game object
      * @throws IOException if sending message through the socket fails
      */
-    private static void doBoardUpdating(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
+    private void doBoardUpdating(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
 
         // update the board on the current device
         // TODO change this to a method to update the screen when on android
         // TODO use a interface callback here to make it more modular
         dotsGame.getDotsBoard().printWithIndex();
 
+        this.getBoardViewListener().onBoardUpdate();
 
         // update the board on the remote device
-        sendBoardToClient(serverSocket, dotsGame);
+        this.sendBoardToClient(serverSocket, dotsGame);
 
     }
 
     /**
      * Helper method to package and send the board to the client
      */
-    private static void sendBoardToClient(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
+    private void sendBoardToClient(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
 
         DotsMessageBoard messageBoard = new DotsMessageBoard(dotsGame.getDotsBoard());
         DotsSocketHelper.sendMessageToClient(serverSocket, messageBoard);
 
     }
 
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
+
+        DotsServer dotsServer = new DotsServer(DotsConstants.CLIENT_PORT);
+
+        dotsServer.setPlayerMovesListener(new DotsPlayerMovesListener() {
+            @Override
+            public void onValidInteraction() {
+
+            }
+        });
+
+        dotsServer.setBoardViewListener(new DotsBoardViewListener() {
+            @Override
+            public void onBoardUpdate() {
+
+            }
+        });
+
+        dotsServer.start();
+        System.out.println("Ended");
+
+    }
 }
 
 /**
@@ -124,10 +143,12 @@ class DotsServerScannerListener implements Runnable {
 
     private final Scanner scanner;
     private final DotsGame dotsGame;
+    private final DotsPlayerMovesListener playerMovesListener;
 
-    public DotsServerScannerListener(DotsGame dotsGame, Scanner scanner) {
+    public DotsServerScannerListener(Scanner scanner, DotsGame dotsGame, DotsPlayerMovesListener playerMovesListener) {
         this.scanner = scanner;
         this.dotsGame = dotsGame;
+        this.playerMovesListener = playerMovesListener;
     }
 
     @Override
@@ -176,10 +197,10 @@ class DotsServerScannerListener implements Runnable {
      */
     private void updateScreenForTouchInteractions(DotsInteraction dotsInteraction) {
 
-        // TODO add android to update screen for the touch interactions
-        // TODO use a interface callback here to make it more modular
         // debug method to print valid interaction
         System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
+
+        this.playerMovesListener.onValidInteraction();
     }
 
 }
@@ -240,6 +261,8 @@ class DotsServerClientListener implements Runnable {
 
             // process the interaction
             DotsInteraction receivedInteraction = ((DotsMessageInteraction) message).getDotsInteraction();
+
+            // doMove will automatically obtain a lock and notify the main thread in the dotsGame thread
             boolean response = this.dotsGame.doMove(receivedInteraction);
 
             // Package and send a response to the client
