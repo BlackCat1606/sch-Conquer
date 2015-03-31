@@ -2,11 +2,11 @@ package Sockets;
 
 import AwesomeSockets.AwesomeClientSocket;
 import AwesomeSockets.AwesomeServerSocket;
-import Dots.Dot;
 import Dots.Point;
 import Model.DotsInteraction;
 import Model.DotsInteractionStates;
 import Model.DotsMessage;
+import Model.MessageLocks;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,29 +20,31 @@ import java.util.regex.Pattern;
  */
 public class DotsSocketHelper {
 
+    // Initialise a lock object so that threads do not try to send message simutaneously
+    public static MessageLocks locks = new MessageLocks();
+
     // Serialization functions
 
     // Server calls these
-
-    public synchronized static void sendMessageToClient(AwesomeServerSocket server, DotsMessage message) throws IOException {
-        System.out.println("Sending message: ");
-        System.out.println(message);
-        ObjectOutputStream serverObjectOutputStream = new ObjectOutputStream(server.getServerOutputStreamForClient(0));
-        serverObjectOutputStream.writeObject(message);
+    public static void sendMessageToClient(AwesomeServerSocket server, DotsMessage message) throws IOException {
+        synchronized (locks.getLock(0)) {
+            System.out.println("Sending message: ");
+            System.out.println(message);
+            ObjectOutputStream serverObjectOutputStream = new ObjectOutputStream(server.getServerOutputStreamForClient(0));
+            serverObjectOutputStream.writeObject(message);
+        }
 
     }
 
     public static DotsMessage readMessageFromClient(AwesomeServerSocket server) throws IOException, ClassNotFoundException {
 
-        ObjectInputStream serverObjectInputStream = new ObjectInputStream(server.getServerInputStreamForClient(0));
-
-        return (DotsMessage)serverObjectInputStream.readObject();
+        synchronized (locks.getLock(1)) {
+            ObjectInputStream serverObjectInputStream = new ObjectInputStream(server.getServerInputStreamForClient(0));
+            return (DotsMessage)serverObjectInputStream.readObject();
+        }
 
     }
 
-
-
-//
 //    public static void sendBoardToClient(AwesomeServerSocket server, Dot[][] board) throws IOException {
 //        ObjectOutputStream serverObjectOutputStream = new ObjectOutputStream(server.getServerOutputStreamForClient(0));
 //        sendBoardToClient(serverObjectOutputStream, board);
@@ -66,16 +68,18 @@ public class DotsSocketHelper {
 
     // Client calls these
     public static void sendMessageToServer(AwesomeClientSocket client, DotsMessage message) throws IOException {
-        ObjectOutputStream clientObjectOutputStream = new ObjectOutputStream(client.getClientOutputStream());
-        clientObjectOutputStream.writeObject(message);
+        synchronized (locks.getLock(2)) {
+            ObjectOutputStream clientObjectOutputStream = new ObjectOutputStream(client.getClientOutputStream());
+            clientObjectOutputStream.writeObject(message);
+        }
 
     }
 
-
     public static DotsMessage readMessageFromServer(AwesomeClientSocket client) throws IOException, ClassNotFoundException {
-
-        ObjectInputStream clientObjectInputStream = new ObjectInputStream(client.getClientInputStream());
-        return (DotsMessage)clientObjectInputStream.readObject();
+        synchronized (locks.getLock(3)) {
+            ObjectInputStream clientObjectInputStream = new ObjectInputStream(client.getClientInputStream());
+            return (DotsMessage)clientObjectInputStream.readObject();
+        }
 
     }
 
