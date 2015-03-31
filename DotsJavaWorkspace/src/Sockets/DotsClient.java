@@ -69,21 +69,25 @@ public class DotsClient extends DotsServerClientParent {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
+        // Initialise the client
         DotsClient dotsClient = new DotsClient(DotsConstants.SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
+
+        // Compulsory to add listeners for changes
         dotsClient.setBoardViewListener(new DotsBoardViewListener() {
             @Override
-            public void onBoardUpdate() {
+            public void onBoardUpdate(DotsBoard board) {
 
             }
         });
 
         dotsClient.setPlayerMovesListener(new DotsPlayerMovesListener() {
             @Override
-            public void onValidInteraction() {
+            public void onValidInteraction(DotsInteraction interaction) {
 
             }
         });
 
+        // Starts the client
         dotsClient.start();
 
     }
@@ -165,7 +169,7 @@ class DotsClientScannerListener implements Runnable {
 
         // debug method to print valid interaction
         System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
-        this.playerMovesListener.onValidInteraction();
+        this.playerMovesListener.onValidInteraction(dotsInteraction);
 
     }
 }
@@ -266,7 +270,7 @@ class DotsClientServerListener implements Runnable {
         dotsBoard.printWithIndex();
 
         // update the board on the current device
-        this.boardViewListener.onBoardUpdate();
+        this.boardViewListener.onBoardUpdate(dotsBoard);
 
 
     }
@@ -276,10 +280,10 @@ class DotsClientServerListener implements Runnable {
      * @param interaction Interactions here should be all valid moves from the other player. This is checked in dealWithMessage()
      */
     private void updateScreenWithInteraction(DotsInteraction interaction) {
-        
+
         System.out.println("Interaction received from server: ");
         System.out.println(interaction);
-        this.playerMovesListener.onValidInteraction();
+        this.playerMovesListener.onValidInteraction(interaction);
 
     }
 }

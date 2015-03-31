@@ -1,5 +1,7 @@
 package ListenerInterface;
 
+import Dots.DotsBoard;
+
 /**
  * Interface to act as a listener for board updates
  *
@@ -7,6 +9,6 @@ package ListenerInterface;
  */
 public interface DotsBoardViewListener {
 
-    public void onBoardUpdate();
+    public void onBoardUpdate(DotsBoard board);
 
 }

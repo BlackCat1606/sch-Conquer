@@ -1,5 +1,7 @@
 package ListenerInterface;
 
+import Model.DotsInteraction;
+
 /**
  * Interface to act as a listener to draw player moves on the screen
  *
@@ -7,6 +9,6 @@ package ListenerInterface;
  */
 public interface DotsPlayerMovesListener {
 
-    public void onValidInteraction();
+    public void onValidInteraction(DotsInteraction interaction);
 
 }

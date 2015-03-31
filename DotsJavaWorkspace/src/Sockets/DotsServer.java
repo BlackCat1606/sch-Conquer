@@ -88,9 +88,11 @@ public class DotsServer extends DotsServerClientParent{
     private void doBoardUpdating(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
 
         // update the board on the current device
-        dotsGame.getDotsBoard().printWithIndex();
+        DotsBoard updatedBoard = dotsGame.getDotsBoard();
 
-        this.getBoardViewListener().onBoardUpdate();
+        updatedBoard.printWithIndex();
+
+        this.getBoardViewListener().onBoardUpdate(updatedBoard);
 
         // update the board on the remote device
         this.sendBoardToClient(serverSocket, dotsGame);
@@ -110,23 +112,27 @@ public class DotsServer extends DotsServerClientParent{
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
+        // Initialise the server
         DotsServer dotsServer = new DotsServer(DotsConstants.CLIENT_PORT);
+
+        // Compulsory to set listeners
+        dotsServer.setBoardViewListener(new DotsBoardViewListener() {
+            @Override
+            public void onBoardUpdate(DotsBoard board) {
+
+            }
+        });
 
         dotsServer.setPlayerMovesListener(new DotsPlayerMovesListener() {
             @Override
-            public void onValidInteraction() {
+            public void onValidInteraction(DotsInteraction interaction) {
 
             }
         });
 
-        dotsServer.setBoardViewListener(new DotsBoardViewListener() {
-            @Override
-            public void onBoardUpdate() {
-
-            }
-        });
-
+        // Starts the server
         dotsServer.start();
+
         System.out.println("Ended");
 
     }
@@ -206,7 +212,7 @@ class DotsServerScannerListener implements Runnable {
         // debug method to print valid interaction
         System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
 
-        this.playerMovesListener.onValidInteraction();
+        this.playerMovesListener.onValidInteraction(dotsInteraction);
     }
 
 }
