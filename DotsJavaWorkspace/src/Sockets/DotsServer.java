@@ -3,12 +3,10 @@ package Sockets;
 import AwesomeSockets.AwesomeServerSocket;
 import Constants.DotsConstants;
 import Dots.*;
-import ListenerInterface.DotsBoardViewListener;
-import ListenerInterface.DotsPlayerMovesListener;
+import AndroidCallback.DotsAndroidCallback;
 import Model.*;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 /**
  *
@@ -45,6 +43,9 @@ public class DotsServer extends DotsServerClientParent{
         // starts thread to listen for messages
         listenerThread.start();
 
+        // First time run to display the board on the client and server
+        this.updateBoard();
+
         // todo closes server and clients when game over
 
 
@@ -78,21 +79,30 @@ public class DotsServer extends DotsServerClientParent{
             // dotsGame will automatically update this variable if the board is changed
             if (this.dotsLocks.isBoardChanged()) {
 
+                this.updateBoard();
 
-                // update the board on the current device
-                DotsBoard updatedBoard = dotsGame.getDotsBoard();
-                updatedBoard.printWithIndex();
-
-                this.getBoardViewListener().onBoardUpdate(updatedBoard);
-
-                // update the board on the remote device
-                DotsMessageBoard messageBoard = new DotsMessageBoard(dotsGame.getDotsBoard());
-                DotsSocketHelper.sendMessageToClient(this.serverSocket, messageBoard);
-
-
-                this.dotsLocks.setBoardChanged(false);
             }
         }
+    }
+
+    /**
+     * Updates the board, by doing the callback, and sending the board to the client
+     * @throws IOException
+     */
+    private void updateBoard() throws IOException {
+
+        // update the board on the current device
+        DotsBoard updatedBoard = dotsGame.getDotsBoard();
+        updatedBoard.printWithIndex();
+
+        this.getAndroidCallback().onBoardChanged(updatedBoard);
+
+        // update the board on the remote device
+        DotsMessageBoard messageBoard = new DotsMessageBoard(dotsGame.getDotsBoard());
+        DotsSocketHelper.sendMessageToClient(this.serverSocket, messageBoard);
+
+        this.dotsLocks.setBoardChanged(false);
+
     }
 
     /**
@@ -104,7 +114,7 @@ public class DotsServer extends DotsServerClientParent{
         // debug method to print valid interaction
         System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
 
-        this.getPlayerMovesListener().onValidInteraction(dotsInteraction);
+        this.getAndroidCallback().onValidPlayerInteraction(dotsInteraction);
     }
 
 //    /**
@@ -135,16 +145,19 @@ public class DotsServer extends DotsServerClientParent{
         DotsServer dotsServer = new DotsServer(DotsConstants.CLIENT_PORT);
 
         // Compulsory to set listeners
-        dotsServer.setBoardViewListener(new DotsBoardViewListener() {
+        dotsServer.setAndroidCallback(new DotsAndroidCallback() {
             @Override
-            public void onBoardUpdate(DotsBoard board) {
+            public void onValidPlayerInteraction(DotsInteraction interaction) {
 
             }
-        });
 
-        dotsServer.setPlayerMovesListener(new DotsPlayerMovesListener() {
             @Override
-            public void onValidInteraction(DotsInteraction interaction) {
+            public void onBoardChanged(DotsBoard board) {
+
+            }
+
+            @Override
+            public void onGameOver() {
 
             }
         });

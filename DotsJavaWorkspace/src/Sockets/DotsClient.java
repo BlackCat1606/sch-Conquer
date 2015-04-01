@@ -3,13 +3,12 @@ package Sockets;
 import AwesomeSockets.AwesomeClientSocket;
 import Constants.DotsConstants;
 import Dots.DotsBoard;
-import ListenerInterface.DotsBoardViewListener;
-import ListenerInterface.DotsPlayerMovesListener;
+
+import AndroidCallback.DotsAndroidCallback;
 import Model.*;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+
 
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -43,9 +42,8 @@ public class DotsClient extends DotsServerClientParent {
         // Initialize client socket
         this.clientSocket = new AwesomeClientSocket(this.serverAddress, this.port);
 
-
         // Init server listener thread
-        DotsClientServerListener dotsServerListener = new DotsClientServerListener(this.clientSocket, dotsLocks, responseQueue, this.getBoardViewListener(), this.getPlayerMovesListener());
+        DotsClientServerListener dotsServerListener = new DotsClientServerListener(this.clientSocket, dotsLocks, responseQueue, this.getAndroidCallback());
         Thread listenerThread = new Thread(dotsServerListener);
 
         // start thread to deal with messages from server
@@ -91,7 +89,7 @@ public class DotsClient extends DotsServerClientParent {
 
         // debug method to print valid interaction
         System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
-        this.getPlayerMovesListener().onValidInteraction(dotsInteraction);
+        this.getAndroidCallback().onValidPlayerInteraction(dotsInteraction);
 
     }
 
@@ -101,19 +99,23 @@ public class DotsClient extends DotsServerClientParent {
         DotsClient dotsClient = new DotsClient(DotsConstants.SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
 
         // Compulsory to add listeners for changes
-        dotsClient.setBoardViewListener(new DotsBoardViewListener() {
+        dotsClient.setAndroidCallback(new DotsAndroidCallback() {
             @Override
-            public void onBoardUpdate(DotsBoard board) {
+            public void onValidPlayerInteraction(DotsInteraction interaction) {
+
+            }
+
+            @Override
+            public void onBoardChanged(DotsBoard board) {
+
+            }
+
+            @Override
+            public void onGameOver() {
 
             }
         });
 
-        dotsClient.setPlayerMovesListener(new DotsPlayerMovesListener() {
-            @Override
-            public void onValidInteraction(DotsInteraction interaction) {
-
-            }
-        });
 
         // Testing scanner thread
         Thread scannerThread = new Thread(new DotsTestScannerListener(dotsClient));
@@ -140,22 +142,13 @@ class DotsClientServerListener implements Runnable {
     private final AwesomeClientSocket clientSocket;
     private final DotsLocks locks;
     private final LinkedBlockingQueue<Boolean> responseQueue;
-    private final DotsBoardViewListener boardViewListener;
-    private final DotsPlayerMovesListener playerMovesListener;
+    private final DotsAndroidCallback screenUpdateListener;
 
-    public DotsClientServerListener(
-            AwesomeClientSocket clientSocket,
-            DotsLocks locks,
-            LinkedBlockingQueue<Boolean> responseQueue,
-            DotsBoardViewListener boardViewListener,
-            DotsPlayerMovesListener playerMovesListener) {
-
+    public DotsClientServerListener(AwesomeClientSocket clientSocket, DotsLocks locks, LinkedBlockingQueue<Boolean> responseQueue, DotsAndroidCallback screenUpdateListener) {
         this.clientSocket = clientSocket;
         this.locks = locks;
         this.responseQueue = responseQueue;
-        this.boardViewListener = boardViewListener;
-        this.playerMovesListener = playerMovesListener;
-
+        this.screenUpdateListener = screenUpdateListener;
     }
 
     @Override
@@ -229,7 +222,7 @@ class DotsClientServerListener implements Runnable {
         dotsBoard.printWithIndex();
 
         // update the board on the current device
-        this.boardViewListener.onBoardUpdate(dotsBoard);
+        this.screenUpdateListener.onBoardChanged(dotsBoard);
 
     }
 
@@ -241,7 +234,7 @@ class DotsClientServerListener implements Runnable {
 
         System.out.println("Interaction received from server: ");
         System.out.println(interaction);
-        this.playerMovesListener.onValidInteraction(interaction);
+        this.screenUpdateListener.onValidPlayerInteraction(interaction);
 
     }
 }

@@ -1,7 +1,6 @@
 package Sockets;
 
-import ListenerInterface.DotsBoardViewListener;
-import ListenerInterface.DotsPlayerMovesListener;
+import AndroidCallback.DotsAndroidCallback;
 import Model.DotsInteraction;
 
 import java.io.IOException;
@@ -14,49 +13,19 @@ import java.io.IOException;
  *
  * Created by JiaHao on 31/3/15.
  */
-public class DotsServerClientParent {
+public abstract class DotsServerClientParent {
 
-    private DotsPlayerMovesListener playerMovesListener = null;
-    private DotsBoardViewListener boardViewListener = null;
-
-    /**
-     * Compulsory method to set a listener to display player interactions on the screen
-     */
-    public void setPlayerMovesListener(DotsPlayerMovesListener playerMovesListener) {
-        this.playerMovesListener = playerMovesListener;
-    }
-
+    private DotsAndroidCallback androidCallback;
 
     /**
-     * Compulsory method to set a listener to update the board when it is changed
+     * Compulsory method to set a listener to update the screen
      */
-    public void setBoardViewListener(DotsBoardViewListener boardViewListener) {
-        this.boardViewListener = boardViewListener;
+    public void setAndroidCallback(DotsAndroidCallback androidCallback) {
+        this.androidCallback = androidCallback;
     }
 
-
-    // Getters for subclass
-
-    protected DotsPlayerMovesListener getPlayerMovesListener() {
-        return playerMovesListener;
-    }
-
-    protected DotsBoardViewListener getBoardViewListener() {
-        return boardViewListener;
-    }
-
-    /**
-     * Helper method to check if both listeners are instantiated
-     */
-    private boolean listenerPresent() {
-
-        if (this.getPlayerMovesListener() == null || this.getBoardViewListener() == null) {
-            return false;
-        } else {
-
-            return true;
-        }
-
+    public DotsAndroidCallback getAndroidCallback() {
+        return androidCallback;
     }
 
     /**
@@ -64,8 +33,8 @@ public class DotsServerClientParent {
      */
     public void start() throws IOException, InterruptedException, InstantiationException {
 
-        if (!this.listenerPresent()) {
-            System.err.println("Listeners not set up, exiting");
+        if (this.androidCallback == null) {
+            System.err.println("Listener not set up, exiting");
             throw new InstantiationException();
         }
     }
