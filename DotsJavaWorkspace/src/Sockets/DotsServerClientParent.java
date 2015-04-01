@@ -2,6 +2,7 @@ package Sockets;
 
 import ListenerInterface.DotsBoardViewListener;
 import ListenerInterface.DotsPlayerMovesListener;
+import Model.DotsInteraction;
 
 import java.io.IOException;
 
@@ -14,7 +15,6 @@ import java.io.IOException;
  * Created by JiaHao on 31/3/15.
  */
 public class DotsServerClientParent {
-
 
     private DotsPlayerMovesListener playerMovesListener = null;
     private DotsBoardViewListener boardViewListener = null;
@@ -59,12 +59,25 @@ public class DotsServerClientParent {
 
     }
 
+    /**
+     * Call start to start the game and start threads to listen for messages
+     */
     public void start() throws IOException, InterruptedException, InstantiationException {
 
         if (!this.listenerPresent()) {
             System.err.println("Listeners not set up, exiting");
             throw new InstantiationException();
         }
+    }
+
+    /**
+     * Override this in the subclass
+     * @param interaction
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public void doInteraction (DotsInteraction interaction) throws IOException, InterruptedException {
+        System.err.println("Do interaction is not overwrote in parent class!");
     }
 
 

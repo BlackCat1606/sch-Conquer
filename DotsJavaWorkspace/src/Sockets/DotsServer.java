@@ -19,6 +19,10 @@ public class DotsServer extends DotsServerClientParent{
 
     private final int port;
 
+    private DotsGame dotsGame;
+    private DotsLocks dotsLocks;
+    private AwesomeServerSocket serverSocket;
+
     public DotsServer(int port) {
         this.port = port;
     }
@@ -27,88 +31,103 @@ public class DotsServer extends DotsServerClientParent{
 
         super.start();
         // initialize server
-        AwesomeServerSocket server = new AwesomeServerSocket(port);
-        server.acceptClient();
+        this.serverSocket = new AwesomeServerSocket(port);
+        this.serverSocket.acceptClient();
 
         // initialize game object
-        DotsGame dotsGame = new DotsGame();
-        DotsLocks dotsLocks = dotsGame.getGameLocks();
+        this.dotsGame = new DotsGame();
+        this.dotsLocks = dotsGame.getGameLocks();
 
         // init listener thread
-        DotsServerClientListener dotsClientListener = new DotsServerClientListener(server, dotsGame);
+        DotsServerClientListener dotsClientListener = new DotsServerClientListener(this.serverSocket, this.dotsGame);
         Thread listenerThread = new Thread(dotsClientListener);
 
-        // init scanner thread
-        Scanner scanner = new Scanner(System.in);
-        DotsServerScannerListener dotsScannerListener = new DotsServerScannerListener(scanner, server, dotsGame, this.getPlayerMovesListener());
-        Thread scannerThread = new Thread(dotsScannerListener);
-
-        // starts threads
+        // starts thread to listen for messages
         listenerThread.start();
-        scannerThread.start();
 
-        // block for game sequence
-        while (dotsGame.isGameRunning()) {
+        // todo closes server and clients when game over
 
-            // we acquire a lock and wait upon the game locks here.
-            synchronized (dotsLocks) {
 
-                while (!dotsLocks.isBoardChanged()) {
+        System.out.println("Waiting for interactions");
+    }
 
-                    try {
-                        dotsLocks.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+    @Override
+    public void doInteraction(DotsInteraction dotsInteraction) throws IOException, InterruptedException {
 
-                // when we are notified, we will do board updating,
-                this.doBoardUpdating(server, dotsGame);
+        boolean result = this.dotsGame.doMove(dotsInteraction);
 
-                // and reset the board changed variable in dotsLocks to false.
-                dotsLocks.setBoardChanged(false);
+        // only proceed if its a valid move
+        if (result) {
 
+            /**
+             * There are two types of game screen updates:
+             * 1. Update to show user touches when touch down and dragged
+             * 2. Update the entire board when elements are cleared
+             */
+
+            // First we deal with the first case where we show interactions on the screen
+
+            updateScreenForTouchInteractions(dotsInteraction);
+
+            // Sends the valid interaction to the client player so that the client can see the move made by the other player
+            DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
+            DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
+
+
+            // finally, we check if the board needs to be updated
+            // dotsGame will automatically update this variable if the board is changed
+            if (this.dotsLocks.isBoardChanged()) {
+
+
+                // update the board on the current device
+                DotsBoard updatedBoard = dotsGame.getDotsBoard();
+                updatedBoard.printWithIndex();
+
+                this.getBoardViewListener().onBoardUpdate(updatedBoard);
+
+                // update the board on the remote device
+                DotsMessageBoard messageBoard = new DotsMessageBoard(dotsGame.getDotsBoard());
+                DotsSocketHelper.sendMessageToClient(this.serverSocket, messageBoard);
+
+
+                this.dotsLocks.setBoardChanged(false);
             }
-
         }
-
-        // closes server and clients when game over
-        server.closeServer();
-
-        System.out.println("Game over");
     }
 
     /**
-     * This function is called when the main thread is notified and awakened, indicating that
-     * the board has been changed and the screen needs updating
-     * @param serverSocket server to send the board to
-     * @param dotsGame the game object
-     * @throws IOException if sending message through the socket fails
+     * Method here to update the screen for touch interaction, i.e. reflect touches
+     * @param dotsInteraction interaction object
      */
-    private void doBoardUpdating(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
+    private void updateScreenForTouchInteractions(DotsInteraction dotsInteraction) {
 
-        // update the board on the current device
-        DotsBoard updatedBoard = dotsGame.getDotsBoard();
+        // debug method to print valid interaction
+        System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
 
-        updatedBoard.printWithIndex();
-
-        this.getBoardViewListener().onBoardUpdate(updatedBoard);
-
-        // update the board on the remote device
-        this.sendBoardToClient(serverSocket, dotsGame);
-
+        this.getPlayerMovesListener().onValidInteraction(dotsInteraction);
     }
 
-    /**
-     * Helper method to package and send the board to the client
-     */
-    private void sendBoardToClient(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
-
-        DotsMessageBoard messageBoard = new DotsMessageBoard(dotsGame.getDotsBoard());
-        DotsSocketHelper.sendMessageToClient(serverSocket, messageBoard);
-
-    }
-
+//    /**
+//     * This function is called when the main thread is notified and awakened, indicating that
+//     * the board has been changed and the screen needs updating
+//     * @param serverSocket server to send the board to
+//     * @param dotsGame the game object
+//     * @throws IOException if sending message through the socket fails
+//     */
+//    private void doBoardUpdating(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
+//
+//        // update the board on the current device
+//        DotsBoard updatedBoard = dotsGame.getDotsBoard();
+//
+//        updatedBoard.printWithIndex();
+//
+//        this.getBoardViewListener().onBoardUpdate(updatedBoard);
+//
+//        // update the board on the remote device
+//        DotsMessageBoard messageBoard = new DotsMessageBoard(dotsGame.getDotsBoard());
+//        DotsSocketHelper.sendMessageToClient(serverSocket, messageBoard);
+//
+//    }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
@@ -130,91 +149,18 @@ public class DotsServer extends DotsServerClientParent{
             }
         });
 
+
+        // Testing scanner thread
+        Thread scannerThread = new Thread(new DotsTestScannerListener(dotsServer));
+
         // Starts the server
         dotsServer.start();
+        scannerThread.start();
 
-        System.out.println("Ended");
+
+        System.out.println("Main thread has reached the end");
 
     }
-}
-
-/**
- * Thread to listen for input from the scanner
- * TODO translate the scanner to system.in or something to parse touches on android to maintain modularity?
- */
-class DotsServerScannerListener implements Runnable {
-
-    private final Scanner scanner;
-    private final AwesomeServerSocket serverSocket;
-    private final DotsGame dotsGame;
-    private final DotsPlayerMovesListener playerMovesListener;
-
-    public DotsServerScannerListener(Scanner scanner, AwesomeServerSocket serverSocket, DotsGame dotsGame, DotsPlayerMovesListener playerMovesListener) {
-        this.scanner = scanner;
-        this.serverSocket = serverSocket;
-        this.dotsGame = dotsGame;
-        this.playerMovesListener = playerMovesListener;
-    }
-
-    @Override
-    public void run() {
-
-        while (this.dotsGame.isGameRunning()) {
-
-            DotsInteraction dotsInteraction = DotsSocketHelper.getInteractionFromScanner(0, this.scanner);
-
-            boolean result = this.dotsGame.doMove(dotsInteraction);
-
-
-            if (result) {
-
-                // TODO update the android screen with the corresponding method
-
-                /**
-                 * There are two types of game screen updates:
-                 * 1. Update to show user touches when touch down and dragged
-                 * 2. Update the entire board when elements are cleared
-                 *
-                 * In this function, we only update the first case, which is to show valid touches
-                 * on user interaction
-                 *
-                 * The second case is dealt directly in the dotsGame object itself, which will notify the locks
-                 * when the board needs to be updated, and will hence trigger the main thread where doBoardUpdating()
-                 * will be triggered.
-                 *
-                 */
-
-                updateScreenForTouchInteractions(dotsInteraction);
-
-
-                // Sends the valid interaction to the client player so that the client can see the move made by the other player
-                DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
-                try {
-                    DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
-                } catch (IOException e) {
-                    System.err.println("Cannot send interaction to server");
-                    e.printStackTrace();
-                }
-
-            }
-
-        }
-
-        System.out.println("Game over!");
-    }
-
-    /**
-     * Method here to update the screen for touch interaction, i.e. reflect touches
-     * @param dotsInteraction interaction object
-     */
-    private void updateScreenForTouchInteractions(DotsInteraction dotsInteraction) {
-
-        // debug method to print valid interaction
-        System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
-
-        this.playerMovesListener.onValidInteraction(dotsInteraction);
-    }
-
 }
 
 /**
@@ -223,7 +169,6 @@ class DotsServerScannerListener implements Runnable {
 class DotsServerClientListener implements Runnable {
 
     private final AwesomeServerSocket serverSocket;
-
     private final DotsGame dotsGame;
 
     public DotsServerClientListener(AwesomeServerSocket serverSocket, DotsGame dotsGame) {
@@ -235,10 +180,6 @@ class DotsServerClientListener implements Runnable {
     @Override
     public void run() {
 
-        if (this.dotsGame == null) {
-            throw new NullPointerException();
-        }
-
         try {
 
             while (this.dotsGame.isGameRunning()) {
@@ -246,7 +187,6 @@ class DotsServerClientListener implements Runnable {
                 // read and deal with messages from the client
                 DotsMessage message = DotsSocketHelper.readMessageFromClient(serverSocket);
                 this.dealWithMessage(message);
-
 
             }
 
@@ -257,8 +197,8 @@ class DotsServerClientListener implements Runnable {
         }
 
         System.out.println("Game over!");
-    }
 
+    }
 
     /**
      * This method deals with messages sent from the client.
