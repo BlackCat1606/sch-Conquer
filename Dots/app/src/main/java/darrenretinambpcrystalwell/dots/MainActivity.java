@@ -1,6 +1,7 @@
 package darrenretinambpcrystalwell.dots;
 
 
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,20 +14,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import Game.DotsGame;
-import Game.DotsLogic;
-import Game.Point;
+import AndroidCallback.DotsAndroidCallback;
+import Dots.DotsBoard;
+import Dots.DotsGame;
+import Model.DotsInteraction;
+import Sockets.DotsServer;
+import Sockets.DotsServerClientParent;
 
 
 public class MainActivity extends ActionBarActivity {
 
     private DotsScreen      dotsScreen;
     private DotView         dotView;
-    private DotsGame        dotsGame;
-    private DotsLogic       dotsLogic;
     private SurfaceViewDots surfaceViewDots;
+//
+    private DotsServerClientParent dotsServerClientParent;
 
-    ArrayList<Point> moves = new ArrayList<Point>();
 
 
 
@@ -36,17 +39,55 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         SurfaceView v = (SurfaceView) findViewById(R.id.surfaceView);
 
-        GifRun gifRun = new GifRun(this);
-
-        gifRun.LoadGiff(v, this, R.drawable.my_animated_gif);
+//        GifRun gifRun = new GifRun(this);
+//
+//        gifRun.LoadGiff(v, this, R.drawable.my_animated_gif);
 
 
         RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
+
+
+
         dotsScreen = new DotsScreen(rootLayout, this);
         //dotView = new DotView(this);
         surfaceViewDots = new SurfaceViewDots(this, rootLayout);
 //        GifWebView view = new GifWebView(this, "/Users/DarrenRetinaMBP/AndroidStudioProjects/dotsMultiplayer/Dots/app/src/main/assets/my_animated_gif.gif");
 //        setContentView(view);
+
+        this.dotsServerClientParent = new DotsServer(4321);
+
+        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
+
+        this.dotsServerClientParent.setAndroidCallback(new DotsAndroidCallback() {
+            @Override
+            public void onValidPlayerInteraction(DotsInteraction dotsInteraction) {
+
+            }
+
+            @Override
+            public void onBoardChanged(DotsBoard dotsBoard) {
+                dotsScreen.updateScreen(dotsBoard.getBoardArray());
+            }
+
+            @Override
+            public void onGameOver() {
+
+            }
+        });
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+
+        try {
+            this.dotsServerClientParent.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -79,12 +120,8 @@ public class MainActivity extends ActionBarActivity {
 //        Effects.castFadeOutEffect(dotsScreen.getDotList()[24], 500, false, false);
 //        Effects.castFadeOutEffect(dotsScreen.getDotList()[25], 500, false, false);
 
-        dotsScreen.updateScreen();
 
-    }
 
-    public ArrayList<Point> getMoves() {
-        return moves;
     }
 
 
