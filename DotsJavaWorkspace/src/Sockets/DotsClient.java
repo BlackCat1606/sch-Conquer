@@ -119,7 +119,7 @@ public class DotsClient extends DotsServerClientParent {
 
 
         // Testing scanner thread
-        Thread scannerThread = new Thread(new DotsTestScannerListener(dotsClient, 1, false));
+        Thread scannerThread = new Thread(new DotsTestScannerListener(dotsClient, 1, true));
 
         // Starts the client
         dotsClient.start();

@@ -1,10 +1,9 @@
 package Sockets;
 
 import Constants.DotsConstants;
-import Dots.Point;
+import Dots.DotsPoint;
 import Model.DotsInteraction;
 import Model.DotsInteractionStates;
-import Model.DotsLocks;
 
 import java.io.IOException;
 import java.util.Random;
@@ -60,8 +59,8 @@ public class DotsTestScannerListener implements Runnable {
                     e.printStackTrace();
                 }
 
-                Point selectedPoint = new Point(random.nextInt(DotsConstants.BOARD_SIZE), random.nextInt(DotsConstants.BOARD_SIZE));
-                dotsInteraction = new DotsInteraction(this.playerNo, DotsInteractionStates.randomState(), selectedPoint);
+                DotsPoint selectedDotsPoint = new DotsPoint(random.nextInt(DotsConstants.BOARD_SIZE), random.nextInt(DotsConstants.BOARD_SIZE));
+                dotsInteraction = new DotsInteraction(this.playerNo, DotsInteractionStates.randomState(), selectedDotsPoint);
 
             }
 
@@ -139,9 +138,9 @@ public class DotsTestScannerListener implements Runnable {
             pointParameters[i] = Character.getNumericValue(currentChar);
         }
 
-        Point point = new Point(pointParameters[0], pointParameters[1]);
+        DotsPoint dotsPoint = new DotsPoint(pointParameters[0], pointParameters[1]);
 
-        DotsInteraction interaction = new DotsInteraction(player, DotsInteractionStates.values()[pointParameters[2]], point);
+        DotsInteraction interaction = new DotsInteraction(player, DotsInteractionStates.values()[pointParameters[2]], dotsPoint);
 
         return interaction;
 

@@ -1,17 +1,13 @@
 package Sockets;
 
 import AwesomeSockets.AwesomeClientSocket;
-import Dots.Dot;
 import Dots.DotsBoard;
 import Dots.DotsGame;
-import Dots.Point;
 import Model.DotsMessage;
 import Model.DotsMessageBoard;
 import Model.DotsMessageResponse;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 /**
  * Created by JiaHao on 25/2/15.

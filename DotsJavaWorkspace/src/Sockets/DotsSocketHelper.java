@@ -2,17 +2,12 @@ package Sockets;
 
 import AwesomeSockets.AwesomeClientSocket;
 import AwesomeSockets.AwesomeServerSocket;
-import Dots.Point;
-import Model.DotsInteraction;
-import Model.DotsInteractionStates;
 import Model.DotsMessage;
 import Model.MessageLocks;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
 /**
  * Helper methods to make reading and writing DotsMessage objects from AwesomeSockets easier

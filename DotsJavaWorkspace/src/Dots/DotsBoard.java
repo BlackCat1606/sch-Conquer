@@ -2,7 +2,6 @@ package Dots;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * A wrapper for a 2D array representing the board, with some helper functions
@@ -51,12 +50,12 @@ public class DotsBoard implements Serializable {
     /**
      * Gets a dot at a point
      *
-     * @param point integer array [x, y]
+     * @param dotsPoint integer array [x, y]
      * @return
      */
-    public Dot getElement(Point point) {
+    public Dot getElement(DotsPoint dotsPoint) {
 
-        return boardArray[point.y][point.x];
+        return boardArray[dotsPoint.y][dotsPoint.x];
     }
 
 
@@ -67,12 +66,12 @@ public class DotsBoard implements Serializable {
     /**
      * Method to clear and cascade new dots down when an arrayList of points is entered
      *
-     * @param pointList points to be removed from the boardArray. Does not check for validity of move, should have
+     * @param dotsPointList points to be removed from the boardArray. Does not check for validity of move, should have
      *                  already been in DotsLogic before calling this
      */
-    public void clearDots(ArrayList<Point> pointList) {
+    public void clearDots(ArrayList<DotsPoint> dotsPointList) {
         // Mark points for deletion
-        markDotsForDeletion(pointList);
+        markDotsForDeletion(dotsPointList);
 
         for (int columnIndex = 0; columnIndex < boardArray.length; columnIndex++) {
 
@@ -118,11 +117,11 @@ public class DotsBoard implements Serializable {
     /**
      * Mark dots for deletion with null
      *
-     * @param pointList list of points to mark for deletion
+     * @param dotsPointList list of points to mark for deletion
      */
-    private void markDotsForDeletion(ArrayList<Point> pointList) {
-        for (Point point : pointList) {
-            setElement(point, null);
+    private void markDotsForDeletion(ArrayList<DotsPoint> dotsPointList) {
+        for (DotsPoint dotsPoint : dotsPointList) {
+            setElement(dotsPoint, null);
         }
 
         System.out.println("Points marked for deletion");
@@ -132,11 +131,11 @@ public class DotsBoard implements Serializable {
     /**
      * Set elements at a point to a dot. For use with marking for deletion
      *
-     * @param point
+     * @param dotsPoint
      * @param dot
      */
-    private void setElement(Point point, Dot dot) {
-        boardArray[point.y][point.x] = dot;
+    private void setElement(DotsPoint dotsPoint, Dot dot) {
+        boardArray[dotsPoint.y][dotsPoint.x] = dot;
     }
 
 

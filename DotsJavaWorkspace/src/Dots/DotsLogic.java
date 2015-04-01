@@ -11,7 +11,7 @@ public class DotsLogic {
 
     private final DotsBoard board;
 
-    private ArrayList<Point> currentTouches;
+    private ArrayList<DotsPoint> currentTouches;
 
     public DotsLogic(DotsBoard board) {
         this.board = board;
@@ -23,7 +23,7 @@ public class DotsLogic {
      * @param inputMoves chronologically ordered arrayList of points
      * @return true if board needs to be updated
      */
-    public boolean moveCompleted(ArrayList<Point> inputMoves) {
+    public boolean moveCompleted(ArrayList<DotsPoint> inputMoves) {
 
         if (inputMoves.size() <= 1) {
             return false;
@@ -47,7 +47,7 @@ public class DotsLogic {
      * @param end
      * @return validity of adjacency only
      */
-    private boolean checkAdjacency(Point start, Point end) {
+    private boolean checkAdjacency(DotsPoint start, DotsPoint end) {
 
         // If the points are the same, we return true right away
         if (start.compareWith(end)) {
@@ -77,15 +77,15 @@ public class DotsLogic {
      * @param inputMoves chronologically ordered arrayList of points
      * @return validity of move
      */
-    public boolean checkMove(ArrayList<Point> inputMoves) {
+    public boolean checkMove(ArrayList<DotsPoint> inputMoves) {
 
         System.out.println(inputMoves);
         for (int i = 0; i < inputMoves.size() - 1; i++) {
 
-            Point startPoint = inputMoves.get(i);
-            Point endPoint = inputMoves.get(i + 1);
+            DotsPoint startDotsPoint = inputMoves.get(i);
+            DotsPoint endDotsPoint = inputMoves.get(i + 1);
 
-            if (!checkAdjacency(startPoint, endPoint)) {
+            if (!checkAdjacency(startDotsPoint, endDotsPoint)) {
                 return false;
             }
         }
