@@ -57,7 +57,7 @@ public class MainActivity extends ActionBarActivity {
         this.dotsServerClientParent = new DotsServer(4321);
 
         surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
-
+        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
         this.dotsServerClientParent.setAndroidCallback(new DotsAndroidCallback() {
             @Override
             public void onValidPlayerInteraction(DotsInteraction dotsInteraction) {

@@ -1,11 +1,13 @@
 package darrenretinambpcrystalwell.dots;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import Constants.DotsConstants;
 import Dots.Dot;
 import Dots.DotColor;
 
@@ -38,11 +40,15 @@ public class DotsScreen {
 
     float                   intersectDistSqThreshold;
 
-    DotView[]               dotViews;
     float                   dotWidth;
 
     DotView                 dotView;
 
+    private float[][][] correspondingDotCoordinates;
+
+    public float[][][] getCorrespondingDotCoordinates() {
+        return correspondingDotCoordinates;
+    }
 
     // Standard Initialising Constructor
     public DotsScreen(RelativeLayout relativeLayout, Context context) {
@@ -69,20 +75,30 @@ public class DotsScreen {
         float dotsXOffset = (1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth;
         float dotsYOffset = SCREEN_Y_PERCENTAGE * screenHeight;
 
-        dotViews = new DotView[36];
+        this.correspondingDotCoordinates = new float[DotsConstants.BOARD_SIZE][DotsConstants.BOARD_SIZE][2];
+
         for (int index = 0; index < 36; ++index) {
             // i == row number (0-5)
             // j == col number (0-5)
             int i = index / 6;
             int j = index % 6;
 
-                DotView d = new RedDotView(context);
-                d.setX(dotsXOffset + j * dotWidth);
-                d.setY(dotsYOffset + i * dotWidth);
-                d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
-                dotViews[index] = d;
-                dotsList[index] = d;
-                dotsLayout.addView(d);
+            DotView d = new RedDotView(context);
+
+            float x = dotsXOffset + j * dotWidth;
+            float y = dotsYOffset + i * dotWidth;
+
+
+            d.setX(x);
+            d.setY(y);
+            d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+
+            dotsList[index] = d;
+            dotsLayout.addView(d);
+
+            this.correspondingDotCoordinates[j][i][0] = x;
+            this.correspondingDotCoordinates[j][i][1] = y;
+
 
         }
 //
@@ -135,12 +151,10 @@ public class DotsScreen {
 
     public void updateScreen(Dot[][] board) {
         Log.d("Screen", board.toString());
-        dotViews = new DotView[36];
         for (int index = 0; index < 36; ++index) {
 
             int i = index / 6;
             int j = index % 6;
-
 
             if (board[i][j].color == DotColor.RED) {
                 if (!dotsList[index].getColor().equals("red")) {
