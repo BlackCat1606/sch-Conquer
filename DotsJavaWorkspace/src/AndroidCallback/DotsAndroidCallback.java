@@ -4,8 +4,10 @@ import Dots.DotsBoard;
 import Model.DotsInteraction;
 
 /**
-* Created by JiaHao on 1/4/15.
-*/
+ * Callback interface, to link android front end with the back end
+ * Created by JiaHao on 1/4/15.
+ *
+ */
 public interface DotsAndroidCallback {
 
     public void onValidPlayerInteraction(DotsInteraction interaction);

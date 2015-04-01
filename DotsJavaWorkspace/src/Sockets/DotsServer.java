@@ -89,7 +89,7 @@ public class DotsServer extends DotsServerClientParent{
      * Updates the board, by doing the callback, and sending the board to the client
      * @throws IOException
      */
-    private void updateBoard() throws IOException {
+    public void updateBoard() throws IOException {
 
         // update the board on the current device
         DotsBoard updatedBoard = dotsGame.getDotsBoard();
@@ -117,28 +117,6 @@ public class DotsServer extends DotsServerClientParent{
         this.getAndroidCallback().onValidPlayerInteraction(dotsInteraction);
     }
 
-//    /**
-//     * This function is called when the main thread is notified and awakened, indicating that
-//     * the board has been changed and the screen needs updating
-//     * @param serverSocket server to send the board to
-//     * @param dotsGame the game object
-//     * @throws IOException if sending message through the socket fails
-//     */
-//    private void doBoardUpdating(AwesomeServerSocket serverSocket, DotsGame dotsGame) throws IOException {
-//
-//        // update the board on the current device
-//        DotsBoard updatedBoard = dotsGame.getDotsBoard();
-//
-//        updatedBoard.printWithIndex();
-//
-//        this.getBoardViewListener().onBoardUpdate(updatedBoard);
-//
-//        // update the board on the remote device
-//        DotsMessageBoard messageBoard = new DotsMessageBoard(dotsGame.getDotsBoard());
-//        DotsSocketHelper.sendMessageToClient(serverSocket, messageBoard);
-//
-//    }
-
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
         // Initialise the server
@@ -164,7 +142,7 @@ public class DotsServer extends DotsServerClientParent{
 
 
         // Testing scanner thread
-        Thread scannerThread = new Thread(new DotsTestScannerListener(dotsServer));
+        Thread scannerThread = new Thread(new DotsTestScannerListener(dotsServer, 0, false));
 
         // Starts the server
         dotsServer.start();

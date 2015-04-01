@@ -49,5 +49,11 @@ public abstract class DotsServerClientParent {
         System.err.println("Do interaction is not overwrote in parent class!");
     }
 
+    /**
+     * Manual method to trigger a screen update
+     */
+    public void updateBoard() throws IOException {
+
+    }
 
 }
