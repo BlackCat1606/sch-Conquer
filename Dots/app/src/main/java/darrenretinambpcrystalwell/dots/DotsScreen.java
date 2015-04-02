@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -39,7 +40,6 @@ public class DotsScreen {
     int                     screenWidth;
     int                     screenHeight;
 
-    float                   intersectDistSqThreshold;
 
     public float                   dotWidth;
 
@@ -71,7 +71,6 @@ public class DotsScreen {
         relativeLayout.addView(dotsLayout);
 
         this.dotWidth = SCREEN_WIDTH_PERCENTAGE * screenWidth / 6.f;
-        this.intersectDistSqThreshold = (dotWidth * .5f) * (dotWidth * .5f);
 
         float dotsXOffset = (1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth;
         float dotsYOffset = SCREEN_Y_PERCENTAGE * screenHeight;
@@ -93,14 +92,15 @@ public class DotsScreen {
 
             d.setX(x);
             d.setY(y);
-            d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+            d.setLayoutParams(new ViewGroup.LayoutParams((int) (dotWidth), (int) dotWidth));
 
             t.setX(x);
             t.setY(y);
-            t.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+            t.setLayoutParams(new ViewGroup.LayoutParams((int) (dotWidth), (int) (dotWidth)));
 
             touchList[index] = t;
             dotsLayout.addView(t);
+            t.setVisibility(View.INVISIBLE);
 
 
 
@@ -113,48 +113,7 @@ public class DotsScreen {
 
 
         }
-//
-//        Log.d("Screen", board.toString());
-//        dotViews = new DotView[36];
-//        for (int index = 0; index < 36; ++index) {
-//            // i == row number (0-5)
-//            // j == col number (0-5)
-//            int i = index / 6;
-//            int j = index % 6;
-//            if (dotBoard[i][j].color == DotColor.RED) {
-//                DotView d = new RedDotView(context);
-//                d.setX(dotsXOffset + j * dotWidth);
-//                d.setY(dotsYOffset + i * dotWidth);
-//                d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
-//                dotViews[index] = d;
-//                dotsList[index] = d;
-//                dotsLayout.addView(d);
-//            } else if (dotBoard[i][j].color == DotColor.BLUE) {
-//                DotView d = new BlueDotView(context);
-//                d.setX(dotsXOffset + j * dotWidth);
-//                d.setY(dotsYOffset + i * dotWidth);
-//                d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
-//                dotViews[index] = d;
-//                dotsList[index] = d;
-//                dotsLayout.addView(d);
-//            } else if (dotBoard[i][j].color == DotColor.GREEN) {
-//                DotView d = new GreenDotView(context);
-//                d.setX(dotsXOffset + j * dotWidth);
-//                d.setY(dotsYOffset + i * dotWidth);
-//                d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
-//                dotViews[index] = d;
-//                dotsList[index] = d;
-//                dotsLayout.addView(d);
-//            } else if (dotBoard[i][j].color == DotColor.YELLOW) {
-//                DotView d = new YellowDotView(context);
-//                d.setX(dotsXOffset + j * dotWidth);
-//                d.setY(dotsYOffset + i * dotWidth);
-//                d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
-//                dotViews[index] = d;
-//                dotsList[index] = d;
-//                dotsLayout.addView(d);
-//            }
-//        }
+
     }
 
     public float getDotWidth() {
