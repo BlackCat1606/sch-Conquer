@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Splash</string>
+
+    <string name="Play">Play!</string>
+    <string name="opponent_IP">Please enter opponent\'s IP address</string>
+    <string name="IP_Address">IP Address</string>
+    <string name="action_settings">Settings</string>
+</resources>
