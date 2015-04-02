@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import Dots.DotsPoint;
 import Model.DotsInteraction;
@@ -41,6 +42,7 @@ public class SurfaceViewDots extends RelativeLayout
     // TODO set player id dynamically
     private final int PLAYER_ID = 0;
 //    float x,y;
+
 
 
     private float[][][] correspondingDotCoordinates;
@@ -78,10 +80,9 @@ public class SurfaceViewDots extends RelativeLayout
         float dotsXOffset = (1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * ScreenDimensions.getWidth(context);
         float dotsYOffset = SCREEN_Y_PERCENTAGE * ScreenDimensions.getHeight(context);
         this.dotWidth = SCREEN_WIDTH_PERCENTAGE * ScreenDimensions.getWidth(context) / 6.f;
-        LayoutParams layoutParams = new LayoutParams(ScreenDimensions.getWidth(context)-(int)(dotsXOffset),
-                ScreenDimensions.getHeight(context)-(int)(8*dotsXOffset));
-        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        LayoutParams layoutParams = new LayoutParams(ScreenDimensions.getWidth(context),
+                ScreenDimensions.getHeight(context));
+
         setLayoutParams(layoutParams);
 
         relativeLayout.addView(this);
@@ -109,12 +110,22 @@ public class SurfaceViewDots extends RelativeLayout
 
     private DotsInteraction previousInteraction;
 
+    private boolean printed = false;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
         DotsInteractionStates interactionState;
 
+        if (!printed) {
+
+            String correspondingDotPosition = Arrays.deepToString(this.correspondingDotCoordinates);
+            Log.d(TAG, correspondingDotPosition);
+            printed = true;
+        }
+
         int action = event.getAction();
+        Log.d(TAG, "Touched : " + event.getX() + ", " + event.getY());
+
 
         if (action == MotionEvent.ACTION_DOWN) {
             interactionState = DotsInteractionStates.TOUCH_DOWN;
@@ -134,6 +145,14 @@ public class SurfaceViewDots extends RelativeLayout
         blackDotView.setX(event.getX() - blackDotView.getWidth() / 2);
         blackDotView.setY(event.getY() - blackDotView.getHeight() / 2);
 
+        // return if touch location has not moved far away enough so we reduce calculations
+        if (touchedLocationCloseEnoughToReference(event.getX(), event.getY(), this.previousDetectedDotCoordinate[0], this.previousDetectedDotCoordinate[1])) {
+            return false;
+        }
+
+
+
+
         DotsPoint closestPoint = dotPointClosestToTouchedLocation(event.getX(), event.getY());
 
         DotsInteraction interaction;
@@ -149,6 +168,12 @@ public class SurfaceViewDots extends RelativeLayout
                 return false;
             }
         } else {
+
+
+
+            this.previousDetectedDotCoordinate = this.correspondingDotCoordinates[closestPoint.y][closestPoint.x];
+
+
             interaction = new DotsInteraction(PLAYER_ID, interactionState, closestPoint);
         }
 
@@ -165,7 +190,11 @@ public class SurfaceViewDots extends RelativeLayout
         this.previousInteraction = interaction;
 
         return true;
+
     }
+
+
+    private float[] previousDetectedDotCoordinate = new float[2];
 
 
     /**
@@ -198,12 +227,11 @@ public class SurfaceViewDots extends RelativeLayout
 
     private boolean touchedLocationCloseEnoughToReference(float touchedX, float touchedY, float refX, float refY) {
 
-        // Make this change according to the size of the screen
-        final float THRESHOLD = 50;
+
 
         double distance = Math.hypot((touchedX - refX), (touchedY - refY));
 
-        if (distance < THRESHOLD) {
+        if (distance < dotWidth/2.0) {
             return true;
         } else {
             return false;
