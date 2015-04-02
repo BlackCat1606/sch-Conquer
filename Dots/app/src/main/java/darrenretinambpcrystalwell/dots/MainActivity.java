@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import java.io.IOException;
@@ -58,6 +59,9 @@ public class MainActivity extends ActionBarActivity {
 
         surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
         surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
+
+
+
         this.dotsServerClientParent.setAndroidCallback(new DotsAndroidCallback() {
             @Override
             public void onValidPlayerInteraction(DotsInteraction dotsInteraction) {
@@ -75,6 +79,18 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        Button button = new Button(this.getApplicationContext());
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // update text
+            }
+        });
+
+
+        // TODO Android does not like running network requests on the main thread.
+        // This is a temporary workaaround.
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
