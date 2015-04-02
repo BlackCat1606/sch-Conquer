@@ -2,10 +2,14 @@ package darrenretinambpcrystalwell.dots;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.media.effect.Effect;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import java.util.Arrays;
 
 import Constants.DotsConstants;
 import Dots.Dot;
@@ -108,8 +112,8 @@ public class DotsScreen {
             dotsList[index] = d;
             dotsLayout.addView(d);
 
-            this.correspondingDotCoordinates[j][i][0] = (float) (x + dotWidth/2.0);
-            this.correspondingDotCoordinates[j][i][1] = (float) (y + dotWidth/2.0);
+            this.correspondingDotCoordinates[i][j][0] = (float) (x + dotWidth/2.0);
+            this.correspondingDotCoordinates[i][j][1] = (float) (y + dotWidth/2.0);
 
 
         }
@@ -162,39 +166,91 @@ public class DotsScreen {
     }
 
     public void updateScreen(Dot[][] board) {
-        Log.d("Screen", board.toString());
-        for (int index = 0; index < 36; ++index) {
+        Log.d("Screen", Arrays.deepToString(board));
 
-            int i = index / 6;
-            int j = index % 6;
+        final int FADE_DURATION = 100;
+        final int END_ALPHA = 1;
 
-            if (board[i][j].color == DotColor.RED) {
-                if (!dotsList[index].getColor().equals("red")) {
-                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
-                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
-                    dotsList[index].setRed();
-                }
-            } else if (board[i][j].color == DotColor.BLUE) {
-                if (!dotsList[index].getColor().equals("blue")) {
-                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
-                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
-                    dotsList[index].setBlue();
+        for (int j = 0; j < 6; j++) {
 
+            for (int i = 0; i < board[j].length; i++) {
+
+                int index = j*6 + i;
+
+                Dot updatedBoardDot = board[j][i];
+                DotView currentDotView = dotsList[index];
+
+//                String dotColorString;
+//
+//                if (updatedBoardDot.color == DotColor.RED) {
+//                    dotColorString = "red";
+//                } else if (updatedBoardDot.color == DotColor.BLUE) {
+//                    dotColorString = "blue";
+//                } else if (updatedBoardDot.color == DotColor.GREEN) {
+//                    dotColorString = "green";
+//                } else if (updatedBoardDot.color == DotColor.YELLOW) {
+//                    dotColorString = "yellow";
+//                } else {
+//                    System.err.println("Unknown color");
+//                    dotColorString = "unknowncolor";
+//                }
+
+
+                // if the updated board color is different from the current dotView's color
+//                System.out.println("LECOLOR" + currentDotView.getColor());
+//                if (!currentDotView.getColor().equals(dotColorString)) {
+
+                if (!(currentDotView.getColor() == updatedBoardDot.color)) {
+                    // do fading effects
+                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, false, true);
+                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
+
+                    // sets the color of the drawable
+                    currentDotView.setColor(updatedBoardDot.color);
                 }
-            } else if (board[i][j].color == DotColor.GREEN) {
-                if (!dotsList[index].getColor().equals("green")) {
-                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
-                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
-                    dotsList[index].setGreen();
-                }
-            } else if (board[i][j].color == DotColor.YELLOW) {
-                if (!dotsList[index].getColor().equals("yellow")) {
-                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
-                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
-                    dotsList[index].setYellow();
-                }
+
+
+
             }
+
         }
+
+
+
+//        for (int index = 0; index < 36; ++index) {
+//
+//            // i == row number (0-5)
+//            // j == col number (0-5)
+//            int i = index / 6;
+//            int j = index % 6;
+//
+//            if (board[j][i].color == DotColor.RED) {
+//                if (!dotsList[index].getColor().equals("red")) {
+//                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
+//                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
+//                    dotsList[index].setRed();
+//                }
+//            } else if (board[j][i].color == DotColor.BLUE) {
+//                if (!dotsList[index].getColor().equals("blue")) {
+//                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
+//                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
+//                    dotsList[index].setBlue();
+//
+//                }
+//            } else if (board[j][i].color == DotColor.GREEN) {
+//                if (!dotsList[index].getColor().equals("green")) {
+//                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
+//                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
+//                    dotsList[index].setGreen();
+//                }
+//            } else if (board[j][i].color == DotColor.YELLOW) {
+//                if (!dotsList[index].getColor().equals("yellow")) {
+//                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
+//                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
+//                    dotsList[index].setYellow();
+//                }
+//            }
+//        }
     }
 
     public DotView[] getDotList() {
