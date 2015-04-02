@@ -21,7 +21,7 @@ public class DotsGame {
     private final DotsLogic dotsLogic;
     private final DotsLocks dotsLocks;
 
-    private ArrayList<Point>[] playerMoves;
+    private ArrayList<DotsPoint>[] playerMoves;
 
 
     public DotsGame() {
@@ -35,7 +35,7 @@ public class DotsGame {
         this.playerMoves = new ArrayList[DotsConstants.NO_OF_PLAYERS];
 
         for (int i = 0; i < DotsConstants.NO_OF_PLAYERS; i++) {
-            this.playerMoves[i] = new ArrayList<Point>();
+            this.playerMoves[i] = new ArrayList<DotsPoint>();
         }
 
     }
@@ -71,8 +71,6 @@ public class DotsGame {
      */
     public synchronized boolean doMove(DotsInteraction interaction) {
 
-        // TODO Check for conflicts between two player points
-
         // if conflict detected
         if (conflictIsDetected(interaction)) {
             // invalid move
@@ -82,30 +80,29 @@ public class DotsGame {
 
         // gets details from the interaction
         int player = interaction.getPlayerId();
-        Point point = interaction.getPoint();
+        DotsPoint dotsPoint = interaction.getDotsPoint();
 
         // if its a new touch down, recreate the array list
         if (interaction.getState() == DotsInteractionStates.TOUCH_DOWN) {
 
-            this.playerMoves[player] = new ArrayList<Point>();
+            this.playerMoves[player] = new ArrayList<DotsPoint>();
         }
 
 
         // we temporarily add the new point to the current list of points and perform a check for adjacency
-
         boolean pointAlreadyRecorded = false;
-        for (Point storedPoints : this.playerMoves[player]) {
 
-            if (storedPoints.compareWith(point)) {
+        for (DotsPoint storedPoints : this.playerMoves[player]) {
+
+            if (storedPoints.compareWith(dotsPoint)) {
                 pointAlreadyRecorded = true;
             }
         }
 
         if (!pointAlreadyRecorded) {
 
-            this.playerMoves[player].add(point);
+            this.playerMoves[player].add(dotsPoint);
             boolean moveResult = this.dotsLogic.checkMove(this.playerMoves[player]);
-
 
             // remove the point if it is invalid
             if (!moveResult) {
@@ -115,6 +112,8 @@ public class DotsGame {
             }
 
         }
+
+        // if the point is already recorded, just return true
 
         if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
 
@@ -158,19 +157,19 @@ public class DotsGame {
      * @return false if no conflict, true if there is a conflict
      */
     private boolean cascadingConflict(DotsInteraction dotsInteraction) {
-        // TODO cascading conflict
 
-        Point interactionPoint = dotsInteraction.getPoint();
+        DotsPoint interactionDotsPoint = dotsInteraction.getDotsPoint();
 
-        ArrayList<Point> otherPlayerPoints = this.getOtherPlayerPoints(dotsInteraction.getPlayerId());
+        ArrayList<DotsPoint> otherPlayerDotsPoints = this.getOtherPlayerPoints(dotsInteraction.getPlayerId());
 
-        for (Point otherPlayerPoint : otherPlayerPoints) {
+        for (DotsPoint otherPlayerDotsPoint : otherPlayerDotsPoints) {
 
             // same column
-            if (otherPlayerPoint.x == interactionPoint.x) {
+            if (otherPlayerDotsPoint.x == interactionDotsPoint.x) {
 
                 // interaction point is above the other player point
-                if (otherPlayerPoint.y > interactionPoint.y) {
+                if (otherPlayerDotsPoint.y > interactionDotsPoint.y) {
+                    System.out.println("DotsGame: Cascading conflict detected");
                     return true;
                 }
             }
@@ -188,14 +187,15 @@ public class DotsGame {
      */
     private boolean samePointConflict(DotsInteraction dotsInteraction) {
 
-        ArrayList<Point> otherPlayerPoints = this.getOtherPlayerPoints(dotsInteraction.getPlayerId());
+        ArrayList<DotsPoint> otherPlayerDotsPoints = this.getOtherPlayerPoints(dotsInteraction.getPlayerId());
 
         // null if no such player
-        if (!(otherPlayerPoints == null)) {
+        if (!(otherPlayerDotsPoints == null)) {
 
-            for (Point otherPlayerPoint : otherPlayerPoints) {
+            for (DotsPoint otherPlayerDotsPoint : otherPlayerDotsPoints) {
 
-                if (otherPlayerPoint.compareWith(dotsInteraction.getPoint())) {
+                if (otherPlayerDotsPoint.compareWith(dotsInteraction.getDotsPoint())) {
+                    System.out.println("DotsGame: Same point conflict detected");
                     return true;
                 }
 
@@ -208,23 +208,23 @@ public class DotsGame {
     }
 
     /**
-     * Returns an arraylist of points held by the other player
+     * Returns an arrayList of points held by the other player
      * @param player current player
      * @return
      */
-    private ArrayList<Point> getOtherPlayerPoints(int player) {
-        ArrayList<Point> otherPlayerPoints;
+    private ArrayList<DotsPoint> getOtherPlayerPoints(int player) {
+        ArrayList<DotsPoint> otherPlayerDotsPoints;
 
         if (player == 0) {
 
-            otherPlayerPoints = this.playerMoves[1];
+            otherPlayerDotsPoints = this.playerMoves[1];
         } else if (player == 1) {
-            otherPlayerPoints = this.playerMoves[0];
+            otherPlayerDotsPoints = this.playerMoves[0];
         } else {
             System.err.println("No such player");
             return null;
         }
-        return otherPlayerPoints;
+        return otherPlayerDotsPoints;
 
     }
 

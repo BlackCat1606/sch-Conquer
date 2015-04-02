@@ -1,12 +1,7 @@
 package Dots;
 
-import Constants.DotsConstants;
 import Model.DotsInteraction;
 import Model.DotsInteractionStates;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 
 /**
  * For single player of how the game might work
@@ -51,30 +46,30 @@ public class TestDotsGame {
         dotsGame.getDotsBoard().printWithIndex();
 
         // testing points that are adjacent and have the same color
-        Point point0 = new Point(0, 1);
-        Point point1 = new Point(1,1);
-        Point point2 = new Point(1,2);
-        Point point3 = new Point(1,3);
-        Point point4 = new Point(0,3);
+        DotsPoint dotsPoint0 = new DotsPoint(0, 1);
+        DotsPoint dotsPoint1 = new DotsPoint(1,1);
+        DotsPoint dotsPoint2 = new DotsPoint(1,2);
+        DotsPoint dotsPoint3 = new DotsPoint(1,3);
+        DotsPoint dotsPoint4 = new DotsPoint(0,3);
 
         int PLAYER_0 = 0;
 
 
         // Simulation of interactions
-        DotsInteraction interaction0 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_DOWN, point0);
+        DotsInteraction interaction0 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_DOWN, dotsPoint0);
 //        dotsGame.getDotsBoard().printWithIndex();
         System.out.println(dotsGame.doMove(interaction0));
 
-        DotsInteraction interaction1 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_MOVE, point1);
+        DotsInteraction interaction1 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_MOVE, dotsPoint1);
         System.out.println(dotsGame.doMove(interaction1));
 
-        DotsInteraction interaction2 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_MOVE, point2);
+        DotsInteraction interaction2 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_MOVE, dotsPoint2);
         System.out.println(dotsGame.doMove(interaction2));
 
-        DotsInteraction interaction3 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_MOVE, point3);
+        DotsInteraction interaction3 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_MOVE, dotsPoint3);
         System.out.println(dotsGame.doMove(interaction3));
 
-        DotsInteraction interaction4 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_UP, point4);
+        DotsInteraction interaction4 = new DotsInteraction(PLAYER_0, DotsInteractionStates.TOUCH_UP, dotsPoint4);
         System.out.println(dotsGame.doMove(interaction4));
 
         // print the final board after the interactions are complete

@@ -1,6 +1,6 @@
 package Model;
 
-import Dots.Point;
+import Dots.DotsPoint;
 
 import java.io.Serializable;
 
@@ -17,12 +17,12 @@ public class DotsInteraction implements Serializable {
 
     private final DotsInteractionStates state;
 
-    private final Point point;
+    private final DotsPoint dotsPoint;
     private final int playerId;
 
-    public DotsInteraction(int playerId, DotsInteractionStates state, Point point) {
+    public DotsInteraction(int playerId, DotsInteractionStates state, DotsPoint dotsPoint) {
         this.state = state;
-        this.point = point;
+        this.dotsPoint = dotsPoint;
         this.playerId = playerId;
     }
 
@@ -32,8 +32,8 @@ public class DotsInteraction implements Serializable {
         return state;
     }
 
-    public Point getPoint() {
-        return point;
+    public DotsPoint getDotsPoint() {
+        return dotsPoint;
     }
 
     public int getPlayerId() {
@@ -42,7 +42,32 @@ public class DotsInteraction implements Serializable {
 
     @Override
     public String toString() {
-        return "Player: " + this.getPlayerId() + " State: " + this.getState() + " Point: " + point.toString();
+        return "Player: " + this.getPlayerId() + " State: " + this.getState() + " Point: " + dotsPoint.toString();
+    }
+
+    /**
+     * Compares this with another dotsInteraction
+     * @param otherInteraction
+     * @return true if their fields are the same
+     */
+    public boolean compareWith(DotsInteraction otherInteraction) {
+
+        // compare point
+        if (!this.getDotsPoint().compareWith(otherInteraction.getDotsPoint())) {
+            return false;
+        }
+
+        // compare state
+        if (this.state != otherInteraction.getState()) {
+            return false;
+        }
+
+        // compare player Id
+        if (this.playerId != otherInteraction.getPlayerId()) {
+            return false;
+        }
+
+        return true;
     }
 }
 

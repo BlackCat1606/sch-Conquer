@@ -3,12 +3,12 @@ package Sockets;
 import AwesomeSockets.AwesomeClientSocket;
 import Constants.DotsConstants;
 import Dots.DotsBoard;
-import ListenerInterface.DotsBoardViewListener;
-import ListenerInterface.DotsPlayerMovesListener;
+
+import AndroidCallback.DotsAndroidCallback;
 import Model.*;
 
+
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -21,145 +21,66 @@ public class DotsClient extends DotsServerClientParent {
     private final String serverAddress;
     private final int port;
 
+    // States
+    private AwesomeClientSocket clientSocket;
+    private DotsLocks dotsLocks;
+    private LinkedBlockingQueue<Boolean> responseQueue;
+
+
     public DotsClient(String serverAddress, int port) {
         this.serverAddress = serverAddress;
         this.port = port;
     }
 
     public void start() throws IOException, InterruptedException, InstantiationException {
-
         super.start();
 
         // Initialise Model
-        DotsLocks dotsLocks = new DotsLocks();
-        LinkedBlockingQueue<Boolean> responseQueue = new LinkedBlockingQueue<Boolean>();
+        this.dotsLocks = new DotsLocks();
+        this.responseQueue = new LinkedBlockingQueue<Boolean>();
 
         // Initialize client socket
-        AwesomeClientSocket clientSocket = new AwesomeClientSocket(this.serverAddress, this.port);
-
+        this.clientSocket = new AwesomeClientSocket(this.serverAddress, this.port);
 
         // Init server listener thread
-        DotsClientServerListener dotsServerListener = new DotsClientServerListener(clientSocket, dotsLocks, responseQueue, this.getBoardViewListener(), this.getPlayerMovesListener());
+        DotsClientServerListener dotsServerListener = new DotsClientServerListener(this.clientSocket, dotsLocks, responseQueue, this.getAndroidCallback());
         Thread listenerThread = new Thread(dotsServerListener);
 
-        // Init scanner thread
-        Scanner scanner = new Scanner(System.in);
-        DotsClientScannerListener dotsClientScannerListener = new DotsClientScannerListener(scanner, clientSocket, dotsLocks, responseQueue, this.getPlayerMovesListener());
-        Thread scannerThread = new Thread(dotsClientScannerListener);
-
-        // start threads
+        // start thread to deal with messages from server
         listenerThread.start();
-        scannerThread.start();
-
-        // Temporary debug
-        // create an object here to block on while the game is running
-        Object gameRunningLock = new Object();
-
-        synchronized (gameRunningLock) {
-
-            while (dotsLocks.isGameRunning()) {
-
-                gameRunningLock.wait();
-            }
-        }
-
-        clientSocket.closeClient();
+        System.out.println("Waiting for interactions");
 
     }
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
-
-        // Initialise the client
-        DotsClient dotsClient = new DotsClient(DotsConstants.SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
-
-        // Compulsory to add listeners for changes
-        dotsClient.setBoardViewListener(new DotsBoardViewListener() {
-            @Override
-            public void onBoardUpdate(DotsBoard board) {
-
-            }
-        });
-
-        dotsClient.setPlayerMovesListener(new DotsPlayerMovesListener() {
-            @Override
-            public void onValidInteraction(DotsInteraction interaction) {
-
-            }
-        });
-
-        // Starts the client
-        dotsClient.start();
-
-    }
-}
-
-/**
- * Thread to listen for input from the scanner
- * TODO translate the scanner to system.in or something to parse touches on android to maintain modularity?
- */
-class DotsClientScannerListener implements Runnable {
-
-    private final Scanner scanner;
-    private final AwesomeClientSocket clientSocket;
-    private final DotsLocks locks;
-    private final LinkedBlockingQueue<Boolean> responseQueue;
-    private final DotsPlayerMovesListener playerMovesListener;
-
-    public DotsClientScannerListener(
-            Scanner scanner,
-            AwesomeClientSocket clientSocket,
-            DotsLocks locks,
-            LinkedBlockingQueue<Boolean> responseQueue,
-            DotsPlayerMovesListener playerMovesListener) {
-
-        this.scanner = scanner;
-        this.clientSocket = clientSocket;
-        this.locks = locks;
-        this.responseQueue = responseQueue;
-        this.playerMovesListener = playerMovesListener;
-
-    }
-
+    /**
+     * Method to call with an interaction on the screen
+     * @param dotsInteraction touch interactions on the screen
+     */
     @Override
-    public void run() {
+    public void doInteraction(DotsInteraction dotsInteraction) throws IOException, InterruptedException {
 
-        while (this.locks.isGameRunning()) {
+        // Package the interaction in to a message
+        DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
 
-            // Whenever we do an interaction on the screen, we send a message to the server and get a response
-            // of the move's validity
-            DotsInteraction dotsInteraction = DotsSocketHelper.getInteractionFromScanner(1, this.scanner);
+        // and send it to the server
+        DotsSocketHelper.sendMessageToServer(this.clientSocket, interactionMessage);
 
-            try {
 
-                DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
-                DotsSocketHelper.sendMessageToServer(this.clientSocket, interactionMessage);
+        // Read the response from the server for the interaction
+        // Here, we use a queue which is populated by the other serverListener thread with appropriate
+        // responses
+        boolean response = this.responseQueue.take();
 
-                // Here, we use a queue which is populated by the other serverListener thread with appropriate
-                // responses
+        System.out.println("Received response: " + response);
 
-                boolean response = this.responseQueue.take();
-
-                System.out.println("Received response: " + response);
-
-                // if the response is valid, it means that the move we have made is valid
-                // Therefore, we update the screen based on our touches
-                if (response) {
-
-                    updateScreenForTouchInteractions(dotsInteraction);
-
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                System.err.println("Taking from response queue is interrupted.");
-                e.printStackTrace();
-            }
-
+        // if the response is valid, it means that the move we have made is valid
+        // Therefore, we update the screen based on our touches
+        if (response) {
+            updateScreenForTouchInteractions(dotsInteraction);
         }
 
-        System.out.println("Game over!");
     }
+
 
     /**
      * Method here to update the screen for touch interaction, i.e. reflect touches
@@ -169,10 +90,50 @@ class DotsClientScannerListener implements Runnable {
 
         // debug method to print valid interaction
         System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
-        this.playerMovesListener.onValidInteraction(dotsInteraction);
+        this.getAndroidCallback().onValidPlayerInteraction(dotsInteraction);
 
     }
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
+
+        // Initialise the client
+        DotsClient dotsClient = new DotsClient(DotsConstants.SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
+
+        // Compulsory to add listeners for changes
+        dotsClient.setAndroidCallback(new DotsAndroidCallback() {
+            @Override
+            public void onValidPlayerInteraction(DotsInteraction interaction) {
+
+            }
+
+            @Override
+            public void onBoardChanged(DotsBoard board) {
+
+            }
+
+            @Override
+            public void onGameOver() {
+
+            }
+        });
+
+
+        // Testing scanner thread
+        Thread scannerThread = new Thread(new DotsTestScannerListener(dotsClient, 1, true));
+
+        // Starts the client
+        dotsClient.start();
+        scannerThread.start();
+
+    }
+
+    public DotsLocks getDotsLocks() {
+        return dotsLocks;
+    }
 }
+
+
+
 
 /**
  * Thread to listen for messages from the server and deal with them
@@ -182,22 +143,13 @@ class DotsClientServerListener implements Runnable {
     private final AwesomeClientSocket clientSocket;
     private final DotsLocks locks;
     private final LinkedBlockingQueue<Boolean> responseQueue;
-    private final DotsBoardViewListener boardViewListener;
-    private final DotsPlayerMovesListener playerMovesListener;
+    private final DotsAndroidCallback screenUpdateListener;
 
-    public DotsClientServerListener(
-            AwesomeClientSocket clientSocket,
-            DotsLocks locks,
-            LinkedBlockingQueue<Boolean> responseQueue,
-            DotsBoardViewListener boardViewListener,
-            DotsPlayerMovesListener playerMovesListener) {
-
+    public DotsClientServerListener(AwesomeClientSocket clientSocket, DotsLocks locks, LinkedBlockingQueue<Boolean> responseQueue, DotsAndroidCallback screenUpdateListener) {
         this.clientSocket = clientSocket;
         this.locks = locks;
         this.responseQueue = responseQueue;
-        this.boardViewListener = boardViewListener;
-        this.playerMovesListener = playerMovesListener;
-
+        this.screenUpdateListener = screenUpdateListener;
     }
 
     @Override
@@ -209,10 +161,11 @@ class DotsClientServerListener implements Runnable {
 
                 // Read message from server
                 DotsMessage message = DotsSocketHelper.readMessageFromServer(clientSocket);
+                System.out.println(message);
                 this.dealWithMessage(message);
 
             } catch (IOException e) {
-//                e.printStackTrace();
+                e.printStackTrace();
                 System.err.println("Server is closed!");
 
                 break;
@@ -270,8 +223,7 @@ class DotsClientServerListener implements Runnable {
         dotsBoard.printWithIndex();
 
         // update the board on the current device
-        this.boardViewListener.onBoardUpdate(dotsBoard);
-
+        this.screenUpdateListener.onBoardChanged(dotsBoard);
 
     }
 
@@ -280,10 +232,10 @@ class DotsClientServerListener implements Runnable {
      * @param interaction Interactions here should be all valid moves from the other player. This is checked in dealWithMessage()
      */
     private void updateScreenWithInteraction(DotsInteraction interaction) {
-
+/// todo make this call main class doInteraction()
         System.out.println("Interaction received from server: ");
         System.out.println(interaction);
-        this.playerMovesListener.onValidInteraction(interaction);
+        this.screenUpdateListener.onValidPlayerInteraction(interaction);
 
     }
 }

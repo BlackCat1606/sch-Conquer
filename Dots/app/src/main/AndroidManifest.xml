@@ -3,7 +3,7 @@
     package="darrenretinambpcrystalwell.dots" >
     <uses-sdk
         android:minSdkVersion="18" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
 
         android:allowBackup="true"
