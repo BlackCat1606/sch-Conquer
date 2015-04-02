@@ -16,6 +16,8 @@ import java.util.Arrays;
 import Dots.DotsPoint;
 import Model.DotsInteraction;
 import Model.DotsInteractionStates;
+import Sockets.DotsClient;
+import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
 
 
@@ -38,9 +40,7 @@ public class SurfaceViewDots extends RelativeLayout
     private static final float SCREEN_WIDTH_PERCENTAGE = .8f;
     private static final float SCREEN_Y_PERCENTAGE     = .2f;
 
-
-    // TODO set player id dynamically
-    private final int PLAYER_ID = 0;
+    private final int PLAYER_ID;
 //    float x,y;
 
 
@@ -57,8 +57,6 @@ public class SurfaceViewDots extends RelativeLayout
     public void setDotsServerClientParent(DotsServerClientParent dotsServerClientParent) {
         this.dotsServerClientParent = dotsServerClientParent;
     }
-
-
 
     // Variables for dag motion
 //    private static final int               TOUCH_UP      = 0;
@@ -96,6 +94,15 @@ public class SurfaceViewDots extends RelativeLayout
         blackDotView.setVisibility(INVISIBLE);
         setOnTouchListener(this);
 
+
+        if (this.dotsServerClientParent instanceof DotsClient) {
+            this.PLAYER_ID = 1;
+        } else {
+            this.PLAYER_ID = 0;
+        }
+
+        Log.d(TAG, "PlayerID: " + this.PLAYER_ID);
+
         // sets up the previous interaction with an arbitary point
         this.previousInteraction = new DotsInteraction(this.PLAYER_ID, DotsInteractionStates.TOUCH_UP, new DotsPoint(0,0));
     }
@@ -110,22 +117,14 @@ public class SurfaceViewDots extends RelativeLayout
 
     private DotsInteraction previousInteraction;
 
-    private boolean printed = false;
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
+
         DotsInteractionStates interactionState;
-//
-//        if (!printed) {
-//
-//            String correspondingDotPosition = Arrays.deepToString(this.correspondingDotCoordinates);
-//            Log.d(TAG, correspondingDotPosition);
-//            printed = true;
-//        }
 
         int action = event.getAction();
-//        Log.d(TAG, "Touched : " + event.getX() + ", " + event.getY());
-
 
         if (action == MotionEvent.ACTION_DOWN) {
             interactionState = DotsInteractionStates.TOUCH_DOWN;
@@ -140,45 +139,62 @@ public class SurfaceViewDots extends RelativeLayout
             return false;
         }
 
-
+        // Draw the crosshair
         blackDotView.setVisibility(VISIBLE);
         blackDotView.setX(event.getX() - blackDotView.getWidth() / 2);
         blackDotView.setY(event.getY() - blackDotView.getHeight() / 2);
 
-        // return if touch location has not moved far away enough so we reduce calculations
-        if (touchedLocationCloseEnoughToReference(event.getX(), event.getY(), this.previousDetectedDotCoordinate[0], this.previousDetectedDotCoordinate[1])) {
-            return false;
+
+        boolean notActionUp = action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE;
+
+        if (notActionUp) {
+
+            // return if touch location has not moved far away enough so we reduce calculations
+            // We only perform this check if its not a touch up
+            if (touchedLocationCloseEnoughToReference(event.getX(), event.getY(), this.previousDetectedDotCoordinate[0], this.previousDetectedDotCoordinate[1])) {
+                return false;
+            }
         }
-
-
 
 
         DotsPoint closestPoint = dotPointClosestToTouchedLocation(event.getX(), event.getY());
 
         DotsInteraction interaction;
-
-        // this part is to deal with touch up, on a strange area of the screen far away from the dotviews
+//
+//        // this part is to deal with touch up, on a strange area of the screen far away from the dotviews
+//        if (closestPoint == null) {
+//
+//            if (interactionState == DotsInteractionStates.TOUCH_UP) {
+//                // sends a touch up interaction with the DotPoint of the previous interaction
+//                interaction = new DotsInteraction(PLAYER_ID, interactionState, previousInteraction.getDotsPoint());
+//
+//            } else {
+//                return false;
+//            }
+//        } else {
+//        }
+//
+////        else {
+////
+//
         if (closestPoint == null) {
-
-            if (interactionState == DotsInteractionStates.TOUCH_UP) {
-                // sends a touch up interaction with the DotPoint of the previous interaction
-                interaction = new DotsInteraction(PLAYER_ID, interactionState, previousInteraction.getDotsPoint());
-
-            } else {
-                return false;
-            }
-        } else {
-
-            this.previousDetectedDotCoordinate = this.correspondingDotCoordinates[closestPoint.y][closestPoint.x];
-            interaction = new DotsInteraction(PLAYER_ID, interactionState, closestPoint);
-        }
-
-
-        // check if its the same interaction as before, we return to avoid duplicate messages
-        if (interaction.compareWith(this.previousInteraction)) {
             return false;
         }
 
+        this.previousDetectedDotCoordinate = this.correspondingDotCoordinates[closestPoint.y][closestPoint.x];
+        interaction = new DotsInteraction(PLAYER_ID, interactionState, closestPoint);
+//        }
+
+        // if its a touch up, we want to clear the previous detected dot coordinate
+        if (interactionState == DotsInteractionStates.TOUCH_UP) {
+            this.previousDetectedDotCoordinate = new float[] {
+                    (float)9999, (float)9999
+            };
+        }
+
+        if (interaction.compareWith(this.previousInteraction)) {
+            return false;
+        }
 
         this.doPlayerInteraction(interaction);
 
@@ -212,7 +228,6 @@ public class SurfaceViewDots extends RelativeLayout
                 float currentDotViewY = correspondingDotCoordinates[j][i][1];
 
                 if (touchedLocationCloseEnoughToReference(touchedX, touchedY, currentDotViewX, currentDotViewY)) {
-
                     return new DotsPoint(i, j);
                 }
             }
@@ -223,8 +238,6 @@ public class SurfaceViewDots extends RelativeLayout
 
     private boolean touchedLocationCloseEnoughToReference(float touchedX, float touchedY, float refX, float refY) {
 
-
-
         double distance = Math.hypot((touchedX - refX), (touchedY - refY));
 
         if (distance < dotWidth/2.0) {
@@ -233,16 +246,11 @@ public class SurfaceViewDots extends RelativeLayout
             return false;
         }
 
-
     }
 
-
-
-    // Filled by Jiahao
-    // TODO
     public void doPlayerInteraction(DotsInteraction interaction) {
 
-        Log.d("Interaction", interaction.toString());
+
         try {
             this.dotsServerClientParent.doInteraction(interaction);
         } catch (IOException e) {

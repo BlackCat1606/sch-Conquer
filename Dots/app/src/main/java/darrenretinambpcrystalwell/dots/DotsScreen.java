@@ -106,9 +106,6 @@ public class DotsScreen {
             touchList[index] = t;
             dotsLayout.addView(t);
 
-
-
-
             dotsList[index] = d;
             dotsLayout.addView(d);
 
@@ -180,27 +177,9 @@ public class DotsScreen {
                 Dot updatedBoardDot = board[j][i];
                 DotView currentDotView = dotsList[index];
 
-//                String dotColorString;
-//
-//                if (updatedBoardDot.color == DotColor.RED) {
-//                    dotColorString = "red";
-//                } else if (updatedBoardDot.color == DotColor.BLUE) {
-//                    dotColorString = "blue";
-//                } else if (updatedBoardDot.color == DotColor.GREEN) {
-//                    dotColorString = "green";
-//                } else if (updatedBoardDot.color == DotColor.YELLOW) {
-//                    dotColorString = "yellow";
-//                } else {
-//                    System.err.println("Unknown color");
-//                    dotColorString = "unknowncolor";
-//                }
-
-
                 // if the updated board color is different from the current dotView's color
-//                System.out.println("LECOLOR" + currentDotView.getColor());
-//                if (!currentDotView.getColor().equals(dotColorString)) {
-
                 if (!(currentDotView.getColor() == updatedBoardDot.color)) {
+
                     // do fading effects
                     Effects.castFadeOutEffect(currentDotView, FADE_DURATION, false, true);
                     Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
@@ -208,14 +187,10 @@ public class DotsScreen {
                     // sets the color of the drawable
                     currentDotView.setColor(updatedBoardDot.color);
                 }
-
-
-
+                
             }
 
         }
-
-
 
 //        for (int index = 0; index < 36; ++index) {
 //
