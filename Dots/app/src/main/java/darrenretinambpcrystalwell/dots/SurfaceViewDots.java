@@ -85,12 +85,12 @@ public class SurfaceViewDots extends RelativeLayout
         relativeLayout.addView(this);
         blackDotView = new CrossHairView(context);
 
-        blackDotView.setX(dotsXOffset + dotWidth);
-        blackDotView.setY(dotsYOffset + dotWidth);
-        blackDotView.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
-
-        addView(blackDotView);
-        blackDotView.setVisibility(INVISIBLE);
+//        blackDotView.setX(dotsXOffset + dotWidth);
+//        blackDotView.setY(dotsYOffset + dotWidth);
+//        blackDotView.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+//
+//        addView(blackDotView);
+//        blackDotView.setVisibility(INVISIBLE);
         setOnTouchListener(this);
 
 
