@@ -115,16 +115,16 @@ public class SurfaceViewDots extends RelativeLayout
     public boolean onTouch(View v, MotionEvent event) {
 
         DotsInteractionStates interactionState;
-
-        if (!printed) {
-
-            String correspondingDotPosition = Arrays.deepToString(this.correspondingDotCoordinates);
-            Log.d(TAG, correspondingDotPosition);
-            printed = true;
-        }
+//
+//        if (!printed) {
+//
+//            String correspondingDotPosition = Arrays.deepToString(this.correspondingDotCoordinates);
+//            Log.d(TAG, correspondingDotPosition);
+//            printed = true;
+//        }
 
         int action = event.getAction();
-        Log.d(TAG, "Touched : " + event.getX() + ", " + event.getY());
+//        Log.d(TAG, "Touched : " + event.getX() + ", " + event.getY());
 
 
         if (action == MotionEvent.ACTION_DOWN) {
@@ -169,11 +169,7 @@ public class SurfaceViewDots extends RelativeLayout
             }
         } else {
 
-
-
             this.previousDetectedDotCoordinate = this.correspondingDotCoordinates[closestPoint.y][closestPoint.x];
-
-
             interaction = new DotsInteraction(PLAYER_ID, interactionState, closestPoint);
         }
 
