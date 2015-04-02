@@ -37,7 +37,7 @@ public class DotsServer extends DotsServerClientParent{
         this.dotsLocks = dotsGame.getGameLocks();
 
         // init listener thread
-        DotsServerClientListener dotsClientListener = new DotsServerClientListener(this.serverSocket, this.dotsGame);
+        DotsServerClientListener dotsClientListener = new DotsServerClientListener(this.serverSocket, this.dotsGame, this);
         Thread listenerThread = new Thread(dotsClientListener);
 
         // starts thread to listen for messages
@@ -57,6 +57,15 @@ public class DotsServer extends DotsServerClientParent{
 
         boolean result = this.dotsGame.doMove(dotsInteraction);
 
+        // if the interaction came from the client, we have to send a response to the client
+        // that contains the validity of the move
+        if (dotsInteraction.getPlayerId() == 1) {
+
+            DotsMessageResponse dotsMessageResponse = new DotsMessageResponse(result);
+            DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageResponse);
+        }
+
+
         // only proceed if its a valid move
         if (result) {
 
@@ -70,9 +79,15 @@ public class DotsServer extends DotsServerClientParent{
 
             updateScreenForTouchInteractions(dotsInteraction);
 
-            // Sends the valid interaction to the client player so that the client can see the move made by the other player
-            DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
-            DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
+            // Here, we only send screen interactions to the client if the interaction is made by the server player.
+            // The client will draw its onw client player interactions based on the response it receives
+            if (dotsInteraction.getPlayerId() == 0) {
+
+                // Sends the valid interaction to the client player so that the client can see the move made by the other player
+                DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
+                DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
+
+            }
 
 
             // finally, we check if the board needs to be updated
@@ -142,7 +157,7 @@ public class DotsServer extends DotsServerClientParent{
 
 
         // Testing scanner thread
-        Thread scannerThread = new Thread(new DotsTestScannerListener(dotsServer, 0, false));
+        Thread scannerThread = new Thread(new DotsTestScannerListener(dotsServer, 0, true));
 
         // Starts the server
         dotsServer.start();
@@ -161,11 +176,12 @@ class DotsServerClientListener implements Runnable {
 
     private final AwesomeServerSocket serverSocket;
     private final DotsGame dotsGame;
+    private final DotsServerClientParent dotsServerClientParent;
 
-    public DotsServerClientListener(AwesomeServerSocket serverSocket, DotsGame dotsGame) {
+    public DotsServerClientListener(AwesomeServerSocket serverSocket, DotsGame dotsGame, DotsServerClientParent dotsServerClientParent) {
         this.serverSocket = serverSocket;
         this.dotsGame = dotsGame;
-
+        this.dotsServerClientParent = dotsServerClientParent;
     }
 
     @Override
@@ -185,6 +201,8 @@ class DotsServerClientListener implements Runnable {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         System.out.println("Game over!");
@@ -196,7 +214,7 @@ class DotsServerClientListener implements Runnable {
      * @param message
      * @throws IOException
      */
-    private void dealWithMessage(DotsMessage message) throws IOException {
+    private void dealWithMessage(DotsMessage message) throws IOException, InterruptedException {
 
         // Right now, only one case of the message, which is an interaction.
         // The response here would be to respond with a boolean indicating the validity of the interaction
@@ -206,11 +224,16 @@ class DotsServerClientListener implements Runnable {
             DotsInteraction receivedInteraction = ((DotsMessageInteraction) message).getDotsInteraction();
 
             // doMove will automatically obtain a lock and notify the main thread in the dotsGame thread
-            boolean response = this.dotsGame.doMove(receivedInteraction);
+//            boolean response = this.dotsGame.doMove(receivedInteraction);
 
-            // Package and send a response to the client
-            DotsMessageResponse dotsMessageResponse = new DotsMessageResponse(response);
-            DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageResponse);
+//
+//
+//            // Package and send a response to the client
+//            DotsMessageResponse dotsMessageResponse = new DotsMessageResponse(response);
+//            DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageResponse);
+
+            this.dotsServerClientParent.doInteraction(receivedInteraction);
+
 
         } else {
 

@@ -232,7 +232,7 @@ class DotsClientServerListener implements Runnable {
      * @param interaction Interactions here should be all valid moves from the other player. This is checked in dealWithMessage()
      */
     private void updateScreenWithInteraction(DotsInteraction interaction) {
-
+/// todo make this call main class doInteraction()
         System.out.println("Interaction received from server: ");
         System.out.println(interaction);
         this.screenUpdateListener.onValidPlayerInteraction(interaction);

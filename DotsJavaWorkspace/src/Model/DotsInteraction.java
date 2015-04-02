@@ -66,7 +66,7 @@ public class DotsInteraction implements Serializable {
         if (this.playerId != otherInteraction.getPlayerId()) {
             return false;
         }
-        
+
         return true;
     }
 }
