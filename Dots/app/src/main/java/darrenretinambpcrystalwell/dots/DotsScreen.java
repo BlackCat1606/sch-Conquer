@@ -41,7 +41,7 @@ public class DotsScreen {
 
     float                   intersectDistSqThreshold;
 
-    float                   dotWidth;
+    public float                   dotWidth;
 
     DotView                 dotView;
 
@@ -108,8 +108,8 @@ public class DotsScreen {
             dotsList[index] = d;
             dotsLayout.addView(d);
 
-            this.correspondingDotCoordinates[j][i][0] = x;
-            this.correspondingDotCoordinates[j][i][1] = y;
+            this.correspondingDotCoordinates[j][i][0] = (float) (x + dotWidth/2.0);
+            this.correspondingDotCoordinates[j][i][1] = (float) (y + dotWidth/2.0);
 
 
         }

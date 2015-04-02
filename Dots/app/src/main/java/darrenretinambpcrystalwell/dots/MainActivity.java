@@ -32,6 +32,7 @@ public class MainActivity extends ActionBarActivity {
     private DotsServerClientParent dotsServerClientParent;
 
 
+
 // hello
 
     @Override
@@ -135,9 +136,6 @@ public class MainActivity extends ActionBarActivity {
     public void updateScreenButton(View view) throws InterruptedException {
 //        Effects.castFadeOutEffect(dotsScreen.getDotList()[24], 500, false, false);
 //        Effects.castFadeOutEffect(dotsScreen.getDotList()[25], 500, false, false);
-
-
-
     }
 
 
