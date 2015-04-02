@@ -64,6 +64,7 @@ public class DotsLogic {
             return false;
         }
 
+        board.printWithIndex();
         Dot startDot = board.getElement(start);
         Dot endDot = board.getElement(end);
 
@@ -79,7 +80,7 @@ public class DotsLogic {
      */
     public boolean checkMove(ArrayList<DotsPoint> inputMoves) {
 
-        System.out.println(inputMoves);
+        System.out.println("DotsLogic/Checking moves: " + inputMoves);
         for (int i = 0; i < inputMoves.size() - 1; i++) {
 
             DotsPoint startDotsPoint = inputMoves.get(i);

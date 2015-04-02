@@ -71,8 +71,6 @@ public class DotsGame {
      */
     public synchronized boolean doMove(DotsInteraction interaction) {
 
-        // TODO Check for conflicts between two player points
-
         // if conflict detected
         if (conflictIsDetected(interaction)) {
             // invalid move
@@ -92,8 +90,8 @@ public class DotsGame {
 
 
         // we temporarily add the new point to the current list of points and perform a check for adjacency
-
         boolean pointAlreadyRecorded = false;
+
         for (DotsPoint storedPoints : this.playerMoves[player]) {
 
             if (storedPoints.compareWith(dotsPoint)) {
@@ -106,7 +104,6 @@ public class DotsGame {
             this.playerMoves[player].add(dotsPoint);
             boolean moveResult = this.dotsLogic.checkMove(this.playerMoves[player]);
 
-
             // remove the point if it is invalid
             if (!moveResult) {
 
@@ -115,6 +112,8 @@ public class DotsGame {
             }
 
         }
+
+        // if the point is already recorded, just return true
 
         if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
 
@@ -158,7 +157,6 @@ public class DotsGame {
      * @return false if no conflict, true if there is a conflict
      */
     private boolean cascadingConflict(DotsInteraction dotsInteraction) {
-        // TODO cascading conflict
 
         DotsPoint interactionDotsPoint = dotsInteraction.getDotsPoint();
 
@@ -171,6 +169,7 @@ public class DotsGame {
 
                 // interaction point is above the other player point
                 if (otherPlayerDotsPoint.y > interactionDotsPoint.y) {
+                    System.out.println("DotsGame: Cascading conflict detected");
                     return true;
                 }
             }
@@ -196,6 +195,7 @@ public class DotsGame {
             for (DotsPoint otherPlayerDotsPoint : otherPlayerDotsPoints) {
 
                 if (otherPlayerDotsPoint.compareWith(dotsInteraction.getDotsPoint())) {
+                    System.out.println("DotsGame: Same point conflict detected");
                     return true;
                 }
 
@@ -208,7 +208,7 @@ public class DotsGame {
     }
 
     /**
-     * Returns an arraylist of points held by the other player
+     * Returns an arrayList of points held by the other player
      * @param player current player
      * @return
      */

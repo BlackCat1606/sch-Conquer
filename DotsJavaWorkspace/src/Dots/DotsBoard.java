@@ -42,9 +42,7 @@ public class DotsBoard implements Serializable {
             for (int j = 0; j < currentRow.length; j++) {
                 currentRow[j] = new Dot();
             }
-
         }
-
     }
 
     /**

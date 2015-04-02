@@ -54,6 +54,7 @@ public class DotsServer extends DotsServerClientParent{
 
     @Override
     public void doInteraction(DotsInteraction dotsInteraction) throws IOException, InterruptedException {
+        System.out.println("Doing Interaction: " + dotsInteraction);
 
         boolean result = this.dotsGame.doMove(dotsInteraction);
 
