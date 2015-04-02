@@ -26,6 +26,7 @@ public class DotsScreen {
     private float              x, y;
 
     DotView[] dotsList = new DotView[36];
+    DotView[] touchList = new DotView[36];
     private BlueDotView      blue;
     private RedDotView       red;
     private GreenDotView     green;
@@ -84,6 +85,7 @@ public class DotsScreen {
             int j = index % 6;
 
             DotView d = new RedDotView(context);
+            DotView t = new TouchedDot(context);
 
             float x = dotsXOffset + j * dotWidth;
             float y = dotsYOffset + i * dotWidth;
@@ -92,6 +94,16 @@ public class DotsScreen {
             d.setX(x);
             d.setY(y);
             d.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+
+            t.setX(x);
+            t.setY(y);
+            t.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+
+            touchList[index] = t;
+            dotsLayout.addView(t);
+
+
+
 
             dotsList[index] = d;
             dotsLayout.addView(d);
@@ -188,6 +200,8 @@ public class DotsScreen {
     public DotView[] getDotList() {
         return dotsList;
     }
+
+    public DotView[] getTouchedList() { return touchList;}
 }
 
 

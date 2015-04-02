@@ -25,23 +25,23 @@ class DotView extends ImageView {
     private Drawable green;
     private Drawable blue;
     private Drawable yellow;
-    private Drawable black;
     private Drawable crosshair;
-    private Drawable cleardot;
+    private Drawable toucheddot;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public DotView(Context context) {
         super(context);
         Drawable a = getDrawable(R.drawable.bluedot);
         setBackground(a);
-        red = getDrawable(R.drawable.reddot);
-        blue = getDrawable(R.drawable.bluedot);
-        green = getDrawable(R.drawable.greendot);
-        yellow = getDrawable(R.drawable.yellowdot);
-//        black = getDrawable(R.drawable.dotcopy);
-//        black.setAlpha(150);
-        crosshair = getDrawable(R.drawable.crosshair);
-//        cleardot = getDrawable(R.drawable.cleareddot);
+
+        red         = getDrawable(R.drawable.reddot);
+        blue        = getDrawable(R.drawable.bluedot);
+        green       = getDrawable(R.drawable.greendot);
+        yellow      = getDrawable(R.drawable.yellowdot);
+        toucheddot  = getDrawable(R.drawable.toucheddot);
+        toucheddot.setAlpha(150);
+
+        crosshair   = getDrawable(R.drawable.crosshair);
     }
     public float getSqDist(float x, float y) {
         float a = x - getX() + getHeight() * .5f;
@@ -50,7 +50,6 @@ class DotView extends ImageView {
     }
 
     public Drawable getDrawable(int id){
-//        int resID = getResources().getIdentifier(id , "drawable", getContext().getPackageName());
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inPreferredConfig = Bitmap.Config.RGB_565;
         opt.inPurgeable = true;
@@ -71,16 +70,11 @@ class DotView extends ImageView {
     public void setRed(){
                 setDrawable(red);
     }
-    public void setGreen(){
-        setDrawable(green);
-    }
-    public void setBlue(){
-        setDrawable(blue);
-    }
+    public void setGreen(){setDrawable(green);}
+    public void setBlue(){setDrawable(blue);}
     public void setYellow(){setDrawable(yellow);}
-    public void setBlack(){setDrawable(black);}
     public void setCrosshair(){setDrawable(crosshair);}
-    public void setClearDot(){setDrawable(cleardot);}
+    public void setTouchedDot(){setDrawable(toucheddot);}
 
 
     public void setColor(String color){this.color = color;}
@@ -124,15 +118,7 @@ class YellowDotView extends DotView {
     }
 }
 
-//class BlackDotView extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public BlackDotView(Context context) {
-//        super(context);
-//        super.setBlack();
-//        super.setColor("black");
-//    }
-//
-//}
+
 
 class CrossHairView extends DotView {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -143,12 +129,11 @@ class CrossHairView extends DotView {
     }
 }
 
-//class ClearDot extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public ClearDot(Context context) {
-//        super(context);
-//        super.setCrosshair();
-//        super.setColor("cleardot");
-//    }
-//}
-
+class TouchedDot extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public TouchedDot(Context context) {
+        super(context);
+        super.setTouchedDot();
+        super.setColor("toucheddot");
+    }
+}

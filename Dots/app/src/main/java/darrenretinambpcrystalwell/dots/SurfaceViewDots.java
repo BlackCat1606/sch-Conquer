@@ -78,10 +78,9 @@ public class SurfaceViewDots extends RelativeLayout
         float dotsXOffset = (1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * ScreenDimensions.getWidth(context);
         float dotsYOffset = SCREEN_Y_PERCENTAGE * ScreenDimensions.getHeight(context);
         this.dotWidth = SCREEN_WIDTH_PERCENTAGE * ScreenDimensions.getWidth(context) / 6.f;
-        LayoutParams layoutParams = new LayoutParams(ScreenDimensions.getWidth(context)-(int)(dotsXOffset),
-                ScreenDimensions.getHeight(context)-(int)(8*dotsXOffset));
-        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        LayoutParams layoutParams = new LayoutParams(ScreenDimensions.getWidth(context),
+                ScreenDimensions.getHeight(context));
+
         setLayoutParams(layoutParams);
 
         relativeLayout.addView(this);
@@ -229,5 +228,6 @@ public class SurfaceViewDots extends RelativeLayout
 
 
     }
+
 
 }
