@@ -39,12 +39,21 @@ class DotView extends ImageView {
         Drawable a = getDrawable(R.drawable.bluedot);
         setBackground(a);
 
+<<<<<<< HEAD
         red = getDrawable(R.drawable.reddot);
         blue = getDrawable(R.drawable.bluedot);
         green = getDrawable(R.drawable.greendot);
         yellow = getDrawable(R.drawable.yellowdot);
         toucheddot = getDrawable(R.drawable.toucheddot);
         toucheddot.setAlpha(150);
+=======
+        red         = getDrawable(R.drawable.reddot);
+        blue        = getDrawable(R.drawable.bluedot);
+        green       = getDrawable(R.drawable.greendot);
+        yellow      = getDrawable(R.drawable.yellowdot);
+        toucheddot  = getDrawable(R.drawable.toucheddot);
+        toucheddot.setAlpha(220);
+>>>>>>> 8a54056f182b68ee40326fe9453e7e16238f770b
 
         crosshair = getDrawable(R.drawable.crosshair);
     }

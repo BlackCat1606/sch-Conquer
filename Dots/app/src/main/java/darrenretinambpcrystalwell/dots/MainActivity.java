@@ -33,7 +33,6 @@ public class MainActivity extends ActionBarActivity {
 
 
 
-// hello
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +52,6 @@ public class MainActivity extends ActionBarActivity {
         dotsScreen = new DotsScreen(rootLayout, this);
         //dotView = new DotView(this);
         surfaceViewDots = new SurfaceViewDots(this, rootLayout);
-//        GifWebView view = new GifWebView(this, "/Users/DarrenRetinaMBP/AndroidStudioProjects/dotsMultiplayer/Dots/app/src/main/assets/my_animated_gif.gif");
-//        setContentView(view);
 
         this.dotsServerClientParent = new DotsServer(4321);
 
@@ -66,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
         this.dotsServerClientParent.setAndroidCallback(new DotsAndroidCallback() {
             @Override
             public void onValidPlayerInteraction(DotsInteraction dotsInteraction) {
-
+                surfaceViewDots.setTouchedPath(dotsInteraction, dotsScreen);
             }
 
             @Override
