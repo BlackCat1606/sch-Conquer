@@ -33,6 +33,8 @@ class DotView extends ImageView {
     private Drawable crosshair;
     private Drawable toucheddot;
     private Drawable purple;
+    private Drawable one;
+    private Drawable two;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public DotView(Context context) {
@@ -46,8 +48,12 @@ class DotView extends ImageView {
         yellow      = getDrawable(R.drawable.yellowdot);
         purple      = getDrawable(R.drawable.purpledot);
         toucheddot  = getDrawable(R.drawable.toucheddot);
+        one         = getDrawable(R.drawable.onetoucheddot);
+        two         = getDrawable(R.drawable.twotoucheddot);
 
         toucheddot.setAlpha(220);
+        one.setAlpha(220);
+        two.setAlpha(220);
 
         crosshair = getDrawable(R.drawable.crosshair);
     }
@@ -94,9 +100,9 @@ class DotView extends ImageView {
             case YELLOW:
                 setYellow();
                 break;
-            case PURPLE:
-                setPurple();
-                break;
+//            case PURPLE:
+//                setPurple();
+//                break;
             default:
                 System.err.println("Unknown color");
                 setDrawable(red);
@@ -128,9 +134,17 @@ class DotView extends ImageView {
         setDrawable(yellow);
     }
 
-    public void setPurple() {
-        this.color = DotColor.PURPLE;
-        setDrawable(purple);
+//    public void setPurple() {
+//        this.color = DotColor.PURPLE;
+//        setDrawable(purple);
+//    }
+
+    public void setOne() {
+        setDrawable(one);
+    }
+
+    public void setTwo() {
+        setDrawable(two);
     }
 
     public void setCrosshair() {
@@ -144,6 +158,8 @@ class DotView extends ImageView {
         this.color = DotColor.RED;
         setDrawable(toucheddot);
     }
+
+
 
 
 //    public void setColor(String color) {
@@ -220,5 +236,21 @@ class PurpleDotView extends DotView {
     public PurpleDotView(Context context) {
         super(context);
         super.setTouchedDot();
+    }
+}
+
+class OneDotView extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public OneDotView(Context context) {
+        super(context);
+        super.setOne();
+    }
+}
+
+class TwoDotView extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public TwoDotView(Context context) {
+        super(context);
+        super.setTwo();
     }
 }

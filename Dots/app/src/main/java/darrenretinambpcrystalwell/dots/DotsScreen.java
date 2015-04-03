@@ -124,8 +124,8 @@ public class DotsScreen {
     public void updateScreen(Dot[][] board) {
         Log.d("Screen", Arrays.deepToString(board));
 
-        final int FADE_DURATION = 100;
-        final int END_ALPHA = 1;
+        final int FADE_DURATION = 1000;
+        final int END_ALPHA = 0;
 
         for (int j = 0; j < 6; j++) {
 
@@ -140,11 +140,14 @@ public class DotsScreen {
                 if (!(currentDotView.getColor() == updatedBoardDot.color)) {
 
                     // do fading effects
-                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, false, true);
+                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
                     Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
+
 
                     // sets the color of the drawable
                     currentDotView.setColor(updatedBoardDot.color);
+
+
                 }
                 
             }
