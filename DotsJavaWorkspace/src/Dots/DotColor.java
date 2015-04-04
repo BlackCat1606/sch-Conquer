@@ -12,7 +12,7 @@ import java.util.Random;
  */
 public enum DotColor {
 
-    RED, BLUE, YELLOW, GREEN;
+    RED, BLUE, YELLOW, GREEN, PURPLE;
 
     /**
      * Override to allow nice single character printing
@@ -21,11 +21,18 @@ public enum DotColor {
     @Override
     public String toString() {
         switch(this) {
-            case RED: return "R";
-            case BLUE: return "B";
-            case YELLOW: return "Y";
-            case GREEN: return "G";
-            default: throw new IllegalArgumentException();
+            case RED:
+                return "R";
+            case BLUE:
+                return "B";
+            case YELLOW:
+                return "Y";
+            case GREEN:
+                return "G";
+            case PURPLE:
+                return "P";
+            default:
+                throw new IllegalArgumentException();
         }
     }
 

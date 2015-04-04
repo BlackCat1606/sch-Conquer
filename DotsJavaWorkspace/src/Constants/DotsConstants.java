@@ -12,7 +12,7 @@ public class DotsConstants {
 
     // Constants to be used on the same computer for debugging
     public static final int CLIENT_PORT = 4321;
-//    public static final String SERVER_ADDRESS = "127.0.0.1";
-public static final String SERVER_ADDRESS = "10.12.17.172";
+    public static final String SERVER_ADDRESS = "127.0.0.1";
+//public static final String SERVER_ADDRESS = "10.12.17.172";
 
 }

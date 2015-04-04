@@ -11,15 +11,15 @@ import java.util.ArrayList;
 public class DotsBoard implements Serializable {
 
     // TODO swap comments here to use default randomised board
-//    private Dot[][] boardArray;
-    private Dot[][] boardArray = {
-            {new Dot(DotColor.RED), new Dot(DotColor.YELLOW), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.BLUE), new Dot(DotColor.RED)},
-            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.GREEN), new Dot(DotColor.GREEN), new Dot(DotColor.YELLOW)},
-            {new Dot(DotColor.GREEN), new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.GREEN), new Dot(DotColor.RED)},
-            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.RED)},
-            {new Dot(DotColor.GREEN), new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.BLUE)},
-            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.RED), new Dot(DotColor.RED), new Dot(DotColor.GREEN)},
-    };
+    private Dot[][] boardArray;
+//    private Dot[][] boardArray = {
+//            {new Dot(DotColor.RED), new Dot(DotColor.YELLOW), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.BLUE), new Dot(DotColor.RED)},
+//            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.GREEN), new Dot(DotColor.GREEN), new Dot(DotColor.YELLOW)},
+//            {new Dot(DotColor.GREEN), new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.GREEN), new Dot(DotColor.RED)},
+//            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.RED)},
+//            {new Dot(DotColor.GREEN), new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.BLUE)},
+//            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.RED), new Dot(DotColor.RED), new Dot(DotColor.GREEN)},
+//    };
 
     /**
      * Designated initialize that sets up a n x n board
@@ -28,7 +28,7 @@ public class DotsBoard implements Serializable {
      */
     public DotsBoard(int n) {
         // Uncomment this to initialize board properly
-//        initializeBoard(n);
+        initializeBoard(n);
     }
 
     /**
