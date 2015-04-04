@@ -19,6 +19,7 @@ import AndroidCallback.DotsAndroidCallback;
 import Dots.DotsBoard;
 import Dots.DotsGame;
 import Model.DotsInteraction;
+import Sockets.DotsClient;
 import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
 
@@ -30,8 +31,7 @@ public class MainActivity extends ActionBarActivity {
     private SurfaceViewDots surfaceViewDots;
 //
     private DotsServerClientParent dotsServerClientParent;
-
-
+    private DotsAndroidCallback androidCallback;
 
 
     @Override
@@ -45,46 +45,8 @@ public class MainActivity extends ActionBarActivity {
 //        gifRun.LoadGiff(v, this, R.drawable.my_animated_gif);
 
 
-        RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
 
 
-
-        dotsScreen = new DotsScreen(rootLayout, this);
-        //dotView = new DotView(this);
-        surfaceViewDots = new SurfaceViewDots(this, rootLayout);
-
-        this.dotsServerClientParent = new DotsServer(4321);
-
-        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
-        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
-
-
-
-        this.dotsServerClientParent.setAndroidCallback(new DotsAndroidCallback() {
-            @Override
-            public void onValidPlayerInteraction(DotsInteraction dotsInteraction) {
-                surfaceViewDots.setTouchedPath(dotsInteraction, dotsScreen);
-            }
-
-            @Override
-            public void onBoardChanged(DotsBoard dotsBoard) {
-                dotsScreen.updateScreen(dotsBoard.getBoardArray());
-            }
-
-            @Override
-            public void onGameOver() {
-
-            }
-        });
-
-        Button button = new Button(this.getApplicationContext());
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // update text
-            }
-        });
 
 
         // TODO Android does not like running network requests on the main thread.
@@ -93,8 +55,89 @@ public class MainActivity extends ActionBarActivity {
         StrictMode.setThreadPolicy(policy);
 
 
+        Button startServerButton = (Button) this.findViewById(R.id.startServerButton);
+        Button startClientButton = (Button) this.findViewById(R.id.startClientButton);
+
+        startServerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startServerOrClient(0);
+            }
+        });
+
+        startClientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startServerOrClient(1);
+            }
+        });
+    }
+
+
+
+    /**
+     * Starts a server or client
+     * @param playerId 0 for server, 1 for client
+     */
+    private void startServerOrClient(int playerId) {
+
+        final int PORT = 4321;
+        final String SERVER_ADDRESS = "10.12.20.13";
+
+        if (playerId == 0) {
+
+            this.dotsServerClientParent = new DotsServer(PORT);
+        } else if (playerId == 1) {
+
+            this.dotsServerClientParent = new DotsClient(SERVER_ADDRESS, PORT);
+        }
+
+
+        RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
+        this.dotsScreen = new DotsScreen(rootLayout, this);
+        this.surfaceViewDots = new SurfaceViewDots(this, rootLayout);
+
+        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
+        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
+
+
+        this.androidCallback = new DotsAndroidCallback() {
+            @Override
+            public void onValidPlayerInteraction(final DotsInteraction dotsInteraction) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        surfaceViewDots.setTouchedPath(dotsInteraction, dotsScreen);
+                    }
+                });
+            }
+
+            @Override
+            public void onBoardChanged(final DotsBoard dotsBoard) {
+                dotsScreen.updateScreen(dotsBoard.getBoardArray());
+
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        dotsScreen.updateScreen(dotsBoard.getBoardArray());
+//                    }
+//                });
+            }
+
+            @Override
+            public void onGameOver() {
+
+            }
+        };
+
+
+        this.dotsServerClientParent.setAndroidCallback(this.androidCallback);
+
+
+
         try {
             this.dotsServerClientParent.start();
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -102,7 +145,6 @@ public class MainActivity extends ActionBarActivity {
         } catch (InstantiationException e) {
             e.printStackTrace();
         }
-
 
     }
 
