@@ -2,8 +2,10 @@ package darrenretinambpcrystalwell.dots;
 
 
 import android.os.StrictMode;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
@@ -22,9 +24,13 @@ import Model.DotsInteraction;
 import Sockets.DotsClient;
 import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
+import darrenretinambpcrystalwell.Fragments.ConnectionFragment;
+import darrenretinambpcrystalwell.Fragments.GameFragment;
+import darrenretinambpcrystalwell.Fragments.MainFragment;
 
 
 public class MainActivity extends ActionBarActivity {
+    private final String TAG = "Main Activity";
 
     private DotsScreen      dotsScreen;
     private DotView         dotView;
@@ -33,128 +39,108 @@ public class MainActivity extends ActionBarActivity {
     private DotsServerClientParent dotsServerClientParent;
     private DotsAndroidCallback androidCallback;
 
+    private Fragment[] fragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SurfaceView v = (SurfaceView) findViewById(R.id.surfaceView);
-
-//        GifRun gifRun = new GifRun(this);
-//
-//        gifRun.LoadGiff(v, this, R.drawable.my_animated_gif);
 
 
-
-
-
-
-        // TODO Android does not like running network requests on the main thread.
+        //   TODO Android does not like running network requests on the main thread.
         // This is a temporary workaaround.
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
 
-        Button startServerButton = (Button) this.findViewById(R.id.startServerButton);
-        Button startClientButton = (Button) this.findViewById(R.id.startClientButton);
 
-        startServerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startServerOrClient(0);
-            }
-        });
 
-        startClientButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startServerOrClient(1);
-            }
-        });
+        setUpFragment(savedInstanceState);
+
+
+
+
+
+
+
+
+
     }
 
 
+    private void setUpFragment(Bundle savedInstanceState) {
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (findViewById(R.id.root_layout) != null) {
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
+            }
+
+            // Create a new Fragment to be placed in the activity layout
+            Fragment firstFragment = this.getFragment(0);
+
+            // In case this activity was started with special instructions from an
+            // Intent, pass the Intent's extras to the fragment as arguments
+            firstFragment.setArguments(getIntent().getExtras());
+
+            // Add the fragment to the 'fragment_container' FrameLayout
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.root_layout, firstFragment).commit();
+        }
+    }
 
     /**
-     * Starts a server or client
-     * @param playerId 0 for server, 1 for client
+     * Get fragment with no arguments
+     * @param i
+     * @return
      */
-    private void startServerOrClient(int playerId) {
-
-        final int PORT = 4321;
-//        final String SERVER_ADDRESS = "10.12.20.13";
-
-// mac
-//        final String SERVER_ADDRESS = "192.168.1.13";
-
-        // note
-
-        final String SERVER_ADDRESS = "192.168.1.4";
-
-        if (playerId == 0) {
-
-            this.dotsServerClientParent = new DotsServer(PORT);
-        } else if (playerId == 1) {
-
-            this.dotsServerClientParent = new DotsClient(SERVER_ADDRESS, PORT);
-        }
+    public Fragment getFragment(int i) {
 
 
-        RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
-        this.dotsScreen = new DotsScreen(rootLayout, this);
-        this.surfaceViewDots = new SurfaceViewDots(this, rootLayout, this.dotsServerClientParent, this.dotsScreen.getCorrespondingDotCoordinates());
-
-//        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
-//        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
-
-
-        this.androidCallback = new DotsAndroidCallback() {
-            @Override
-            public void onValidPlayerInteraction(final DotsInteraction dotsInteraction) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        surfaceViewDots.setTouchedPath(dotsInteraction, dotsScreen);
-                    }
-                });
-            }
-
-            @Override
-            public void onBoardChanged(final DotsBoard dotsBoard) {
-//                dotsScreen.updateScreen(dotsBoard.getBoardArray());
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        dotsScreen.updateScreen(dotsBoard.getBoardArray());
-                    }
-                });
-            }
-
-            @Override
-            public void onGameOver() {
-
-            }
-        };
-
-
-        this.dotsServerClientParent.setAndroidCallback(this.androidCallback);
-
-
-
-        try {
-            this.dotsServerClientParent.start();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-
+        return this.getFragment(i, new String[2]);
     }
 
+    public Fragment getFragment(int i, String args[]) {
+
+        /**
+         * 0 Main fragment
+         * 1 Connection fragment
+         * 2 Game fragment
+         *
+         */
+
+        if (this.fragments == null) {
+            this.fragments = new Fragment[DotsAndroidConstants.NO_OF_FRAGMENTS];
+        }
+
+        if (this.fragments[i] == null) {
+
+            Fragment fragmentToCreate;
+            if (i == 0) {
+                fragmentToCreate = MainFragment.newInstance(args[0], args[1]);
+            } else if (i == 1) {
+                fragmentToCreate = ConnectionFragment.newInstance(args[0], args[1]);
+            } else if (i == 2) {
+                fragmentToCreate = GameFragment.newInstance(args[0], args[1]);
+            } else {
+                Log.e(TAG, "Unknown Fragment id");
+                return null;
+            }
+
+
+            this.fragments[i] = fragmentToCreate;
+
+
+        }
+
+        return this.fragments[i];
+
+
+    }
 
 
     @Override

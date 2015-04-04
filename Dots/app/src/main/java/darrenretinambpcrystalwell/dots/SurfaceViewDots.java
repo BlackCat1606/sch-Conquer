@@ -118,7 +118,7 @@ public class SurfaceViewDots extends RelativeLayout
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-
+        //Todo fix this to fix the touch and drag over invalid tiles problem
 
         DotsInteractionStates interactionState;
 

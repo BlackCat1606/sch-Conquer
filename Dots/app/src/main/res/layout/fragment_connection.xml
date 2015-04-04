@@ -1,0 +1,45 @@
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="darrenretinambpcrystalwell.Fragments.ConnectionFragment">
+
+
+
+    <ImageView
+        android:layout_width="503dp"
+        android:layout_height="743dp"
+        android:id="@+id/imageView3"
+        android:src="@drawable/lockonfaded"
+        android:layout_x="-72dp"
+        android:layout_y="-71dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/ipAddress"
+        android:layout_gravity="center"
+        android:layout_x="80dp"
+        android:layout_y="313dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="startServer"
+            android:id="@+id/startServerButton" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="StartClient"
+            android:id="@+id/startClientButton" />
+
+
+    </LinearLayout>
+</AbsoluteLayout>
