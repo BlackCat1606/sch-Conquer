@@ -32,10 +32,10 @@ public class DotsScreen {
 
     DotView[] dotsList = new DotView[36];
     DotView[] touchList = new DotView[36];
-    private BlueDotView      blue;
-    private RedDotView       red;
-    private GreenDotView     green;
-    private YellowDotView    yellow;
+//    private BlueDotView      blue;
+//    private RedDotView       red;
+//    private GreenDotView     green;
+//    private YellowDotView    yellow;
 
     // Standard Variables call
     RelativeLayout          relativeLayout;
@@ -47,7 +47,7 @@ public class DotsScreen {
 
     public float                   dotWidth;
 
-    DotView                 dotView;
+//    DotView                 dotView;
 
     private float[][][] correspondingDotCoordinates;
 
@@ -59,12 +59,12 @@ public class DotsScreen {
     public DotsScreen(RelativeLayout relativeLayout, Context context) {
         this.context =        context;
         this.relativeLayout = relativeLayout;
-        this.dotView = new    DotView(context);
-
-        red    = new          RedDotView(context);
-        blue   = new          BlueDotView(context);
-        green  = new          GreenDotView(context);
-        yellow = new          YellowDotView(context);
+//        this.dotView = new    DotView(context);
+//
+//        red    = new          RedDotView(context);
+//        blue   = new          BlueDotView(context);
+//        green  = new          GreenDotView(context);
+//        yellow = new          YellowDotView(context);
 
         this.screenWidth =  ScreenDimensions.getWidth(context);
         this.screenHeight = ScreenDimensions.getHeight(context);
@@ -190,9 +190,9 @@ public class DotsScreen {
 //        }
     }
 
-    public DotView[] getDotList() {
-        return dotsList;
-    }
+//    public DotView[] getDotList() {
+//        return dotsList;
+//    }
 
     public DotView[] getTouchedList() { return touchList;}
 }

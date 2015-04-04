@@ -100,9 +100,9 @@ class DotView extends ImageView {
             case YELLOW:
                 setYellow();
                 break;
-//            case PURPLE:
-//                setPurple();
-//                break;
+            case PURPLE:
+                setPurple();
+                break;
             default:
                 System.err.println("Unknown color");
                 setDrawable(red);
@@ -134,10 +134,10 @@ class DotView extends ImageView {
         setDrawable(yellow);
     }
 
-//    public void setPurple() {
-//        this.color = DotColor.PURPLE;
-//        setDrawable(purple);
-//    }
+    public void setPurple() {
+        this.color = DotColor.PURPLE;
+        setDrawable(purple);
+    }
 
     public void setOne() {
         setDrawable(one);
