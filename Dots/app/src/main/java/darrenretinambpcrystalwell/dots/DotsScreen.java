@@ -1,5 +1,6 @@
 package darrenretinambpcrystalwell.dots;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.media.effect.Effect;
@@ -134,7 +135,7 @@ public class DotsScreen {
                 int index = j*6 + i;
 
                 Dot updatedBoardDot = board[j][i];
-                DotView currentDotView = dotsList[index];
+                final DotView currentDotView = dotsList[index];
 
                 // if the updated board color is different from the current dotView's color
                 if (!(currentDotView.getColor() == updatedBoardDot.color)) {
@@ -143,6 +144,15 @@ public class DotsScreen {
 //                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
 //                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
 
+
+                    ((Activity)context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
+                            Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
+
+                        }
+                    });
 
                     // sets the color of the drawable
                     currentDotView.setColor(updatedBoardDot.color);
