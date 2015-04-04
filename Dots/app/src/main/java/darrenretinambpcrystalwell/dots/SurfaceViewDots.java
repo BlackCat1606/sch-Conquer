@@ -42,36 +42,41 @@ public class SurfaceViewDots extends RelativeLayout
     private static final float SCREEN_Y_PERCENTAGE     = .2f;
 
 
-    private final int PLAYER_ID;
-
-//    float x,y;
-
-
-
-    private float[][][] correspondingDotCoordinates;
-    private DotsServerClientParent dotsServerClientParent;
-
-
-    public void setCorrespondingDotCoordinates(float[][][] correspondingDotCoordinates) {
-        this.correspondingDotCoordinates = correspondingDotCoordinates;
-    }
-
-
-    public void setDotsServerClientParent(DotsServerClientParent dotsServerClientParent) {
-        this.dotsServerClientParent = dotsServerClientParent;
-    }
-
-    private static final Bitmap BLANK_BITMAP
-            = Bitmap.createBitmap(1,1, Bitmap.Config.ARGB_8888);
-
     CrossHairView   blackDotView;
 
     float           dotWidth;
 
-    public SurfaceViewDots(Context context, RelativeLayout relativeLayout) {
+    private final int PLAYER_ID;
+
+//    float x,y;
+
+    private final float[][][] correspondingDotCoordinates;
+    private final DotsServerClientParent dotsServerClientParent;
+
+
+//    public void setCorrespondingDotCoordinates(float[][][] correspondingDotCoordinates) {
+//        this.correspondingDotCoordinates = correspondingDotCoordinates;
+//    }
+//
+//
+//    public void setDotsServerClientParent(DotsServerClientParent dotsServerClientParent) {
+//        this.dotsServerClientParent = dotsServerClientParent;
+//    }
+
+    private static final Bitmap BLANK_BITMAP
+            = Bitmap.createBitmap(1,1, Bitmap.Config.ARGB_8888);
+
+
+    public SurfaceViewDots(
+            Context context,
+            RelativeLayout relativeLayout,
+            DotsServerClientParent dotsServerClientParent,
+            float[][][] correspondingDotCoordinates) {
         super(context);
         this.context              = context;
         this.relativeLayout       = relativeLayout;
+        this.dotsServerClientParent = dotsServerClientParent;
+        this.correspondingDotCoordinates = correspondingDotCoordinates;
 
 
         float dotsXOffset         = (1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * ScreenDimensions.getWidth(context);
@@ -253,6 +258,7 @@ public class SurfaceViewDots extends RelativeLayout
     public void doPlayerInteraction(DotsInteraction interaction) {
 
         try {
+            Log.d(TAG, interaction.toString());
             this.dotsServerClientParent.doInteraction(interaction);
         } catch (IOException e) {
             e.printStackTrace();

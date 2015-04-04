@@ -82,7 +82,14 @@ public class MainActivity extends ActionBarActivity {
     private void startServerOrClient(int playerId) {
 
         final int PORT = 4321;
-        final String SERVER_ADDRESS = "10.12.20.13";
+//        final String SERVER_ADDRESS = "10.12.20.13";
+
+// mac
+//        final String SERVER_ADDRESS = "192.168.1.13";
+
+        // note
+
+        final String SERVER_ADDRESS = "192.168.1.4";
 
         if (playerId == 0) {
 
@@ -95,10 +102,10 @@ public class MainActivity extends ActionBarActivity {
 
         RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         this.dotsScreen = new DotsScreen(rootLayout, this);
-        this.surfaceViewDots = new SurfaceViewDots(this, rootLayout);
+        this.surfaceViewDots = new SurfaceViewDots(this, rootLayout, this.dotsServerClientParent, this.dotsScreen.getCorrespondingDotCoordinates());
 
-        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
-        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
+//        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
+//        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
 
 
         this.androidCallback = new DotsAndroidCallback() {
@@ -114,14 +121,14 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void onBoardChanged(final DotsBoard dotsBoard) {
-                dotsScreen.updateScreen(dotsBoard.getBoardArray());
+//                dotsScreen.updateScreen(dotsBoard.getBoardArray());
 
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        dotsScreen.updateScreen(dotsBoard.getBoardArray());
-//                    }
-//                });
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dotsScreen.updateScreen(dotsBoard.getBoardArray());
+                    }
+                });
             }
 
             @Override

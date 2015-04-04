@@ -140,8 +140,8 @@ public class DotsScreen {
                 if (!(currentDotView.getColor() == updatedBoardDot.color)) {
 
                     // do fading effects
-                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
-                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
+//                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
+//                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
 
 
                     // sets the color of the drawable
