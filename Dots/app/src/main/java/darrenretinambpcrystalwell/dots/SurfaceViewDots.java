@@ -85,12 +85,12 @@ public class SurfaceViewDots extends RelativeLayout
         relativeLayout.addView(this);
         blackDotView = new CrossHairView(context);
 
-        blackDotView.setX(dotsXOffset + dotWidth);
-        blackDotView.setY(dotsYOffset + dotWidth);
-        blackDotView.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
-
-        addView(blackDotView);
-        blackDotView.setVisibility(INVISIBLE);
+//        blackDotView.setX(dotsXOffset + dotWidth);
+//        blackDotView.setY(dotsYOffset + dotWidth);
+//        blackDotView.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
+//
+//        addView(blackDotView);
+//        blackDotView.setVisibility(INVISIBLE);
         setOnTouchListener(this);
 
 
@@ -265,14 +265,28 @@ public class SurfaceViewDots extends RelativeLayout
 
     // Filled by Darren
     public void setTouchedPath(DotsInteraction interaction, DotsScreen dotsScreen) {
-        if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
-            int index = interaction.getDotsPoint().y*6 + interaction.getDotsPoint().x;
-            dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
-        } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
-            for (DotView touched : dotsScreen.getTouchedList()) {
-                touched.setVisibility(INVISIBLE);
+        if (interaction.getPlayerId() == 0) {
+            if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
+                int index = interaction.getDotsPoint().y*6 + interaction.getDotsPoint().x;
+                dotsScreen.getTouchedList()[index].setOne();
+                dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
+            } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
+                for (DotView touched : dotsScreen.getTouchedList()) {
+                    touched.setVisibility(INVISIBLE);
+                }
+            }
+        } else if (interaction.getPlayerId() == 1) {
+            if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
+                int index = interaction.getDotsPoint().y*6 + interaction.getDotsPoint().x;
+                dotsScreen.getTouchedList()[index].setTwo();
+                dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
+            } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
+                for (DotView touched : dotsScreen.getTouchedList()) {
+                    touched.setVisibility(INVISIBLE);
+                }
             }
         }
+
     }
 
 
