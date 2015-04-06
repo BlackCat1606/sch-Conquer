@@ -16,4 +16,9 @@ public class DotsMessageResponse implements DotsMessage {
     public boolean getResponse() {
         return response;
     }
+
+    @Override
+    public String toString() {
+        return "Response :" + response;
+    }
 }

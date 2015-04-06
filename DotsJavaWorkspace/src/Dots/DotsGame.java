@@ -56,6 +56,8 @@ public class DotsGame {
         return dotsLocks;
     }
 
+
+
     /**
      * The primary method that we will call on our game, to update the game based on
      * an input DotsInteraction
@@ -71,6 +73,8 @@ public class DotsGame {
      */
     public synchronized boolean doMove(DotsInteraction interaction) {
 
+        // Todo shouldnt be escaping here
+        // Todo fix touch below reserved dot as well
         // if conflict detected
         if (conflictIsDetected(interaction)) {
             // invalid move
@@ -88,10 +92,8 @@ public class DotsGame {
             this.playerMoves[player] = new ArrayList<DotsPoint>();
         }
 
-
-        // we temporarily add the new point to the current list of points and perform a check for adjacency
+        // Check first to determine if the point has already been recorded
         boolean pointAlreadyRecorded = false;
-
         for (DotsPoint storedPoints : this.playerMoves[player]) {
 
             if (storedPoints.compareWith(dotsPoint)) {
@@ -99,31 +101,42 @@ public class DotsGame {
             }
         }
 
+        // If the point has not been added previously, we add it into the list of points
         if (!pointAlreadyRecorded) {
-
             this.playerMoves[player].add(dotsPoint);
-            boolean moveResult = this.dotsLogic.checkMove(this.playerMoves[player]);
-
-            // remove the point if it is invalid
-            if (!moveResult) {
-
-                this.playerMoves[player].remove(this.playerMoves[player].size()-1);
-                return false;
-            }
-
         }
 
-        // if the point is already recorded, just return true
+
+        // perform a check for adjacency with the new points
+        boolean moveResult = this.dotsLogic.checkMove(this.playerMoves[player]);
+        System.out.println("MoveResult: " + moveResult);
+        // remove the point if it is invalid, so this.playerMoves[player] always contains valid moves
+        if (!moveResult) {
+
+            this.playerMoves[player].remove(this.playerMoves[player].size()-1);
+        }
+
+        boolean needToUpdateBoard = false;
 
         if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
+            System.out.println("HELLO " + this.playerMoves[player]);
 
-            boolean needToUpdateBoard = this.dotsLogic.moveCompleted(this.playerMoves[player]);
+            needToUpdateBoard = this.dotsLogic.moveCompleted(this.playerMoves[player]);
+
+            /**
+             * A touchUp is always a valid move, so even if there is no need to update the board, this interaction
+             * will have to be true.
+             *
+             * This prevents problems when you select one dot and touch up on a adjacent dot of a different color
+             * that is next to it.
+             */
+            moveResult = true;
 
             // if the board is changed, notify lock
             if (needToUpdateBoard) {
 
+                // TODO We no longer use wait/notify, might want to remove the synchronized
                 synchronized (this.dotsLocks) {
-
                     this.dotsLocks.setBoardChanged(true);
                     this.dotsLocks.notifyAll();
                 }
@@ -132,7 +145,14 @@ public class DotsGame {
 
         }
 
-        return true;
+        /**
+         * Move result tells us the validity of the touched move
+         * Case 1: valid touch adjacent to previous points, board no need to update: return moveResult = true
+         * Case 2: valid touch adjacent to previous points, board needs to update: return moveResult || needToUpdateBoard = true
+         * Case 3: invalid touch not adjacent to previous points, board no need to update: return moveResult = false
+         * Case 4: invalid touch not adjacent to previous points, but touch up and board needs to update with previous points: return moveResult || needToUpdateBoard = true
+         */
+        return moveResult || needToUpdateBoard;
     }
 
     /**

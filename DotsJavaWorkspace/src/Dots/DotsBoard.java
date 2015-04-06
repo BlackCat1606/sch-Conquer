@@ -122,8 +122,8 @@ public class DotsBoard implements Serializable {
             setElement(dotsPoint, null);
         }
 
-        System.out.println("Points marked for deletion");
-        System.out.println(this.toString());
+//        System.out.println("Points marked for deletion");
+//        System.out.println(this.toString());
     }
 
     /**

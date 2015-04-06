@@ -64,7 +64,6 @@ public class DotsLogic {
             return false;
         }
 
-        board.printWithIndex();
         Dot startDot = board.getElement(start);
         Dot endDot = board.getElement(end);
 
