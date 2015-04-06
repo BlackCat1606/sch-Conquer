@@ -94,14 +94,22 @@ public class GameFragment extends Fragment {
 //        gifRun.LoadGiff(v, this, R.drawable.my_animated_gif);
 
         int playerId = Integer.parseInt(this.mParam1);
-        startServerOrClient(playerId);
+        try {
+            startServerOrClient(playerId);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (java.lang.InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Starts a server or client
      * @param playerId 0 for server, 1 for client
      */
-    private void startServerOrClient(int playerId) {
+    private void startServerOrClient(int playerId) throws InterruptedException, IOException, java.lang.InstantiationException {
 
         Log.d(TAG, "Starting game, playerId: " + playerId + " ip: " + this.mParam2);
         final int PORT = 4321;
@@ -163,16 +171,9 @@ public class GameFragment extends Fragment {
 
         dotsServerClientParent.setAndroidCallback(androidCallback);
 
-        try {
-            dotsServerClientParent.start();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (java.lang.InstantiationException e) {
-            e.printStackTrace();
-        }
+        dotsServerClientParent.start();
+
 
     }
 }

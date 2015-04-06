@@ -22,29 +22,33 @@ public class DotsClient extends DotsServerClientParent {
     private final int port;
 
     // States
+    private final DotsLocks dotsLocks;
+    private final LinkedBlockingQueue<Boolean> responseQueue;
+
     private AwesomeClientSocket clientSocket;
-    private DotsLocks dotsLocks;
-    private LinkedBlockingQueue<Boolean> responseQueue;
+    private Thread listenerThread;
 
 
-    public DotsClient(String serverAddress, int port) {
+
+    public DotsClient(String serverAddress, int port) throws IOException {
         this.serverAddress = serverAddress;
         this.port = port;
-    }
-
-    public void start() throws IOException, InterruptedException, InstantiationException {
-        super.start();
 
         // Initialise Model
         this.dotsLocks = new DotsLocks();
         this.responseQueue = new LinkedBlockingQueue<Boolean>();
+
+    }
+
+    public void start() throws IOException, InterruptedException, InstantiationException {
+        super.start();
 
         // Initialize client socket
         this.clientSocket = new AwesomeClientSocket(this.serverAddress, this.port);
 
         // Init server listener thread
         DotsClientServerListener dotsServerListener = new DotsClientServerListener(this.clientSocket, dotsLocks, responseQueue, this.getAndroidCallback());
-        Thread listenerThread = new Thread(dotsServerListener);
+        listenerThread = new Thread(dotsServerListener);
 
         // start thread to deal with messages from server
         listenerThread.start();

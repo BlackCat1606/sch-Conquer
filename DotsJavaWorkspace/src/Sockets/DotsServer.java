@@ -15,22 +15,16 @@ import java.io.IOException;
  */
 public class DotsServer extends DotsServerClientParent{
 
-    private final int port;
+    private final DotsGame dotsGame;
+    private final DotsLocks dotsLocks;
+    private final AwesomeServerSocket serverSocket;
+    private final Thread listenerThread;
 
-    private DotsGame dotsGame;
-    private DotsLocks dotsLocks;
-    private AwesomeServerSocket serverSocket;
 
-    public DotsServer(int port) {
-        this.port = port;
-    }
+    public DotsServer(int port) throws IOException {
 
-    public void start() throws IOException, InstantiationException, InterruptedException {
-
-        super.start();
         // initialize server
         this.serverSocket = new AwesomeServerSocket(port);
-        this.serverSocket.acceptClient();
 
         // initialize game object
         this.dotsGame = new DotsGame();
@@ -38,7 +32,15 @@ public class DotsServer extends DotsServerClientParent{
 
         // init listener thread
         DotsServerClientListener dotsClientListener = new DotsServerClientListener(this.serverSocket, this.dotsGame, this);
-        Thread listenerThread = new Thread(dotsClientListener);
+        listenerThread = new Thread(dotsClientListener);
+    }
+
+    public void start() throws IOException, InstantiationException, InterruptedException {
+        // Super checks if callbacks have been initialized
+        super.start();
+
+        // Accepts the client (BLOCKS)
+        this.serverSocket.acceptClient();
 
         // starts thread to listen for messages
         listenerThread.start();
@@ -46,10 +48,12 @@ public class DotsServer extends DotsServerClientParent{
         // First time run to display the board on the client and server
         this.updateBoard();
 
+        System.out.println("Waiting for interactions");
+
+
         // todo closes server and clients when game over
 
 
-        System.out.println("Waiting for interactions");
     }
 
     @Override
