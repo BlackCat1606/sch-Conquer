@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,6 +23,7 @@ import Sockets.DotsClient;
 import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
 import darrenretinambpcrystalwell.dots.DotsScreen;
+import darrenretinambpcrystalwell.dots.GifRun;
 import darrenretinambpcrystalwell.dots.R;
 import darrenretinambpcrystalwell.dots.SurfaceViewDots;
 
@@ -89,9 +91,9 @@ public class GameFragment extends Fragment {
         super.onStart();
 
 
-//                SurfaceView v = (SurfaceView) findViewById(R.id.surfaceView);
-//        GifRun gifRun = new GifRun(this);
-//        gifRun.LoadGiff(v, this, R.drawable.my_animated_gif);
+        SurfaceView v = (SurfaceView) this.getActivity().findViewById(R.id.surfaceView);
+        GifRun gifRun = new GifRun(this.getActivity());
+        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
 
         int playerId = Integer.parseInt(this.mParam1);
         try {
