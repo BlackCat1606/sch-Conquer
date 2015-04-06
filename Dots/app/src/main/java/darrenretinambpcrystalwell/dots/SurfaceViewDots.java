@@ -167,30 +167,30 @@ public class SurfaceViewDots extends RelativeLayout
 
         DotsInteraction interaction;
 //
-//        // this part is to deal with touch up, on a strange area of the screen far away from the dotviews
-//        if (closestPoint == null) {
-//
-//            if (interactionState == DotsInteractionStates.TOUCH_UP) {
-//                // sends a touch up interaction with the DotPoint of the previous interaction
-//                interaction = new DotsInteraction(PLAYER_ID, interactionState, previousInteraction.getDotsPoint());
-//
-//            } else {
-//                return false;
-//            }
-//        } else {
-//        }
-//
-////        else {
-////
-//
+        // this part is to deal with touch up, on a strange area of the screen far away from the dotviews
         if (closestPoint == null) {
-            return false;
+
+            if (interactionState == DotsInteractionStates.TOUCH_UP) {
+                // sends a touch up interaction with the DotPoint of the previous interaction
+                interaction = new DotsInteraction(PLAYER_ID, interactionState, previousInteraction.getDotsPoint());
+
+            } else {
+                return false;
+            }
+        } else {
+            interaction = new DotsInteraction(PLAYER_ID, interactionState, closestPoint);
+            this.previousDetectedDotCoordinate = this.correspondingDotCoordinates[closestPoint.y][closestPoint.x];
         }
-
-
-        this.previousDetectedDotCoordinate = this.correspondingDotCoordinates[closestPoint.y][closestPoint.x];
-        interaction = new DotsInteraction(PLAYER_ID, interactionState, closestPoint);
+////        } else {
+////        }
+////
+//////        else {
+//////
+////
+//        if (closestPoint == null) {
+//            return false;
 //        }
+
 
         // if its a touch up, we want to clear the previous detected dot coordinate
         if (interactionState == DotsInteractionStates.TOUCH_UP) {

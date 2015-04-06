@@ -102,6 +102,13 @@ public class ConnectionFragment extends Fragment {
             }
         });
 
+        // Set a default ip address here so you dont have to type it in everytime
+        String placeholderIpAddress = "10.12.20.13";
+
+        EditText editText = (EditText) this.getActivity().findViewById(R.id.ipAddress);
+
+        editText.setText(placeholderIpAddress);
+
     }
 
 

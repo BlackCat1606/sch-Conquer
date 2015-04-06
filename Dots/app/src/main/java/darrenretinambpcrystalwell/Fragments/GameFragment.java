@@ -109,7 +109,7 @@ public class GameFragment extends Fragment {
 
         //TODO uncomment this to set a dynamic ip address
         String serverIp = this.mParam2;
-//        String serverIp = "192.168.1.13";
+//        serverIp = "192.168.1.13";
 
         DotsServerClientParent dotsServerClientParent;
 
