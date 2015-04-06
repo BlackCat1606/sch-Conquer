@@ -5,6 +5,7 @@ import Constants.DotsConstants;
 import Dots.DotsBoard;
 
 import AndroidCallback.DotsAndroidCallback;
+import Latency.RuntimeStopwatch;
 import Model.*;
 
 
@@ -24,6 +25,7 @@ public class DotsClient extends DotsServerClientParent {
     // States
     private final DotsLocks dotsLocks;
     private final LinkedBlockingQueue<Boolean> responseQueue;
+    private final RuntimeStopwatch runtimeStopwatch;
 
     private AwesomeClientSocket clientSocket;
     private Thread listenerThread;
@@ -37,6 +39,7 @@ public class DotsClient extends DotsServerClientParent {
         // Initialise Model
         this.dotsLocks = new DotsLocks();
         this.responseQueue = new LinkedBlockingQueue<Boolean>();
+        this.runtimeStopwatch = new RuntimeStopwatch();
 
     }
 
@@ -62,6 +65,7 @@ public class DotsClient extends DotsServerClientParent {
      */
     @Override
     public void doInteraction(DotsInteraction dotsInteraction) throws IOException, InterruptedException {
+        this.runtimeStopwatch.startMeasurement();
 
         // Package the interaction in to a message
         DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
@@ -82,6 +86,9 @@ public class DotsClient extends DotsServerClientParent {
         if (response) {
             updateScreenForTouchInteractions(dotsInteraction);
         }
+
+        this.runtimeStopwatch.stopMeasurement();
+        System.out.println("Latency: " + this.runtimeStopwatch.getAverageRuntime());
 
     }
 

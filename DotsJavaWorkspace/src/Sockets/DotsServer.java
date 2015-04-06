@@ -4,6 +4,7 @@ import AwesomeSockets.AwesomeServerSocket;
 import Constants.DotsConstants;
 import Dots.*;
 import AndroidCallback.DotsAndroidCallback;
+import Latency.RuntimeStopwatch;
 import Model.*;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class DotsServer extends DotsServerClientParent{
     private final AwesomeServerSocket serverSocket;
     private final Thread listenerThread;
 
+    private final RuntimeStopwatch runtimeStopwatch;
 
     public DotsServer(int port) throws IOException {
 
@@ -29,6 +31,7 @@ public class DotsServer extends DotsServerClientParent{
         // initialize game object
         this.dotsGame = new DotsGame();
         this.dotsLocks = dotsGame.getGameLocks();
+        this.runtimeStopwatch = new RuntimeStopwatch();
 
         // init listener thread
         DotsServerClientListener dotsClientListener = new DotsServerClientListener(this.serverSocket, this.dotsGame, this);
@@ -59,6 +62,8 @@ public class DotsServer extends DotsServerClientParent{
     @Override
     public void doInteraction(DotsInteraction dotsInteraction) throws IOException, InterruptedException {
         System.out.println("Doing Interaction: " + dotsInteraction);
+
+        this.runtimeStopwatch.startMeasurement();
 
         boolean result = this.dotsGame.doMove(dotsInteraction);
 
@@ -103,6 +108,9 @@ public class DotsServer extends DotsServerClientParent{
 
             }
         }
+
+        this.runtimeStopwatch.stopMeasurement();
+        System.out.println("Latency: " + this.runtimeStopwatch.getAverageRuntime());
     }
 
     /**
