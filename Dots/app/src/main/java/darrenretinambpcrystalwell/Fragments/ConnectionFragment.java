@@ -1,15 +1,24 @@
 package darrenretinambpcrystalwell.Fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteOrder;
 
 import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
@@ -74,18 +83,18 @@ public class ConnectionFragment extends Fragment {
         super.onStart();
 
 
-
-
+        TextView myIpView = (TextView) this.getActivity().findViewById(R.id.player_ip_address);
+        myIpView.setText(this.wifiIpAddress(this.getActivity()));
 
         Button startServerButton = (Button) this.getActivity().findViewById(R.id.startServerButton);
         Button startClientButton = (Button) this.getActivity().findViewById(R.id.startClientButton);
 
         final Fragment thisFragment = this;
 
+
         startServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity)getActivity());
 
@@ -109,6 +118,28 @@ public class ConnectionFragment extends Fragment {
 
         editText.setText(placeholderIpAddress);
 
+    }
+
+    private String wifiIpAddress(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
+
+        // Convert little-endian to big-endianif needed
+        if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
+            ipAddress = Integer.reverseBytes(ipAddress);
+        }
+
+        byte[] ipByteArray = BigInteger.valueOf(ipAddress).toByteArray();
+
+        String ipAddressString;
+        try {
+            ipAddressString = InetAddress.getByAddress(ipByteArray).getHostAddress();
+        } catch (UnknownHostException ex) {
+            Log.e("WIFIIP", "Unable to get host address.");
+            ipAddressString = null;
+        }
+
+        return ipAddressString;
     }
 
 
