@@ -19,6 +19,7 @@ import java.io.IOException;
 import AndroidCallback.DotsAndroidCallback;
 import Dots.DotsBoard;
 import Model.DotsInteraction;
+import Model.DotsInteractionStates;
 import Sockets.DotsClient;
 import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
@@ -91,9 +92,9 @@ public class GameFragment extends Fragment {
         super.onStart();
 
 
-        SurfaceView v = (SurfaceView) this.getActivity().findViewById(R.id.surfaceView);
-        GifRun gifRun = new GifRun(this.getActivity());
-        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
+//        SurfaceView v = (SurfaceView) this.getActivity().findViewById(R.id.surfaceView);
+//        GifRun gifRun = new GifRun(this.getActivity());
+//        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
 
         int playerId = Integer.parseInt(this.mParam1);
         try {
@@ -148,6 +149,7 @@ public class GameFragment extends Fragment {
                     @Override
                     public void run() {
                         surfaceViewDots.setTouchedPath(dotsInteraction, dotsScreen);
+                        playSoundForInteraction(dotsInteraction);
                     }
                 });
             }
@@ -166,16 +168,27 @@ public class GameFragment extends Fragment {
 
             @Override
             public void onGameOver() {
-
+                // print game over
             }
         };
 
-
         dotsServerClientParent.setAndroidCallback(androidCallback);
-
-
         dotsServerClientParent.start();
 
+    }
+
+    private void playSoundForInteraction(DotsInteraction interaction) {
+
+        DotsInteractionStates state = interaction.getState();
+
+        if (state == DotsInteractionStates.TOUCH_UP) {
+            // play high pitch
+
+        } else if (state == DotsInteractionStates.TOUCH_DOWN) {
+            // play low pitch
+        }
 
     }
+
+
 }
