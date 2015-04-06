@@ -14,6 +14,6 @@ public class DotsConstants {
     public static final int CLIENT_PORT = 4321;
 //    public static final String SERVER_ADDRESS = "127.0.0.1";
 //public static final String SERVER_ADDRESS = "10.12.17.172";
-public static final String SERVER_ADDRESS = "192.168.1.16";
+//public static final String SERVER_ADDRESS = "192.168.1.16";
 
 }
