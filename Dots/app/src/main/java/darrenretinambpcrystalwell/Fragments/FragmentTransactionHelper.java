@@ -15,7 +15,7 @@ public class FragmentTransactionHelper {
         Fragment connectionFragment = activity.getFragment(fragmentToPushIn, args);
 
         activity.getSupportFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.frag_slide_in_from_left, R.anim.frag_slide_out_from_right)
+                        .setCustomAnimations(R.anim.frag_slide_in_from_right, R.anim.frag_slide_out_from_left)
                 .replace(R.id.root_layout, connectionFragment)
                 .remove(currentFragment)
                 .commit();

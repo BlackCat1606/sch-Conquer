@@ -91,7 +91,6 @@ public class GameFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-
 //        SurfaceView v = (SurfaceView) this.getActivity().findViewById(R.id.surfaceView);
 //        GifRun gifRun = new GifRun(this.getActivity());
 //        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
