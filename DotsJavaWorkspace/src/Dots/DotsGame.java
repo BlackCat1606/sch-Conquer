@@ -79,7 +79,6 @@ public class DotsGame {
         if (conflictIsDetected(interaction)) {
             // invalid move
             return false;
-
         }
 
         // gets details from the interaction
@@ -87,10 +86,10 @@ public class DotsGame {
         DotsPoint dotsPoint = interaction.getDotsPoint();
 
         // if its a new touch down, recreate the array list
-        if (interaction.getState() == DotsInteractionStates.TOUCH_DOWN) {
-
-            this.playerMoves[player] = new ArrayList<DotsPoint>();
-        }
+//        if (interaction.getState() == DotsInteractionStates.TOUCH_DOWN) {
+//
+//            this.playerMoves[player] = new ArrayList<DotsPoint>();
+//        }
 
         // Check first to determine if the point has already been recorded
         boolean pointAlreadyRecorded = false;
@@ -142,6 +141,9 @@ public class DotsGame {
                 }
 
             }
+
+            // After a touch up, clear the stored moves
+            this.playerMoves[player] = new ArrayList<DotsPoint>();
 
         }
 
@@ -248,5 +250,8 @@ public class DotsGame {
 
     }
 
+
+    //TODO Game over check
+    // Time limit, score, no more valid moves
 
 }
