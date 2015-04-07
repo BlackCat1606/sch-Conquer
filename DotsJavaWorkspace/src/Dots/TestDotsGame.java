@@ -1,7 +1,7 @@
 package Dots;
 
-import Model.DotsInteraction;
-import Model.DotsInteractionStates;
+import Model.Interaction.DotsInteraction;
+import Model.Interaction.DotsInteractionStates;
 
 /**
  * For single player of how the game might work

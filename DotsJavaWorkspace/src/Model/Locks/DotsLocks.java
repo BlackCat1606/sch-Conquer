@@ -1,4 +1,4 @@
-package Model;
+package Model.Locks;
 
 /**
  * A thread-safe(?) object that holds locks, to track the state of the game
@@ -7,8 +7,12 @@ package Model;
  */
 public class DotsLocks {
 
+    // TODO is this class redundant? can we just put it into the DotsGame?
+    // Todo not sure why i synchronise methods as well
     private boolean boardChanged;
     private boolean gameRunning;
+
+    private boolean scoreNeedingUpdate;
 
     public DotsLocks() {
         // init as true so that the board will print it in the first time it listens for change
@@ -37,6 +41,11 @@ public class DotsLocks {
     }
 
 
+    public synchronized boolean isScoreNeedingUpdate() {
+        return scoreNeedingUpdate;
+    }
 
-
+    public synchronized void setScoreNeedingUpdate(boolean scoreNeedingUpdate) {
+        this.scoreNeedingUpdate = scoreNeedingUpdate;
+    }
 }

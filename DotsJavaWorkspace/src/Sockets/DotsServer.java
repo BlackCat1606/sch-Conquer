@@ -5,9 +5,12 @@ import Constants.DotsConstants;
 import Dots.*;
 import AndroidCallback.DotsAndroidCallback;
 import Latency.RuntimeStopwatch;
-import Model.*;
+import Model.Interaction.DotsInteraction;
+import Model.Locks.DotsLocks;
+import Model.Messages.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  *
@@ -109,8 +112,18 @@ public class DotsServer extends DotsServerClientParent{
             }
         }
 
+        if (this.dotsLocks.isScoreNeedingUpdate()) {
+
+            int[] score = this.dotsGame.getScore();
+
+            this.getAndroidCallback().onScoreUpdated(score);
+
+            this.dotsLocks.setScoreNeedingUpdate(false);
+
+        }
+
         // perform a check for game over
-        if (!dotsLocks.isGameRunning()) {
+        if (!this.dotsLocks.isGameRunning()) {
 
             // Send the game over message to the client
             DotsMessageGameOver gameOverMessage = new DotsMessageGameOver();
@@ -186,6 +199,11 @@ public class DotsServer extends DotsServerClientParent{
             @Override
             public void onGameOver() {
 
+            }
+
+            @Override
+            public void onScoreUpdated(int[] score) {
+                System.out.println("Score : " + Arrays.toString(score));
             }
         });
 

@@ -1,7 +1,7 @@
 package Sockets;
 
 import AndroidCallback.DotsAndroidCallback;
-import Model.DotsInteraction;
+import Model.Interaction.DotsInteraction;
 
 import java.io.IOException;
 

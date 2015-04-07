@@ -1,7 +1,7 @@
 package AndroidCallback;
 
 import Dots.DotsBoard;
-import Model.DotsInteraction;
+import Model.Interaction.DotsInteraction;
 
 /**
  * Callback interface, to link android front end with the back end
@@ -16,5 +16,6 @@ public interface DotsAndroidCallback {
 
     public void onGameOver();
 
+    public void onScoreUpdated(int[] score);
 
 }

@@ -2,8 +2,8 @@ package Sockets;
 
 import AwesomeSockets.AwesomeClientSocket;
 import AwesomeSockets.AwesomeServerSocket;
-import Model.DotsMessage;
-import Model.MessageLocks;
+import Model.Messages.DotsMessage;
+import Model.Locks.MessageLocks;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

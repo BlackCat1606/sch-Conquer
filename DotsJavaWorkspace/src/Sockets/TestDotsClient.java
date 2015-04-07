@@ -3,9 +3,9 @@ package Sockets;
 import AwesomeSockets.AwesomeClientSocket;
 import Dots.DotsBoard;
 import Dots.DotsGame;
-import Model.DotsMessage;
-import Model.DotsMessageBoard;
-import Model.DotsMessageResponse;
+import Model.Messages.DotsMessage;
+import Model.Messages.DotsMessageBoard;
+import Model.Messages.DotsMessageResponse;
 
 import java.io.IOException;
 

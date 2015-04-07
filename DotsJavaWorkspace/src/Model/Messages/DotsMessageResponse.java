@@ -1,4 +1,4 @@
-package Model;
+package Model.Messages;
 
 /**
  * Container for a message that holds a boolean response

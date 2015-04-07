@@ -6,10 +6,13 @@ import Dots.DotsBoard;
 
 import AndroidCallback.DotsAndroidCallback;
 import Latency.RuntimeStopwatch;
-import Model.*;
+import Model.Interaction.DotsInteraction;
+import Model.Locks.DotsLocks;
+import Model.Messages.*;
 
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -135,6 +138,13 @@ public class DotsClient extends DotsServerClientParent {
             @Override
             public void onGameOver() {
 
+                System.out.println("game over!");
+            }
+
+            @Override
+            public void onScoreUpdated(int[] score) {
+
+                System.out.println("Score : " + Arrays.toString(score));
             }
         });
 
@@ -205,7 +215,6 @@ class DotsClientServerListener implements Runnable {
 
     private void dealWithMessage(DotsMessage message) throws InterruptedException {
 
-
         if (message instanceof DotsMessageBoard) {
 
             DotsMessageBoard receivedBoardMessage = (DotsMessageBoard) message;
@@ -231,7 +240,12 @@ class DotsClientServerListener implements Runnable {
 
             // Trigger the game over callback
             this.dotsAndroidCallback.onGameOver();
-            
+
+        } else if (message instanceof DotsMessageScore) {
+
+            int[] score = ((DotsMessageScore) message).getScore();
+            this.dotsAndroidCallback.onScoreUpdated(score);
+
         } else {
             System.err.println("Unknown message type: ");
             System.err.println(message.toString());

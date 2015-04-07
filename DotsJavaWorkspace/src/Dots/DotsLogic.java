@@ -1,7 +1,7 @@
 package Dots;
 
 import Constants.DotsConstants;
-import Model.DotsLocks;
+import Model.Locks.DotsLocks;
 
 import java.util.ArrayList;
 
@@ -23,26 +23,32 @@ public class DotsLogic {
     /**
      * Takes an input move sequence and clear the dots if it is a valid move
      * @param inputMoves chronologically ordered arrayList of points
-     * @return true if board needs to be updated
+     * @return 0 if board does not need to be updated, or the number of points cleared
      */
-    public boolean moveCompleted(ArrayList<DotsPoint> inputMoves) {
+    public int moveCompleted(ArrayList<DotsPoint> inputMoves) {
+
+        int dotsCleared = 0;
 
         if (inputMoves.size() <= 1) {
-            return false;
+            return 0;
         }
+
 
         boolean needToUpdateBoard = checkMove(inputMoves);
 
 
         if (needToUpdateBoard) {
+
             board.clearDots(inputMoves);
-            
+
+            dotsCleared = inputMoves.size();
+
             // Every time we update the board, perform a check for a remaining legal move
             // and update the locks
             dotsLocks.setGameRunning(this.legalMovePresent());
         }
 
-        return needToUpdateBoard;
+        return dotsCleared;
     }
 
 

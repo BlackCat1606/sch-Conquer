@@ -1,9 +1,9 @@
 package Dots;
 
 import Constants.DotsConstants;
-import Model.DotsInteraction;
-import Model.DotsInteractionStates;
-import Model.DotsLocks;
+import Model.Interaction.DotsInteraction;
+import Model.Interaction.DotsInteractionStates;
+import Model.Locks.DotsLocks;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,12 @@ public class DotsGame {
     private final DotsLogic dotsLogic;
     private final DotsLocks dotsLocks;
 
+
+
+    private final int[] score;
+
     private ArrayList<DotsPoint>[] playerMoves;
+
 
 
     public DotsGame() {
@@ -32,6 +37,7 @@ public class DotsGame {
         this.dotsLocks = new DotsLocks();
         this.dotsLogic = new DotsLogic(this.dotsBoard, this.dotsLocks);
 
+        this.score = new int[DotsConstants.NO_OF_PLAYERS];
         this.playerMoves = new ArrayList[DotsConstants.NO_OF_PLAYERS];
 
         for (int i = 0; i < DotsConstants.NO_OF_PLAYERS; i++) {
@@ -73,7 +79,6 @@ public class DotsGame {
      */
     public synchronized boolean doMove(DotsInteraction interaction) {
 
-        // Todo shouldnt be escaping here
         // Todo fix touch below reserved dot as well
         // if conflict detected
 
@@ -122,9 +127,15 @@ public class DotsGame {
         boolean needToUpdateBoard = false;
 
         if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
-            System.out.println("HELLO " + this.playerMoves[player]);
 
-            needToUpdateBoard = this.dotsLogic.moveCompleted(this.playerMoves[player]);
+            int noOfDotsCleared = this.dotsLogic.moveCompleted(this.playerMoves[player]);
+            this.scoreChanged(player, noOfDotsCleared);
+
+            System.out.println("Dots cleared: " + noOfDotsCleared);
+            if (noOfDotsCleared != 0) {
+                needToUpdateBoard = true;
+//            needToUpdateBoard = this.dotsLogic.moveCompleted(this.playerMoves[player]);
+            }
 
             /**
              * A touchUp is always a valid move, so even if there is no need to update the board, this interaction
@@ -257,5 +268,39 @@ public class DotsGame {
 
     //TODO Game over check
     // Time limit, score, no more valid moves
+    private void scoreChanged(int playerId, int noOfDotsCleared) {
+
+        if (noOfDotsCleared != 0) {
+
+            this.dotsLocks.setScoreNeedingUpdate(true);
+            this.score[playerId] += scoreFromNoOfDotsCleared(noOfDotsCleared);
+        }
+
+    }
+
+    /**
+     * Maps the number of dots cleared to a score
+     * @return
+     */
+    private int scoreFromNoOfDotsCleared(int noOfDotsCleared) {
+
+
+
+        // Sum of natural numbers
+        // 1 + 2 + ... noOfDotsCleared
+        return noOfDotsCleared * (noOfDotsCleared + 1) / 2;
+
+    }
+
+    /**
+     * Escape to get a copy of the score
+     * @return
+     */
+    public int[] getScore() {
+        int[] copiedArray = new int[this.score.length];
+        System.arraycopy(this.score, 0, copiedArray, 0, this.score.length);
+        return copiedArray;
+    }
+
 
 }
