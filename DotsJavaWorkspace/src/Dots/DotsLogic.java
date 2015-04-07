@@ -1,5 +1,8 @@
 package Dots;
 
+import Constants.DotsConstants;
+import Model.DotsLocks;
+
 import java.util.ArrayList;
 
 /**
@@ -10,12 +13,11 @@ import java.util.ArrayList;
 public class DotsLogic {
 
     private final DotsBoard board;
+    private final DotsLocks dotsLocks;
 
-    private ArrayList<DotsPoint> currentTouches;
-
-    public DotsLogic(DotsBoard board) {
+    public DotsLogic(DotsBoard board, DotsLocks dotsLocks) {
         this.board = board;
-
+        this.dotsLocks = dotsLocks;
     }
 
     /**
@@ -34,6 +36,10 @@ public class DotsLogic {
 
         if (needToUpdateBoard) {
             board.clearDots(inputMoves);
+            
+            // Every time we update the board, perform a check for a remaining legal move
+            // and update the locks
+            dotsLocks.setGameRunning(this.legalMovePresent());
         }
 
         return needToUpdateBoard;
@@ -72,6 +78,23 @@ public class DotsLogic {
     }
 
     /**
+     * Checks if the point parameter is within the bounds of the board
+     * @param point
+     * @return true if point is inside bounds, false otherwise
+     */
+    private boolean inBoard(DotsPoint point) {
+
+        boolean leftCheck = point.x >= 0;
+        boolean rightCheck = point.x < DotsConstants.BOARD_SIZE;
+
+        boolean topCheck = point.y >= 0;
+        boolean bottomCheck = point.y < DotsConstants.BOARD_SIZE;
+
+        return leftCheck && rightCheck && topCheck && bottomCheck;
+
+    }
+
+    /**
      * Takes an arrayList of points and checks for adjacency in colors for all points
      *
      * @param inputMoves chronologically ordered arrayList of points
@@ -91,6 +114,38 @@ public class DotsLogic {
         }
 
         return true;
+    }
+
+
+    /**
+     * Does a check for a legal move
+     * @return true if legal move is left, false otherwise
+     */
+    public boolean legalMovePresent() {
+
+        for (int j = 0; j < DotsConstants.BOARD_SIZE; j++) {
+
+            for (int i = 0; i < DotsConstants.BOARD_SIZE; i++) {
+
+                DotsPoint firstPoint = new DotsPoint(i, j);
+                DotsPoint secondPoint = new DotsPoint(i+1, j);
+
+                // If either of the points are not in the board, ignore this
+                if (!this.inBoard(firstPoint) || !this.inBoard(secondPoint)) {
+                    continue;
+                }
+
+                if (checkAdjacency(firstPoint, secondPoint)) {
+                    return true;
+                }
+
+
+            }
+        }
+
+        System.out.println("NO MOVES LEFT");
+
+        return false;
     }
 
 }

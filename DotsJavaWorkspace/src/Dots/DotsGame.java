@@ -26,11 +26,11 @@ public class DotsGame {
 
     public DotsGame() {
         this.dotsBoard = new DotsBoard(DotsConstants.BOARD_SIZE);
-        this.dotsLogic = new DotsLogic(this.dotsBoard);
+
 
 
         this.dotsLocks = new DotsLocks();
-
+        this.dotsLogic = new DotsLogic(this.dotsBoard, this.dotsLocks);
 
         this.playerMoves = new ArrayList[DotsConstants.NO_OF_PLAYERS];
 
