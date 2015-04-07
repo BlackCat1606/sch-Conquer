@@ -76,10 +76,8 @@ public class DotsGame {
         // Todo shouldnt be escaping here
         // Todo fix touch below reserved dot as well
         // if conflict detected
-        if (conflictIsDetected(interaction)) {
-            // invalid move
-            return false;
-        }
+
+        boolean conflictDetected = conflictIsDetected(interaction);
 
         // gets details from the interaction
         int player = interaction.getPlayerId();
@@ -91,29 +89,35 @@ public class DotsGame {
 //            this.playerMoves[player] = new ArrayList<DotsPoint>();
 //        }
 
-        // Check first to determine if the point has already been recorded
-        boolean pointAlreadyRecorded = false;
-        for (DotsPoint storedPoints : this.playerMoves[player]) {
+        boolean moveResult = false;
 
-            if (storedPoints.compareWith(dotsPoint)) {
-                pointAlreadyRecorded = true;
+        if (!conflictDetected) {
+            // Check first to determine if the point has already been recorded
+            boolean pointAlreadyRecorded = false;
+            for (DotsPoint storedPoints : this.playerMoves[player]) {
+
+                if (storedPoints.compareWith(dotsPoint)) {
+                    pointAlreadyRecorded = true;
+                }
+            }
+
+            // If the point has not been added previously, we add it into the list of points
+            if (!pointAlreadyRecorded) {
+                this.playerMoves[player].add(dotsPoint);
+            }
+
+
+            // perform a check for adjacency with the new points
+            moveResult = this.dotsLogic.checkMove(this.playerMoves[player]);
+            System.out.println("MoveResult: " + moveResult);
+            // remove the point if it is invalid, so this.playerMoves[player] always contains valid moves
+            if (!moveResult) {
+
+                this.playerMoves[player].remove(this.playerMoves[player].size()-1);
             }
         }
 
-        // If the point has not been added previously, we add it into the list of points
-        if (!pointAlreadyRecorded) {
-            this.playerMoves[player].add(dotsPoint);
-        }
 
-
-        // perform a check for adjacency with the new points
-        boolean moveResult = this.dotsLogic.checkMove(this.playerMoves[player]);
-        System.out.println("MoveResult: " + moveResult);
-        // remove the point if it is invalid, so this.playerMoves[player] always contains valid moves
-        if (!moveResult) {
-
-            this.playerMoves[player].remove(this.playerMoves[player].size()-1);
-        }
 
         boolean needToUpdateBoard = false;
 
