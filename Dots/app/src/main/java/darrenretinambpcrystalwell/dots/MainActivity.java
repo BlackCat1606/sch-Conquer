@@ -117,7 +117,9 @@ public class MainActivity extends ActionBarActivity {
             this.fragments = new Fragment[DotsAndroidConstants.NO_OF_FRAGMENTS];
         }
 
-        if (this.fragments[i] == null) {
+        // This if else is to check if the fragment has already been created and start it again
+        // Somehow we cant reuse fragments that have already been created
+//        if (this.fragments[i] == null) {
 
             Fragment fragmentToCreate;
             if (i == 0) {
@@ -134,8 +136,6 @@ public class MainActivity extends ActionBarActivity {
 
             this.fragments[i] = fragmentToCreate;
 
-
-        }
 
         return this.fragments[i];
 

@@ -101,7 +101,7 @@ public class ConnectionFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity)getActivity());
+                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity)getActivity(), true);
 
             }
         });
@@ -112,7 +112,7 @@ public class ConnectionFragment extends Fragment {
 
                 EditText text = (EditText) getActivity().findViewById(R.id.ipAddress);
                 String serverIp = text.getText().toString();
-                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"1", serverIp}, (MainActivity)getActivity());
+                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"1", serverIp}, (MainActivity)getActivity(), true);
             }
         });
 

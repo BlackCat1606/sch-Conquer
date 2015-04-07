@@ -17,6 +17,8 @@ public abstract class DotsServerClientParent {
 
     private DotsAndroidCallback androidCallback;
 
+    private boolean gameStarted = false;
+
     /**
      * Compulsory method to set a listener to update the screen
      */
@@ -28,6 +30,8 @@ public abstract class DotsServerClientParent {
         return androidCallback;
     }
 
+
+
     /**
      * Call start to start the game and start threads to listen for messages
      */
@@ -37,6 +41,9 @@ public abstract class DotsServerClientParent {
             System.err.println("Listener not set up, exiting");
             throw new InstantiationException();
         }
+
+
+
     }
 
     /**
@@ -56,4 +63,11 @@ public abstract class DotsServerClientParent {
 
     }
 
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        this.gameStarted = gameStarted;
+    }
 }

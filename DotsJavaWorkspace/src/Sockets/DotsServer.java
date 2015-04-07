@@ -45,6 +45,8 @@ public class DotsServer extends DotsServerClientParent{
         // Accepts the client (BLOCKS)
         this.serverSocket.acceptClient();
 
+
+
         // starts thread to listen for messages
         listenerThread.start();
 
@@ -53,6 +55,9 @@ public class DotsServer extends DotsServerClientParent{
 
         System.out.println("Waiting for interactions");
 
+
+
+        super.setGameStarted(true);
 
         // todo closes server and clients when game over
 

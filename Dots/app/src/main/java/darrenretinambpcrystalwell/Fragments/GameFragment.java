@@ -1,6 +1,7 @@
 package darrenretinambpcrystalwell.Fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -25,6 +27,7 @@ import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
 import darrenretinambpcrystalwell.dots.DotsScreen;
 import darrenretinambpcrystalwell.dots.GifRun;
+import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
 import darrenretinambpcrystalwell.dots.SurfaceViewDots;
 
@@ -95,6 +98,14 @@ public class GameFragment extends Fragment {
 //        GifRun gifRun = new GifRun(this.getActivity());
 //        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
 
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         int playerId = Integer.parseInt(this.mParam1);
         try {
             startServerOrClient(playerId);
@@ -102,6 +113,18 @@ public class GameFragment extends Fragment {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+
+
+            // Connection failed, go back to connection fragment
+            FragmentTransactionHelper.pushFragment(1, this, new String[2], (MainActivity)getActivity(), false);
+
+            Context context = this.getActivity().getApplicationContext();
+            CharSequence text = "Connection Failed!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+
         } catch (java.lang.InstantiationException e) {
             e.printStackTrace();
         }

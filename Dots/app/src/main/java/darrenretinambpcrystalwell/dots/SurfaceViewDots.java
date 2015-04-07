@@ -118,7 +118,12 @@ public class SurfaceViewDots extends RelativeLayout
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        //Todo fix this to fix the touch and drag over invalid tiles problem
+
+        // if game is not started yet, we just return to avoid nullpointer exceptions
+        if (!this.dotsServerClientParent.isGameStarted()) {
+            return false;
+        }
+
 
         DotsInteractionStates interactionState;
 

@@ -55,7 +55,14 @@ public class DotsClient extends DotsServerClientParent {
 
         // start thread to deal with messages from server
         listenerThread.start();
+
+
+        super.setGameStarted(true);
+
+
         System.out.println("Waiting for interactions");
+
+
 
     }
 
@@ -137,6 +144,7 @@ public class DotsClient extends DotsServerClientParent {
         // Starts the client
         dotsClient.start();
         scannerThread.start();
+
 
     }
 

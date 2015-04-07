@@ -85,7 +85,7 @@ public class MainFragment extends Fragment {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransactionHelper.pushFragment(1, thisFragment,new String[2], (MainActivity)getActivity());
+                FragmentTransactionHelper.pushFragment(1, thisFragment,new String[2], (MainActivity)getActivity(), true);
             }
         });
 
