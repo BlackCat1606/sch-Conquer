@@ -200,9 +200,9 @@ public class DotsScreen {
 //        }
     }
 
-//    public DotView[] getDotList() {
-//        return dotsList;
-//    }
+    public DotView[] getDotList() {
+        return dotsList;
+    }
 
     public DotView[] getTouchedList() { return touchList;}
 }
