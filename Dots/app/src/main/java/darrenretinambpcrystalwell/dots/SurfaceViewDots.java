@@ -12,6 +12,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.Arrays;
 
+import Dots.DotColor;
 import Dots.DotsPoint;
 import Model.DotsInteraction;
 import Model.DotsInteractionStates;
@@ -275,6 +276,7 @@ public class SurfaceViewDots extends RelativeLayout
     }
 
     // Filled by Darren
+    // Updated to only clear touchedPath of player and not opponent
     public void setTouchedPath(DotsInteraction interaction, DotsScreen dotsScreen) {
 
         Log.d(TAG, "TOUCHPATH: " + interaction.toString());
@@ -285,8 +287,9 @@ public class SurfaceViewDots extends RelativeLayout
                 dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
             } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
                 for (DotView touched : dotsScreen.getTouchedList()) {
-                    // TODO change touchup to only the current player's touch
-                    touched.setVisibility(INVISIBLE);
+                    if (touched.getColor().equals(DotColor.PLAYER_0)) {
+                        touched.setVisibility(INVISIBLE);
+                    }
                 }
             }
         } else if (interaction.getPlayerId() == 1) {
@@ -296,7 +299,9 @@ public class SurfaceViewDots extends RelativeLayout
                 dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
             } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
                 for (DotView touched : dotsScreen.getTouchedList()) {
-                    touched.setVisibility(INVISIBLE);
+                    if (touched.getColor().equals(DotColor.PLAYER_1)){
+                        touched.setVisibility(INVISIBLE);
+                    }
                 }
             }
         }
