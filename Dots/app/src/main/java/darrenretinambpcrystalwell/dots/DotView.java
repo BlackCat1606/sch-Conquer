@@ -46,7 +46,7 @@ class DotView extends ImageView {
         blue        = getDrawable(R.drawable.bluedot);
         green       = getDrawable(R.drawable.greendot);
         yellow      = getDrawable(R.drawable.yellowdot);
-        purple      = getDrawable(R.drawable.purpledot);
+        purple      = getDrawable(R.drawable.clearerpurpledot);
         toucheddot  = getDrawable(R.drawable.toucheddot);
         one         = getDrawable(R.drawable.onetoucheddot);
         two         = getDrawable(R.drawable.twotoucheddot);
