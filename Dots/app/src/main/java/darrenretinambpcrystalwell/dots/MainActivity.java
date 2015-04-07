@@ -8,21 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 
 import AndroidCallback.DotsAndroidCallback;
-import Dots.DotsBoard;
-import Dots.DotsGame;
-import Model.DotsInteraction;
-import Sockets.DotsClient;
-import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
 import darrenretinambpcrystalwell.Fragments.ConnectionFragment;
 import darrenretinambpcrystalwell.Fragments.GameFragment;

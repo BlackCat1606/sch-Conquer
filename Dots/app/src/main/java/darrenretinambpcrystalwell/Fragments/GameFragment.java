@@ -20,8 +20,8 @@ import java.io.IOException;
 
 import AndroidCallback.DotsAndroidCallback;
 import Dots.DotsBoard;
-import Model.DotsInteraction;
-import Model.DotsInteractionStates;
+import Model.Interaction.DotsInteraction;
+import Model.Interaction.DotsInteractionStates;
 import Sockets.DotsClient;
 import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
@@ -106,6 +106,9 @@ public class GameFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        TextView view = (TextView)this.getActivity().findViewById(R.id.latency);
+
+
         int playerId = Integer.parseInt(this.mParam1);
         try {
             startServerOrClient(playerId);
@@ -128,6 +131,8 @@ public class GameFragment extends Fragment {
         } catch (java.lang.InstantiationException e) {
             e.printStackTrace();
         }
+
+        view.bringToFront();
     }
 
     /**
@@ -139,10 +144,7 @@ public class GameFragment extends Fragment {
         Log.d(TAG, "Starting game, playerId: " + playerId + " ip: " + this.mParam2);
         final int PORT = 4321;
 
-
-        //TODO uncomment this to set a dynamic ip address
         String serverIp = this.mParam2;
-//        serverIp = "192.168.1.13";
 
         DotsServerClientParent dotsServerClientParent;
 
@@ -191,6 +193,16 @@ public class GameFragment extends Fragment {
             @Override
             public void onGameOver() {
                 // print game over
+            }
+
+            @Override
+            public void onScoreUpdated(int[] ints) {
+
+            }
+
+            @Override
+            public void latencyChanged(long l) {
+
             }
         };
 
