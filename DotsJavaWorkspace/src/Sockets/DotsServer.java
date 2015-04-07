@@ -109,8 +109,20 @@ public class DotsServer extends DotsServerClientParent{
             }
         }
 
+        // perform a check for game over
+        if (!dotsLocks.isGameRunning()) {
+
+            // Send the game over message to the client
+            DotsMessageGameOver gameOverMessage = new DotsMessageGameOver();
+            DotsSocketHelper.sendMessageToClient(this.serverSocket, gameOverMessage);
+
+            // triggers the game over callback
+            this.gameOver();
+        }
+
         this.runtimeStopwatch.stopMeasurement();
         System.out.println("Latency: " + this.runtimeStopwatch.getAverageRuntime());
+
     }
 
     /**
@@ -144,6 +156,15 @@ public class DotsServer extends DotsServerClientParent{
 
         this.getAndroidCallback().onValidPlayerInteraction(dotsInteraction);
     }
+
+    /**
+     * Triggers the gameover callback
+     */
+    private void gameOver() {
+        System.out.println("GAME OVER");
+        this.getAndroidCallback().onGameOver();
+    }
+
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 

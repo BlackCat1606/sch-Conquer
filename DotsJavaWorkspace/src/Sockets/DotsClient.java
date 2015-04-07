@@ -114,7 +114,8 @@ public class DotsClient extends DotsServerClientParent {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
-        final String SERVER_ADDRESS = "10.12.17.172";
+//        final String SERVER_ADDRESS = "10.12.17.172";
+        final String SERVER_ADDRESS = "127.0.0.1";
 
         // Initialise the client
         DotsClient dotsClient = new DotsClient(SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
@@ -164,13 +165,13 @@ class DotsClientServerListener implements Runnable {
     private final AwesomeClientSocket clientSocket;
     private final DotsLocks locks;
     private final LinkedBlockingQueue<Boolean> responseQueue;
-    private final DotsAndroidCallback screenUpdateListener;
+    private final DotsAndroidCallback dotsAndroidCallback;
 
-    public DotsClientServerListener(AwesomeClientSocket clientSocket, DotsLocks locks, LinkedBlockingQueue<Boolean> responseQueue, DotsAndroidCallback screenUpdateListener) {
+    public DotsClientServerListener(AwesomeClientSocket clientSocket, DotsLocks locks, LinkedBlockingQueue<Boolean> responseQueue, DotsAndroidCallback dotsAndroidCallback) {
         this.clientSocket = clientSocket;
         this.locks = locks;
         this.responseQueue = responseQueue;
-        this.screenUpdateListener = screenUpdateListener;
+        this.dotsAndroidCallback = dotsAndroidCallback;
     }
 
     @Override
@@ -204,7 +205,6 @@ class DotsClientServerListener implements Runnable {
 
     private void dealWithMessage(DotsMessage message) throws InterruptedException {
 
-        // TODO Check and deal with game over
 
         if (message instanceof DotsMessageBoard) {
 
@@ -225,6 +225,13 @@ class DotsClientServerListener implements Runnable {
             DotsInteraction receivedInteraction = receivedInteractionMessage.getDotsInteraction();
             this.updateScreenWithInteraction(receivedInteraction);
 
+        } else if (message instanceof DotsMessageGameOver) {
+
+            System.out.println("GAME OVER RECEIVED");
+
+            // Trigger the game over callback
+            this.dotsAndroidCallback.onGameOver();
+            
         } else {
             System.err.println("Unknown message type: ");
             System.err.println(message.toString());
@@ -239,12 +246,11 @@ class DotsClientServerListener implements Runnable {
      */
     private void updateScreenWithNewBoard(DotsBoard dotsBoard) {
 
-
         // Debug method to print the board to the console
         dotsBoard.printWithIndex();
 
         // update the board on the current device
-        this.screenUpdateListener.onBoardChanged(dotsBoard);
+        this.dotsAndroidCallback.onBoardChanged(dotsBoard);
 
     }
 
@@ -256,7 +262,7 @@ class DotsClientServerListener implements Runnable {
 /// todo make this call main class doInteraction()
         System.out.println("Interaction received from server: ");
         System.out.println(interaction);
-        this.screenUpdateListener.onValidPlayerInteraction(interaction);
+        this.dotsAndroidCallback.onValidPlayerInteraction(interaction);
 
     }
 }
