@@ -43,7 +43,6 @@ public class SurfaceViewDots extends RelativeLayout
     private static final float SCREEN_Y_PERCENTAGE     = .2f;
 
 
-    CrossHairView   blackDotView;
 
     float           dotWidth;
 
@@ -89,7 +88,6 @@ public class SurfaceViewDots extends RelativeLayout
         setLayoutParams(layoutParams);
 
         relativeLayout.addView(this);
-        blackDotView = new CrossHairView(context);
 
 //        blackDotView.setX(dotsXOffset + dotWidth);
 //        blackDotView.setY(dotsYOffset + dotWidth);
@@ -152,10 +150,6 @@ public class SurfaceViewDots extends RelativeLayout
             return false;
         }
 
-        // Draw the crosshair
-        blackDotView.setVisibility(VISIBLE);
-        blackDotView.setX(event.getX() - blackDotView.getWidth() / 2);
-        blackDotView.setY(event.getY() - blackDotView.getHeight() / 2);
 
 
         boolean notActionUp = action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE;
