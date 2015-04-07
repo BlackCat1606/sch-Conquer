@@ -25,12 +25,10 @@ class DotView extends ImageView {
     float x, y;
 //    private String color;
     private DotColor color;
-    private Drawable background;
     private Drawable red;
     private Drawable green;
     private Drawable blue;
     private Drawable yellow;
-    private Drawable crosshair;
     private Drawable toucheddot;
     private Drawable purple;
     private Drawable one;
@@ -55,7 +53,6 @@ class DotView extends ImageView {
         one.setAlpha(220);
         two.setAlpha(220);
 
-        crosshair = getDrawable(R.drawable.crosshair);
     }
 
     public float getSqDist(float x, float y) {
@@ -156,11 +153,7 @@ class DotView extends ImageView {
         setDrawable(two);
     }
 
-    public void setCrosshair() {
-        // doesnt matter what color we set here
-        this.color = DotColor.RED;
-        setDrawable(crosshair);
-    }
+
 
     public void setTouchedDot() {
         // doesnt matter what color we set here
@@ -222,14 +215,7 @@ class YellowDotView extends DotView {
 }
 
 
-class CrossHairView extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public CrossHairView(Context context) {
-        super(context);
-        super.setCrosshair();
-//        super.setColor("crosshair");
-    }
-}
+
 
 class TouchedDot extends DotView {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
