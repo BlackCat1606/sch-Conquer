@@ -18,4 +18,6 @@ public interface DotsAndroidCallback {
 
     public void onScoreUpdated(int[] score);
 
+    public void latencyChanged(long latency);
+
 }

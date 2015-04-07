@@ -36,7 +36,6 @@ public class DotsLogic {
 
         boolean needToUpdateBoard = checkMove(inputMoves);
 
-
         if (needToUpdateBoard) {
 
             board.clearDots(inputMoves);
@@ -129,27 +128,47 @@ public class DotsLogic {
      */
     public boolean legalMovePresent() {
 
+
         for (int j = 0; j < DotsConstants.BOARD_SIZE; j++) {
 
             for (int i = 0; i < DotsConstants.BOARD_SIZE; i++) {
 
+                // Horizontal check
                 DotsPoint firstPoint = new DotsPoint(i, j);
                 DotsPoint secondPoint = new DotsPoint(i+1, j);
 
+                // Vertical check
+                DotsPoint thirdPoint = new DotsPoint(i, j + 1);
+
+
                 // If either of the points are not in the board, ignore this
-                if (!this.inBoard(firstPoint) || !this.inBoard(secondPoint)) {
-                    continue;
+
+                boolean horiTest = false;
+                boolean vertTest = false;
+                if (this.inBoard(secondPoint)) {
+
+                    horiTest = this.checkAdjacency(firstPoint, secondPoint);
+
                 }
 
-                if (checkAdjacency(firstPoint, secondPoint)) {
+                if (this.inBoard(thirdPoint)) {
+                    vertTest= this.checkAdjacency(firstPoint, thirdPoint);
+                }
+
+                if (horiTest || vertTest) {
                     return true;
                 }
+
 
 
             }
         }
 
+
+
+
         System.out.println("NO MOVES LEFT");
+        this.board.printWithIndex();
 
         return false;
     }

@@ -133,8 +133,9 @@ public class DotsServer extends DotsServerClientParent{
             this.gameOver();
         }
 
-        this.runtimeStopwatch.stopMeasurement();
-        System.out.println("Latency: " + this.runtimeStopwatch.getAverageRuntime());
+
+        this.getAndroidCallback().latencyChanged(this.runtimeStopwatch.stopMeasurement());
+
 
     }
 
@@ -204,6 +205,11 @@ public class DotsServer extends DotsServerClientParent{
             @Override
             public void onScoreUpdated(int[] score) {
                 System.out.println("Score : " + Arrays.toString(score));
+            }
+
+            @Override
+            public void latencyChanged(long latency) {
+                System.out.println("Current Latency: " + latency);
             }
         });
 
