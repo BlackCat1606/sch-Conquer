@@ -276,6 +276,8 @@ public class SurfaceViewDots extends RelativeLayout
 
     // Filled by Darren
     public void setTouchedPath(DotsInteraction interaction, DotsScreen dotsScreen) {
+
+        Log.d(TAG, "TOUCHPATH: " + interaction.toString());
         if (interaction.getPlayerId() == 0) {
             if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
                 int index = interaction.getDotsPoint().y*6 + interaction.getDotsPoint().x;
@@ -283,6 +285,7 @@ public class SurfaceViewDots extends RelativeLayout
                 dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
             } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
                 for (DotView touched : dotsScreen.getTouchedList()) {
+                    // TODO change touchup to only the current player's touch
                     touched.setVisibility(INVISIBLE);
                 }
             }
