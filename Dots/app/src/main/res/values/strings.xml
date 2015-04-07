@@ -5,5 +5,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="My_IP_Address">My IP Address</string>
+    <string name="targetLocation">Target location: </string>
+    <string name="currentLocation">Current location: </string>
+    <string name="chooseRocket">Choose your rocket: </string>
 
 </resources>

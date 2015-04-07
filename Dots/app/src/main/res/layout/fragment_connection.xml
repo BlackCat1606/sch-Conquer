@@ -1,53 +1,109 @@
-<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="darrenretinambpcrystalwell.Fragments.ConnectionFragment">
 
 
 
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignRight="@+id/textView"-->
+        <!--android:layout_alignEnd="@+id/textView"-->
+        <!-->-->
+        <!--&lt;!&ndash;<Button&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:text="startServer"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/startServerButton" />&ndash;&gt;-->
+        <!--&lt;!&ndash;<Button&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:text="StartClient"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/startClientButton" />&ndash;&gt;-->
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/player_ip_address"-->
+            <!--android:text="@string/My_IP_Address"-->
+            <!--android:textColor="#ffffff"-->
+            <!--/>-->
+
+    <!--</LinearLayout>-->
     <ImageView
-        android:layout_width="503dp"
-        android:layout_height="743dp"
-        android:id="@+id/imageView3"
-        android:src="@drawable/lockonfaded"
-        android:layout_x="-72dp"
-        android:layout_y="-71dp"/>
+            android:layout_width="538dp"
+            android:layout_height="716dp"
+            android:src="@drawable/conquermain"
+            android:layout_gravity="center"/>
 
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/ipAddress"
-        android:layout_gravity="center"
-        android:layout_x="80dp"
-        android:layout_y="313dp"
-        android:textColor="#ffffff"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="8"
+            android:id="@+id/ipAddress"
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="5dp"
+            android:inputType="numberDecimal"
+            android:textColor="#ffffff"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView"
-        >
-        <Button
+    <ImageButton
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/startClientButton"
+        android:src="@drawable/rocket1"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="-50dp"
+        android:background="@android:color/transparent"/>
+
+    <ImageButton
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/startServerButton"
+        android:src="@drawable/rocket2"
+        android:background="@android:color/transparent"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="50dp"/>
+
+    <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="startServer"
-            android:id="@+id/startServerButton" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="StartClient"
-            android:id="@+id/startClientButton" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/player_ip_address"
-            android:text="my Ip address"
+            android:id="@+id/targetLocation"
+            android:text="@string/targetLocation"
+            android:layout_marginTop="-50dp"
             android:textColor="#ffffff"
-            />
+            android:layout_gravity="center"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/currentLocation"
+            android:text="@string/currentLocation"
+            android:layout_marginTop="80dp"
+            android:textColor="#ffffff"
+            android:layout_gravity="center_horizontal|top"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/player_ip_address"
+        android:text="@string/My_IP_Address"
+        android:textColor="#ffffff"
+        android:layout_marginTop="130dp"
+        android:layout_gravity="center_horizontal|top"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/chooseRocket"
+            android:text="@string/chooseRocket"
+            android:layout_marginTop="50dp"
+            android:textColor="#ffffff"
+            android:layout_gravity="center"/>
 
 
-    </LinearLayout>
-</AbsoluteLayout>
+</FrameLayout>

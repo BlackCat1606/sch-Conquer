@@ -2,6 +2,7 @@ package darrenretinambpcrystalwell.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -9,10 +10,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.math.BigInteger;
@@ -20,6 +23,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
 
+import darrenretinambpcrystalwell.dots.GifRun;
 import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
 
@@ -82,12 +86,13 @@ public class ConnectionFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-
         TextView myIpView = (TextView) this.getActivity().findViewById(R.id.player_ip_address);
         myIpView.setText(this.wifiIpAddress(this.getActivity()));
 
-        Button startServerButton = (Button) this.getActivity().findViewById(R.id.startServerButton);
-        Button startClientButton = (Button) this.getActivity().findViewById(R.id.startClientButton);
+        ImageButton startServerButton = (ImageButton) this.getActivity().findViewById(R.id.startServerButton);
+        ImageButton startClientButton = (ImageButton) this.getActivity().findViewById(R.id.startClientButton);
+        startClientButton.setBackgroundColor(Color.TRANSPARENT);
+        startServerButton.setBackgroundColor(Color.TRANSPARENT);
 
         final Fragment thisFragment = this;
 
