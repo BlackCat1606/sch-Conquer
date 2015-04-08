@@ -16,11 +16,13 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import AndroidCallback.DotsAndroidCallback;
+import Constants.DotsConstants;
 import Dots.DotsBoard;
 import Model.Interaction.DotsInteraction;
 import Model.Interaction.DotsInteractionStates;
 import darrenretinambpcrystalwell.Game.DotsGameTask;
 import darrenretinambpcrystalwell.SoundHelper;
+import darrenretinambpcrystalwell.dots.DotsAndroidConstants;
 import darrenretinambpcrystalwell.dots.DotsScreen;
 import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
@@ -117,7 +119,7 @@ public class GameFragment extends Fragment {
             // Connection failed, go back to connection fragment
             FragmentTransactionHelper.pushFragment(1, this, new String[2], (MainActivity)getActivity(), false);
 
-            FragmentTransactionHelper.showToast("Connection Failed!", this.getActivity());
+            FragmentTransactionHelper.showToast("Connection Failed!", this.getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
 
         } catch (java.lang.InstantiationException e) {
             e.printStackTrace();
@@ -184,7 +186,7 @@ public class GameFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        FragmentTransactionHelper.showToast(message, getActivity());
+                        FragmentTransactionHelper.showToast(message, getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
 
                     }
                 });
@@ -200,8 +202,8 @@ public class GameFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
-                        FragmentTransactionHelper.showToast(Arrays.toString(ints), getActivity());
+                        System.out.println("SHOWING TOAST");
+                        FragmentTransactionHelper.showToast(Arrays.toString(ints), getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
                     }
                 });
             }
@@ -229,7 +231,8 @@ public class GameFragment extends Fragment {
 
         int soundId = state.ordinal();
 
-        soundHelper.playSoundForInteraction(soundId);
+        // Temporarily comment out bad sound
+//        soundHelper.playSoundForInteraction(soundId);
 
     }
 

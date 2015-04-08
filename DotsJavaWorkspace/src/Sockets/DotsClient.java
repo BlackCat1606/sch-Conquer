@@ -250,7 +250,6 @@ class DotsClientServerListener implements Runnable {
         } else if (message instanceof DotsMessageGameOver) {
 
             System.out.println("GAME OVER RECEIVED");
-
             // Trigger the game over callback
 
             int[] finalScore = ((DotsMessageGameOver) message).getScore();

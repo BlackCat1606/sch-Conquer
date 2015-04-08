@@ -138,7 +138,11 @@ public class DotsServer extends DotsServerClientParent{
 
         if (this.dotsLocks.isScoreNeedingUpdate()) {
 
+
             int[] score = this.dotsGame.getScores();
+
+            DotsMessageScore scoreMessage = new DotsMessageScore(score);
+            DotsSocketHelper.sendMessageToClient(this.serverSocket, scoreMessage);
 
             this.getAndroidCallback().onScoreUpdated(score);
 

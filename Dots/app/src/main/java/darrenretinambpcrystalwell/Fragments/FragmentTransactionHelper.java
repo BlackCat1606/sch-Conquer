@@ -6,6 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
+import com.github.johnpersano.supertoasts.SuperToast;
+import com.github.johnpersano.supertoasts.util.Style;
+
 import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
 
@@ -35,11 +38,11 @@ public class FragmentTransactionHelper {
 
     }
 
-    public static void showToast(String message, Context context) {
+    public static void showToast(String message, Context context, int duration) {
+        // using external library to configure custom toast duration
+        SuperToast.create(context, message, duration, Style.getStyle(Style.GREEN, SuperToast.Animations.SCALE)).show();
 
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, message, duration);
-        toast.show();
+//        Toast toast = Toast.makeText(context, message, duration);
+//        toast.show();
     }
 }
