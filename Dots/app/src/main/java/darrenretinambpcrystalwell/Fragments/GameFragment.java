@@ -20,6 +20,7 @@ import Dots.DotsBoard;
 import Model.Interaction.DotsInteraction;
 import Model.Interaction.DotsInteractionStates;
 import darrenretinambpcrystalwell.Game.DotsGameTask;
+import darrenretinambpcrystalwell.SoundHelper;
 import darrenretinambpcrystalwell.dots.DotsScreen;
 import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
@@ -147,6 +148,8 @@ public class GameFragment extends Fragment {
 
         final SurfaceViewDots surfaceViewDots = new SurfaceViewDots(this.getActivity(), rootLayout, dotsGameTask.getDotsServerClientParent(), dotsScreen.getCorrespondingDotCoordinates());
 
+        final SoundHelper soundHelper = new SoundHelper(this.getActivity());
+
         DotsAndroidCallback androidCallback = new DotsAndroidCallback() {
             @Override
             public void onValidPlayerInteraction(final DotsInteraction dotsInteraction) {
@@ -154,9 +157,11 @@ public class GameFragment extends Fragment {
                     @Override
                     public void run() {
                         surfaceViewDots.setTouchedPath(dotsInteraction, dotsScreen);
-                        playSoundForInteraction(dotsInteraction);
                     }
                 });
+
+                playSoundForInteraction(dotsInteraction, soundHelper);
+
             }
 
             @Override
@@ -218,16 +223,13 @@ public class GameFragment extends Fragment {
 
     }
 
-    private void playSoundForInteraction(DotsInteraction interaction) {
+    private void playSoundForInteraction(DotsInteraction interaction, SoundHelper soundHelper) {
 
         DotsInteractionStates state = interaction.getState();
 
-        if (state == DotsInteractionStates.TOUCH_UP) {
-            // play high pitch
+        int soundId = state.ordinal();
 
-        } else if (state == DotsInteractionStates.TOUCH_DOWN) {
-            // play low pitch
-        }
+        soundHelper.playSoundForInteraction(soundId);
 
     }
 
