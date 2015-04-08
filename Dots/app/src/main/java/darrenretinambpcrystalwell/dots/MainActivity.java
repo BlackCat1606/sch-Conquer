@@ -34,22 +34,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // This is a temporary workaaround.
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
-
-
-
-
         setUpFragment(savedInstanceState);
-
-
-
-
-
-
-
-
 
     }
 

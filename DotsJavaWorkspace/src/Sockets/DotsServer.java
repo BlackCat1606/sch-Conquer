@@ -111,18 +111,16 @@ public class DotsServer extends DotsServerClientParent{
                 this.updateBoard();
 
             }
-        }
 
-        // if getPlayerAffected is not -1, a player has been affected
-        int playerAffected = this.dotsLocks.getPlayerAffected();
-        if (playerAffected != -1) {
+            // if getPlayerAffected is not -1, a player has been affected
+            int playerAffected = this.dotsLocks.getPlayerAffected();
+            if (playerAffected != -1) {
+                
+                // Create an arbitrary touch up interaction to clear all dots
+                DotsInteraction clearDisplayedInteraction = new DotsInteraction(playerAffected, DotsInteractionStates.TOUCH_UP, new DotsPoint(DotsConstants.CLEAR_DOTS_INDEX,DotsConstants.CLEAR_DOTS_INDEX));
 
-            // Create an arbitrary touch up interaction to clear all dots
-            DotsInteraction clearDisplayedInteraction = new DotsInteraction(playerAffected, DotsInteractionStates.TOUCH_UP, new DotsPoint(DotsConstants.CLEAR_DOTS_INDEX,DotsConstants.CLEAR_DOTS_INDEX));
-            if (playerAffected == 0) {
-                // server
+                // Clear touches on the screen for the player affected
                 this.updateScreenForTouchInteractions(clearDisplayedInteraction);
-            } else {
 
                 // send the message to the client
                 // Triggers a touch up for the player affected, which would make the displayed touch on the client invisible as managed by the callback
@@ -130,12 +128,13 @@ public class DotsServer extends DotsServerClientParent{
                 DotsMessageInteraction interactionMessage = new DotsMessageInteraction(clearDisplayedInteraction);
                 DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
 
+                // Reset the playerAffected variable
+                this.dotsLocks.setPlayerAffected(-1);
+
             }
-
-            // Reset the playerAffected variable
-            this.dotsLocks.setPlayerAffected(-1);
-
         }
+
+
 
         if (this.dotsLocks.isScoreNeedingUpdate()) {
 

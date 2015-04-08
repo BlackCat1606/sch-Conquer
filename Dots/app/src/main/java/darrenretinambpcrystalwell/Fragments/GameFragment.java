@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import AndroidCallback.DotsAndroidCallback;
 import Dots.DotsBoard;
@@ -172,9 +173,11 @@ public class GameFragment extends Fragment {
             }
 
             @Override
-            public void onGameOver() {
-                // print game over
+            public void onGameOver(int i, int[] ints) {
+                Log.d(TAG, "GAME OVER, WINNER: " + i + " FINAL SCORE: " + Arrays.toString(ints));
+                // TODO something wrong with game over logic checking
             }
+
 
             @Override
             public void onScoreUpdated(int[] ints) {
@@ -191,8 +194,6 @@ public class GameFragment extends Fragment {
 
 //        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
 //        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
-
-
 
         Thread thread = new Thread(dotsGameTask);
         thread.start();

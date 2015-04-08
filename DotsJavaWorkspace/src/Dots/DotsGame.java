@@ -350,7 +350,8 @@ public class DotsGame {
                 if (otherPlayerDotsPoint.x == currentPlayerPoint.x) {
 
                     // interaction point is above the other player point
-                    if (otherPlayerDotsPoint.y > currentPlayerPoint.y) {
+                    if (otherPlayerDotsPoint.y < currentPlayerPoint.y) {
+//                        System.err.println("POINT ABOVE, CURRENT PLAYER: " + currentPlayerId);
                         return true;
                     }
                 }

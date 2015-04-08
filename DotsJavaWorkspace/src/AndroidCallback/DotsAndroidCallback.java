@@ -10,14 +10,14 @@ import Model.Interaction.DotsInteraction;
  */
 public interface DotsAndroidCallback {
 
-    public void onValidPlayerInteraction(DotsInteraction interaction);
+    void onValidPlayerInteraction(DotsInteraction interaction);
 
-    public void onBoardChanged(DotsBoard board);
+    void onBoardChanged(DotsBoard board);
 
-    public void onGameOver(int winningPlayerId, int[] finalScore);
+    void onGameOver(int winningPlayerId, int[] finalScore);
 
-    public void onScoreUpdated(int[] score);
+    void onScoreUpdated(int[] score);
 
-    public void latencyChanged(long latency);
+    void latencyChanged(long latency);
 
 }
