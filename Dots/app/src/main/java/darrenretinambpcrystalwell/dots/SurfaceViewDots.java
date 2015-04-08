@@ -261,9 +261,9 @@ public class SurfaceViewDots extends RelativeLayout
             Log.d(TAG, interaction.toString());
             this.dotsServerClientParent.doInteraction(interaction);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Do interaction IO exception: " + e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Do interaction interrupted exception: " + e);
         }
 
 

@@ -134,7 +134,7 @@ public class GameFragment extends Fragment {
      * Starts a server or client
      * @param playerId 0 for server, 1 for client
      */
-    private void startServerOrClient(int playerId) throws InterruptedException, IOException, java.lang.InstantiationException {
+    private void startServerOrClient(final int playerId) throws InterruptedException, IOException, java.lang.InstantiationException {
 
         Log.d(TAG, "Starting game, playerId: " + playerId + " ip: " + this.mParam2);
         final int PORT = 4321;
@@ -145,12 +145,14 @@ public class GameFragment extends Fragment {
         final DotsScreen dotsScreen = new DotsScreen(rootLayout, this.getActivity());
         final ScoreBoard scoreBoard = new ScoreBoard(rootLayout, this.getActivity());
 
-        DotsGameTask dotsGameTask = new DotsGameTask(playerId, PORT, serverIp);
+        final DotsGameTask dotsGameTask = new DotsGameTask(playerId, PORT, serverIp);
 
 
         final SurfaceViewDots surfaceViewDots = new SurfaceViewDots(this.getActivity(), rootLayout, dotsGameTask.getDotsServerClientParent(), dotsScreen.getCorrespondingDotCoordinates());
 
         final SoundHelper soundHelper = new SoundHelper(this.getActivity());
+
+        final Fragment thisFragment = this;
 
         DotsAndroidCallback androidCallback = new DotsAndroidCallback() {
             @Override
@@ -183,6 +185,9 @@ public class GameFragment extends Fragment {
                 final String message = "GAME OVER, WINNER: " + i + " FINAL SCORE: " + Arrays.toString(ints);
                 Log.d(TAG, message);
 
+                // kill threads and stop the game
+                dotsGameTask.getDotsServerClientParent().stopGame();
+
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -191,6 +196,12 @@ public class GameFragment extends Fragment {
                     }
                 });
 
+                // initialise the game over fragments with arguments
+                GameOverFragment gameOverFragment = new GameOverFragment();
+                gameOverFragment.setArguments(playerId, ints);
+
+                // Push the game over fragment out
+                FragmentTransactionHelper.pushFragment(gameOverFragment, thisFragment, (MainActivity)getActivity(), true);
 
             }
 

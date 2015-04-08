@@ -4,7 +4,7 @@ package darrenretinambpcrystalwell.Fragments;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.Toast;
+
 
 import com.github.johnpersano.supertoasts.SuperToast;
 import com.github.johnpersano.supertoasts.util.Style;
@@ -20,18 +20,24 @@ public class FragmentTransactionHelper {
     public static void pushFragment(int fragmentToPushIn, Fragment currentFragment, String[] args, MainActivity activity, boolean animate) {
 
         Fragment connectionFragment = activity.getFragment(fragmentToPushIn, args);
+        pushFragment(connectionFragment, currentFragment, activity, animate);
+
+    }
+
+
+    public static void pushFragment(Fragment incomingFragment, Fragment currentFragment, MainActivity activity, boolean animate) {
 
         if (animate) {
             activity.getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.frag_slide_in_from_right, R.anim.frag_slide_out_from_left)
-                    .replace(R.id.root_layout, connectionFragment)
+                    .replace(R.id.root_layout, incomingFragment)
                     .remove(currentFragment)
                     .commit();
         } else {
             //TODO cannot turn off animations
             activity.getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(FragmentTransaction.TRANSIT_NONE, FragmentTransaction.TRANSIT_NONE)
-                    .replace(R.id.root_layout, connectionFragment)
+                    .replace(R.id.root_layout, incomingFragment)
                     .remove(currentFragment)
                     .commit();
         }
