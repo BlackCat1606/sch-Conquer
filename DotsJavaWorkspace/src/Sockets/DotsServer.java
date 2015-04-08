@@ -65,109 +65,108 @@ public class DotsServer extends DotsServerClientParent{
 
     @Override
     public void doInteraction(DotsInteraction dotsInteraction) throws IOException, InterruptedException {
-        System.out.println("Doing Interaction: " + dotsInteraction);
 
-        this.runtimeStopwatch.startMeasurement();
+        if (this.dotsLocks.isGameRunning()) {
 
-        boolean result = this.dotsGame.doMove(dotsInteraction);
+            this.runtimeStopwatch.startMeasurement();
 
-        // if the interaction came from the client, we have to send a response to the client
-        // that contains the validity of the move
-        if (dotsInteraction.getPlayerId() == 1) {
+            boolean result = this.dotsGame.doMove(dotsInteraction);
 
-            DotsMessageResponse dotsMessageResponse = new DotsMessageResponse(result);
-            DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageResponse);
-        }
+            // if the interaction came from the client, we have to send a response to the client
+            // that contains the validity of the move
+            if (dotsInteraction.getPlayerId() == 1) {
 
-
-        // only proceed if its a valid move
-        if (result) {
-
-            /**
-             * There are two types of game screen updates:
-             * 1. Update to show user touches when touch down and dragged
-             * 2. Update the entire board when elements are cleared
-             */
-
-            // First we deal with the first case where we show interactions on the screen
-
-            updateScreenForTouchInteractions(dotsInteraction);
-
-            // Here, we only send screen interactions to the client if the interaction is made by the server player.
-            // The client will draw its onw client player interactions based on the response it receives
-            if (dotsInteraction.getPlayerId() == 0) {
-
-                // Sends the valid interaction to the client player so that the client can see the move made by the other player
-                DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
-                DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
-
+                DotsMessageResponse dotsMessageResponse = new DotsMessageResponse(result);
+                DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageResponse);
             }
 
 
-            // finally, we check if the board needs to be updated
-            // dotsGame will automatically update this variable if the board is changed
-            if (this.dotsLocks.isBoardChanged()) {
+            // only proceed if its a valid move
+            if (result) {
 
-                this.updateBoard();
+                /**
+                 * There are two types of game screen updates:
+                 * 1. Update to show user touches when touch down and dragged
+                 * 2. Update the entire board when elements are cleared
+                 */
+
+                // First we deal with the first case where we show interactions on the screen
+
+                updateScreenForTouchInteractions(dotsInteraction);
+
+                // Here, we only send screen interactions to the client if the interaction is made by the server player.
+                // The client will draw its onw client player interactions based on the response it receives
+                if (dotsInteraction.getPlayerId() == 0) {
+
+                    // Sends the valid interaction to the client player so that the client can see the move made by the other player
+                    DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
+                    DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
+
+                }
+
+
+                // finally, we check if the board needs to be updated
+                // dotsGame will automatically update this variable if the board is changed
+                if (this.dotsLocks.isBoardChanged()) {
+
+                    this.updateBoard();
+
+                }
+
+                // if getPlayerAffected is not -1, a player has been affected
+                int playerAffected = this.dotsLocks.getPlayerAffected();
+                if (playerAffected != -1) {
+
+                    // Create an arbitrary touch up interaction to clear all dots
+                    DotsInteraction clearDisplayedInteraction = new DotsInteraction(playerAffected, DotsInteractionStates.TOUCH_UP, new DotsPoint(DotsConstants.CLEAR_DOTS_INDEX,DotsConstants.CLEAR_DOTS_INDEX));
+
+                    // Clear touches on the screen for the player affected
+                    this.updateScreenForTouchInteractions(clearDisplayedInteraction);
+
+                    // send the message to the client
+                    // Triggers a touch up for the player affected, which would make the displayed touch on the client invisible as managed by the callback
+                    // on the android side
+                    DotsMessageInteraction interactionMessage = new DotsMessageInteraction(clearDisplayedInteraction);
+                    DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
+
+                    // Reset the playerAffected variable
+                    this.dotsLocks.setPlayerAffected(-1);
+
+                }
+            }
+
+            if (this.dotsLocks.isScoreNeedingUpdate()) {
+
+                int[] score = this.dotsGame.getScores();
+
+                DotsMessageScore scoreMessage = new DotsMessageScore(score);
+                DotsSocketHelper.sendMessageToClient(this.serverSocket, scoreMessage);
+
+                this.getAndroidCallback().onScoreUpdated(score);
+
+                this.dotsLocks.setScoreNeedingUpdate(false);
 
             }
 
-            // if getPlayerAffected is not -1, a player has been affected
-            int playerAffected = this.dotsLocks.getPlayerAffected();
-            if (playerAffected != -1) {
+            // perform a check for game over
+            if (!this.dotsLocks.isGameRunning()) {
 
-                // Create an arbitrary touch up interaction to clear all dots
-                DotsInteraction clearDisplayedInteraction = new DotsInteraction(playerAffected, DotsInteractionStates.TOUCH_UP, new DotsPoint(DotsConstants.CLEAR_DOTS_INDEX,DotsConstants.CLEAR_DOTS_INDEX));
+                // Send the game over message to the client
 
-                // Clear touches on the screen for the player affected
-                this.updateScreenForTouchInteractions(clearDisplayedInteraction);
+                int[] score = this.dotsGame.getScores();
 
-                // send the message to the client
-                // Triggers a touch up for the player affected, which would make the displayed touch on the client invisible as managed by the callback
-                // on the android side
-                DotsMessageInteraction interactionMessage = new DotsMessageInteraction(clearDisplayedInteraction);
-                DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
+                DotsMessageGameOver gameOverMessage = new DotsMessageGameOver(score);
+                DotsSocketHelper.sendMessageToClient(this.serverSocket, gameOverMessage);
 
-                // Reset the playerAffected variable
-                this.dotsLocks.setPlayerAffected(-1);
-
+                // triggers the game over callback
+                this.gameOver(score);
             }
+
+            this.getAndroidCallback().latencyChanged(this.runtimeStopwatch.stopMeasurement());
+
+        } else {
+            System.err.println("Interaction not complete, game is not running!");
         }
-
-
-
-        if (this.dotsLocks.isScoreNeedingUpdate()) {
-
-
-            int[] score = this.dotsGame.getScores();
-
-            DotsMessageScore scoreMessage = new DotsMessageScore(score);
-            DotsSocketHelper.sendMessageToClient(this.serverSocket, scoreMessage);
-
-            this.getAndroidCallback().onScoreUpdated(score);
-
-            this.dotsLocks.setScoreNeedingUpdate(false);
-
-        }
-
-        // perform a check for game over
-        if (!this.dotsLocks.isGameRunning()) {
-
-            // Send the game over message to the client
-
-            int[] score = this.dotsGame.getScores();
-
-            DotsMessageGameOver gameOverMessage = new DotsMessageGameOver(score);
-            DotsSocketHelper.sendMessageToClient(this.serverSocket, gameOverMessage);
-
-            // triggers the game over callback
-            this.gameOver(score);
-        }
-
-
-        this.getAndroidCallback().latencyChanged(this.runtimeStopwatch.stopMeasurement());
-
-
     }
 
     /**
@@ -195,15 +194,11 @@ public class DotsServer extends DotsServerClientParent{
      * @param dotsInteraction interaction object
      */
     private void updateScreenForTouchInteractions(DotsInteraction dotsInteraction) {
-
-        // debug method to print valid interaction
-//        System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
-
         this.getAndroidCallback().onValidPlayerInteraction(dotsInteraction);
     }
 
     /**
-     * Triggers the gameover callback
+     * Triggers the game over callback
      */
     private void gameOver(int[] finalScore) {
         System.out.println("GAME OVER");
@@ -213,6 +208,22 @@ public class DotsServer extends DotsServerClientParent{
         this.getAndroidCallback().onGameOver(winningPlayerId, finalScore);
     }
 
+
+    @Override
+    public void stopGame() {
+
+        // By right, if game over, dotsLocks.isGameRunning should automatically be set to false
+        // just do it again to be sure
+        // this will terminate the while loop in DotsServerClientListener and stop the game
+        this.dotsLocks.setGameRunning(false);
+
+        // close the socket
+        try {
+            this.serverSocket.closeServer();
+        } catch (IOException e) {
+            System.err.println("IO Exception with closing server: " + e);
+        }
+    }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
@@ -280,26 +291,23 @@ class DotsServerClientListener implements Runnable {
     @Override
     public void run() {
 
-        try {
-
-            while (this.dotsGame.isGameRunning()) {
+        while (this.dotsGame.isGameRunning()) {
+            try {
 
                 // read and deal with messages from the client
                 DotsMessage message = DotsSocketHelper.readMessageFromClient(serverSocket);
                 this.dealWithMessage(message);
 
+            } catch(IOException e){
+                System.err.println("DotsServerClientListener IO Exception: " + e);
+            } catch(ClassNotFoundException e){
+                System.err.println("DotsServerClientListener ClassNotFoundException: " + e);
+            } catch(InterruptedException e){
+                System.err.println("DotsServerClientListener interrupted: " + e);
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
-        System.out.println("Game over!");
-
+        System.out.println("Server listener thread reached end");
     }
 
     /**

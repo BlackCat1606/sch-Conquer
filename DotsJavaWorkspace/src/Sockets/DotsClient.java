@@ -31,8 +31,6 @@ public class DotsClient extends DotsServerClientParent {
     private final RuntimeStopwatch runtimeStopwatch;
 
     private AwesomeClientSocket clientSocket;
-    private Thread listenerThread;
-
 
 
     public DotsClient(String serverAddress, int port) throws IOException {
@@ -54,7 +52,7 @@ public class DotsClient extends DotsServerClientParent {
 
         // Init server listener thread
         DotsClientServerListener dotsServerListener = new DotsClientServerListener(this.clientSocket, dotsLocks, responseQueue, this.getAndroidCallback());
-        listenerThread = new Thread(dotsServerListener);
+        Thread listenerThread = new Thread(dotsServerListener);
 
         // start thread to deal with messages from server
         listenerThread.start();
@@ -121,6 +119,19 @@ public class DotsClient extends DotsServerClientParent {
         System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
         this.getAndroidCallback().onValidPlayerInteraction(dotsInteraction);
 
+    }
+
+    @Override
+    public void stopGame() {
+
+        // this will terminate the while loop in DotsServerClientListener and stop the game
+        this.dotsLocks.setGameRunning(false);
+
+        try {
+            this.clientSocket.closeClient();
+        } catch (IOException e) {
+            System.err.println("Close client IO Exception: " + e);
+        }
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
@@ -289,7 +300,7 @@ class DotsClientServerListener implements Runnable {
      * @param interaction Interactions here should be all valid moves from the other player. This is checked in dealWithMessage()
      */
     private void updateScreenWithInteraction(DotsInteraction interaction) {
-/// todo make this call main class doInteraction()
+
         System.out.println("Interaction received from server: ");
         System.out.println(interaction);
         this.dotsAndroidCallback.onValidPlayerInteraction(interaction);

@@ -30,8 +30,6 @@ public abstract class DotsServerClientParent {
         return androidCallback;
     }
 
-
-
     /**
      * Call start to start the game and start threads to listen for messages
      */
@@ -71,6 +69,12 @@ public abstract class DotsServerClientParent {
         this.gameStarted = gameStarted;
     }
 
+    /**
+     * Call this method to stop the game from running, and terminate threads
+     */
+    public void stopGame() {
+
+    }
 
     /**
      * Static helper method to determine who the winner is
