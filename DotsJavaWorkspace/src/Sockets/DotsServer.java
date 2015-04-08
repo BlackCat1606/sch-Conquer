@@ -126,11 +126,14 @@ public class DotsServer extends DotsServerClientParent{
         if (!this.dotsLocks.isGameRunning()) {
 
             // Send the game over message to the client
-            DotsMessageGameOver gameOverMessage = new DotsMessageGameOver();
+
+            int[] score = this.dotsGame.getScore();
+
+            DotsMessageGameOver gameOverMessage = new DotsMessageGameOver(score);
             DotsSocketHelper.sendMessageToClient(this.serverSocket, gameOverMessage);
 
             // triggers the game over callback
-            this.gameOver();
+            this.gameOver(score);
         }
 
 
@@ -174,9 +177,12 @@ public class DotsServer extends DotsServerClientParent{
     /**
      * Triggers the gameover callback
      */
-    private void gameOver() {
+    private void gameOver(int[] finalScore) {
         System.out.println("GAME OVER");
-        this.getAndroidCallback().onGameOver();
+
+        int winningPlayerId = DotsServerClientParent.getWinner(finalScore);
+
+        this.getAndroidCallback().onGameOver(winningPlayerId, finalScore);
     }
 
 
@@ -198,9 +204,10 @@ public class DotsServer extends DotsServerClientParent{
             }
 
             @Override
-            public void onGameOver() {
+            public void onGameOver(int winningPlayerId, int[] finalScore) {
 
             }
+
 
             @Override
             public void onScoreUpdated(int[] score) {

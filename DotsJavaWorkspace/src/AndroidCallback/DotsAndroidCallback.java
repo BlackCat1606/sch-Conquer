@@ -14,7 +14,7 @@ public interface DotsAndroidCallback {
 
     public void onBoardChanged(DotsBoard board);
 
-    public void onGameOver();
+    public void onGameOver(int winningPlayerId, int[] finalScore);
 
     public void onScoreUpdated(int[] score);
 

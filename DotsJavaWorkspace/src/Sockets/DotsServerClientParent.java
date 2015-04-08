@@ -70,4 +70,26 @@ public abstract class DotsServerClientParent {
     public void setGameStarted(boolean gameStarted) {
         this.gameStarted = gameStarted;
     }
+
+
+    /**
+     * Static helper method to determine who the winner is
+     * @param score
+     * @return index of winning player from score array
+     */
+    public static int getWinner(int[] score) {
+
+        int winningPlayer;
+
+        if (score[0] > score[1]) {
+            winningPlayer = 0;
+        } else if (score[0] < score[1]) {
+            winningPlayer = 1;
+        } else {
+            // Draw
+            winningPlayer = -1;
+        }
+
+        return winningPlayer;
+    }
 }

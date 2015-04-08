@@ -284,8 +284,6 @@ public class DotsGame {
      */
     private int scoreFromNoOfDotsCleared(int noOfDotsCleared) {
 
-
-
         // Sum of natural numbers
         // 1 + 2 + ... noOfDotsCleared
         return noOfDotsCleared * (noOfDotsCleared + 1) / 2;

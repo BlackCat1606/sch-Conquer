@@ -119,8 +119,8 @@ public class DotsClient extends DotsServerClientParent {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
-//        final String SERVER_ADDRESS = "10.12.17.172";
-        final String SERVER_ADDRESS = "127.0.0.1";
+        final String SERVER_ADDRESS = "10.12.17.172";
+//        final String SERVER_ADDRESS = "127.0.0.1";
 
         // Initialise the client
         DotsClient dotsClient = new DotsClient(SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
@@ -138,10 +138,10 @@ public class DotsClient extends DotsServerClientParent {
             }
 
             @Override
-            public void onGameOver() {
-
-                System.out.println("game over!");
+            public void onGameOver(int winningPlayerId, int[] finalScore) {
+                System.out.println("GAME OVER, WINNER: " + winningPlayerId + " FINAL SCORE: " + Arrays.toString(finalScore));
             }
+
 
             @Override
             public void onScoreUpdated(int[] score) {
@@ -246,7 +246,11 @@ class DotsClientServerListener implements Runnable {
             System.out.println("GAME OVER RECEIVED");
 
             // Trigger the game over callback
-            this.dotsAndroidCallback.onGameOver();
+
+            int[] finalScore = ((DotsMessageGameOver) message).getScore();
+            int winningPlayerId = DotsServerClientParent.getWinner(finalScore);
+
+            this.dotsAndroidCallback.onGameOver(winningPlayerId, finalScore);
 
         } else if (message instanceof DotsMessageScore) {
 
