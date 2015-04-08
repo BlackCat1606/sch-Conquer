@@ -1,17 +1,13 @@
 package darrenretinambpcrystalwell.Fragments;
 
-import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,11 +18,8 @@ import AndroidCallback.DotsAndroidCallback;
 import Dots.DotsBoard;
 import Model.Interaction.DotsInteraction;
 import Model.Interaction.DotsInteractionStates;
-import Sockets.DotsClient;
-import Sockets.DotsServer;
-import Sockets.DotsServerClientParent;
+import darrenretinambpcrystalwell.Game.DotsGameTask;
 import darrenretinambpcrystalwell.dots.DotsScreen;
-import darrenretinambpcrystalwell.dots.GifRun;
 import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
 import darrenretinambpcrystalwell.dots.SurfaceViewDots;
@@ -146,25 +139,13 @@ public class GameFragment extends Fragment {
 
         String serverIp = this.mParam2;
 
-        DotsServerClientParent dotsServerClientParent;
-
-        if (playerId == 0) {
-
-            dotsServerClientParent = new DotsServer(PORT);
-        } else {
-
-            dotsServerClientParent = new DotsClient(serverIp, PORT);
-        }
-
-
         RelativeLayout rootLayout = (RelativeLayout) this.getActivity().findViewById(R.id.gameFragment);
         final DotsScreen dotsScreen = new DotsScreen(rootLayout, this.getActivity());
 
-        final SurfaceViewDots surfaceViewDots = new SurfaceViewDots(this.getActivity(), rootLayout, dotsServerClientParent, dotsScreen.getCorrespondingDotCoordinates());
+        DotsGameTask dotsGameTask = new DotsGameTask(playerId, PORT, serverIp);
 
-//        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
-//        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
 
+        final SurfaceViewDots surfaceViewDots = new SurfaceViewDots(this.getActivity(), rootLayout, dotsGameTask.getDotsServerClientParent(), dotsScreen.getCorrespondingDotCoordinates());
 
         DotsAndroidCallback androidCallback = new DotsAndroidCallback() {
             @Override
@@ -206,8 +187,16 @@ public class GameFragment extends Fragment {
             }
         };
 
-        dotsServerClientParent.setAndroidCallback(androidCallback);
-        dotsServerClientParent.start();
+        dotsGameTask.setDotsAndroidCallback(androidCallback);
+
+//        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
+//        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
+
+
+
+        Thread thread = new Thread(dotsGameTask);
+        thread.start();
+
 
     }
 
