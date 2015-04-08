@@ -82,7 +82,8 @@ public class DotsGame {
         // Todo fix touch below reserved dot as well
         // if conflict detected
 
-        boolean conflictDetected = conflictIsDetected(interaction);
+        boolean samePointConflict = samePointConflict(interaction);
+
 
         // gets details from the interaction
         int player = interaction.getPlayerId();
@@ -96,7 +97,7 @@ public class DotsGame {
 
         boolean moveResult = false;
 
-        if (!conflictDetected) {
+        if (!samePointConflict) {
             // Check first to determine if the point has already been recorded
             boolean pointAlreadyRecorded = false;
             for (DotsPoint storedPoints : this.playerMoves[player]) {

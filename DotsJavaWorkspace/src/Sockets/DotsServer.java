@@ -6,6 +6,7 @@ import Dots.*;
 import AndroidCallback.DotsAndroidCallback;
 import Latency.RuntimeStopwatch;
 import Model.Interaction.DotsInteraction;
+import Model.Interaction.DotsInteractionStates;
 import Model.Locks.DotsLocks;
 import Model.Messages.*;
 
@@ -112,6 +113,28 @@ public class DotsServer extends DotsServerClientParent{
             }
         }
 
+        // if getPlayerAffected is not -1, a player has been affected
+        int playerAffected = this.dotsLocks.getPlayerAffected();
+        if (playerAffected != -1) {
+
+            // Create an arbitrary touch up interaction to clear all dots
+            DotsInteraction clearDisplayedInteraction = new DotsInteraction(playerAffected, DotsInteractionStates.TOUCH_UP, new DotsPoint(DotsConstants.CLEAR_DOTS_INDEX,DotsConstants.CLEAR_DOTS_INDEX));
+            if (playerAffected == 0) {
+                // server
+                this.updateScreenForTouchInteractions(clearDisplayedInteraction);
+            } else {
+
+                // send the message to the client
+                // Triggers a touch up for the player affected, which would make the displayed touch on the client invisible as managed by the callback
+                // on the android side
+                DotsMessageInteraction interactionMessage = new DotsMessageInteraction(clearDisplayedInteraction);
+                DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
+
+            }
+
+
+        }
+
         if (this.dotsLocks.isScoreNeedingUpdate()) {
 
             int[] score = this.dotsGame.getScore();
@@ -169,7 +192,7 @@ public class DotsServer extends DotsServerClientParent{
     private void updateScreenForTouchInteractions(DotsInteraction dotsInteraction) {
 
         // debug method to print valid interaction
-        System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
+//        System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
 
         this.getAndroidCallback().onValidPlayerInteraction(dotsInteraction);
     }

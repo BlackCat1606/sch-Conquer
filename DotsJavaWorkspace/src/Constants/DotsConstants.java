@@ -10,10 +10,12 @@ public class DotsConstants {
     public static final int NO_OF_PLAYERS = 2;
     public static final int BOARD_SIZE = 6;
 
+    // Arbitrary value used to create a DotPoint that indicates clearing of displayed interaction
+    public static final int CLEAR_DOTS_INDEX = 59;
+
     // Constants to be used on the same computer for debugging
     public static final int CLIENT_PORT = 4321;
-//    public static final String SERVER_ADDRESS = "127.0.0.1";
-//public static final String SERVER_ADDRESS = "10.12.17.172";
-//public static final String SERVER_ADDRESS = "192.168.1.16";
+
+
 
 }
