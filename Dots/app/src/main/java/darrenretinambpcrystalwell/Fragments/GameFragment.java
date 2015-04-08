@@ -23,6 +23,7 @@ import darrenretinambpcrystalwell.Game.DotsGameTask;
 import darrenretinambpcrystalwell.dots.DotsScreen;
 import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
+import darrenretinambpcrystalwell.dots.ScoreBoard;
 import darrenretinambpcrystalwell.dots.SurfaceViewDots;
 
 /**
@@ -142,6 +143,7 @@ public class GameFragment extends Fragment {
 
         RelativeLayout rootLayout = (RelativeLayout) this.getActivity().findViewById(R.id.gameFragment);
         final DotsScreen dotsScreen = new DotsScreen(rootLayout, this.getActivity());
+        final ScoreBoard scoreBoard = new ScoreBoard(rootLayout, this.getActivity());
 
         DotsGameTask dotsGameTask = new DotsGameTask(playerId, PORT, serverIp);
 
