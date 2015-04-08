@@ -132,6 +132,8 @@ public class DotsServer extends DotsServerClientParent{
 
             }
 
+            // Reset the playerAffected variable
+            this.dotsLocks.setPlayerAffected(-1);
 
         }
 
