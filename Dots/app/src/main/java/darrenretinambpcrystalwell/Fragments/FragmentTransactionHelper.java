@@ -1,8 +1,10 @@
 package darrenretinambpcrystalwell.Fragments;
 
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.Toast;
 
 import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
@@ -31,5 +33,13 @@ public class FragmentTransactionHelper {
                     .commit();
         }
 
+    }
+
+    public static void showToast(String message, Context context) {
+
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, message, duration);
+        toast.show();
     }
 }

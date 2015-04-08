@@ -115,7 +115,7 @@ public class DotsServer extends DotsServerClientParent{
             // if getPlayerAffected is not -1, a player has been affected
             int playerAffected = this.dotsLocks.getPlayerAffected();
             if (playerAffected != -1) {
-                
+
                 // Create an arbitrary touch up interaction to clear all dots
                 DotsInteraction clearDisplayedInteraction = new DotsInteraction(playerAffected, DotsInteractionStates.TOUCH_UP, new DotsPoint(DotsConstants.CLEAR_DOTS_INDEX,DotsConstants.CLEAR_DOTS_INDEX));
 
@@ -138,7 +138,7 @@ public class DotsServer extends DotsServerClientParent{
 
         if (this.dotsLocks.isScoreNeedingUpdate()) {
 
-            int[] score = this.dotsGame.getScore();
+            int[] score = this.dotsGame.getScores();
 
             this.getAndroidCallback().onScoreUpdated(score);
 
@@ -151,7 +151,7 @@ public class DotsServer extends DotsServerClientParent{
 
             // Send the game over message to the client
 
-            int[] score = this.dotsGame.getScore();
+            int[] score = this.dotsGame.getScores();
 
             DotsMessageGameOver gameOverMessage = new DotsMessageGameOver(score);
             DotsSocketHelper.sendMessageToClient(this.serverSocket, gameOverMessage);

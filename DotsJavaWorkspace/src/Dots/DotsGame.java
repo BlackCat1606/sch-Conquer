@@ -23,7 +23,7 @@ public class DotsGame {
 
 
 
-    private final int[] score;
+    private final int[] scores;
 
     private ArrayList<DotsPoint>[] playerMoves;
 
@@ -37,7 +37,7 @@ public class DotsGame {
         this.dotsLocks = new DotsLocks();
         this.dotsLogic = new DotsLogic(this.dotsBoard, this.dotsLocks);
 
-        this.score = new int[DotsConstants.NO_OF_PLAYERS];
+        this.scores = new int[DotsConstants.NO_OF_PLAYERS];
         this.playerMoves = new ArrayList[DotsConstants.NO_OF_PLAYERS];
 
         for (int i = 0; i < DotsConstants.NO_OF_PLAYERS; i++) {
@@ -50,7 +50,7 @@ public class DotsGame {
         return this.dotsLocks.isGameRunning();
     }
 
-    public synchronized DotsBoard getDotsBoard() {
+    public DotsBoard getDotsBoard() {
         return dotsBoard;
     }
 
@@ -61,8 +61,6 @@ public class DotsGame {
     public DotsLocks getGameLocks() {
         return dotsLocks;
     }
-
-
 
     /**
      * The primary method that we will call on our game, to update the game based on
@@ -77,26 +75,16 @@ public class DotsGame {
      * @param interaction touch interaction
      * @return true if valid, false if invalid
      */
-    public synchronized boolean doMove(DotsInteraction interaction) {
+    public boolean doMove(DotsInteraction interaction) {
 
-        // Todo fix touch below reserved dot as well
         // if conflict detected
-
         boolean samePointConflict = samePointConflict(interaction);
-
 
         // gets details from the interaction
         int player = interaction.getPlayerId();
         DotsPoint dotsPoint = interaction.getDotsPoint();
 
-        // if its a new touch down, recreate the array list
-//        if (interaction.getState() == DotsInteractionStates.TOUCH_DOWN) {
-//
-//            this.playerMoves[player] = new ArrayList<DotsPoint>();
-//        }
-
         boolean moveResult = false;
-
 
         // Invariant: at the end of this block, this.playerMoves always contains valid moves for both players
         if (!samePointConflict) {
@@ -124,7 +112,6 @@ public class DotsGame {
                 this.playerMoves[player].remove(this.playerMoves[player].size()-1);
             }
         }
-
 
 
         boolean needToUpdateBoard = false;
@@ -168,11 +155,9 @@ public class DotsGame {
                     playerAffected(otherPlayerAffected);
                 }
 
-                // TODO We no longer use wait/notify, might want to remove the synchronized
-                synchronized (this.dotsLocks) {
-                    this.dotsLocks.setBoardChanged(true);
-                    this.dotsLocks.notifyAll();
-                }
+                this.dotsLocks.setBoardChanged(true);
+//                this.dotsLocks.notifyAll();
+
             }
 
             // After a touch up, clear the stored moves
@@ -192,50 +177,6 @@ public class DotsGame {
         //noinspection ConstantConditions
         return moveResult || needToUpdateBoard;
     }
-//
-//    /**
-//     * General method to check for conflicts in the same point selected
-//     * and when points are selected above points that can be cleared
-//     * @param dotsInteraction
-//     * @return
-//     */
-//    private boolean conflictIsDetected(DotsInteraction dotsInteraction) {
-//
-//        boolean samePointConflict = this.samePointConflict(dotsInteraction);
-//        boolean cascadingConflict = this.cascadingConflict(dotsInteraction);
-//
-//        return samePointConflict || cascadingConflict;
-//
-//    }
-
-//    /**
-//     * Helper method to check for an interaction that selects points
-//     * which are above the points another player has selected
-//     * @param dotsInteraction interaction of a particular player
-//     * @return false if no conflict, true if there is a conflict
-//     */
-//    private boolean cascadingConflict(DotsInteraction dotsInteraction) {
-//
-//        DotsPoint interactionDotsPoint = dotsInteraction.getDotsPoint();
-//
-//        ArrayList<DotsPoint> otherPlayerDotsPoints = this.getOtherPlayerPoints(dotsInteraction.getPlayerId());
-//
-//        for (DotsPoint otherPlayerDotsPoint : otherPlayerDotsPoints) {
-//
-//            // same column
-//            if (otherPlayerDotsPoint.x == interactionDotsPoint.x) {
-//
-//                // interaction point is above the other player point
-//                if (otherPlayerDotsPoint.y > interactionDotsPoint.y) {
-//                    System.out.println("DotsGame: Cascading conflict detected");
-//                    return true;
-//                }
-//            }
-//        }
-//
-//        return false;
-//
-//    }
 
     /**
      * This method will check for any conflicts in touches between players.
@@ -261,7 +202,6 @@ public class DotsGame {
 
         }
 
-
         return false;
     }
 
@@ -286,22 +226,30 @@ public class DotsGame {
 
     }
 
-
-    //TODO Game over check
-    // Time limit, score, no more valid moves
+    /**
+     * Method to update the player scores based on the number of dots cleared by a player
+     * @param playerId player id
+     * @param noOfDotsCleared number of dots cleared
+     */
     private void scoreChanged(int playerId, int noOfDotsCleared) {
 
         if (noOfDotsCleared != 0) {
 
             this.dotsLocks.setScoreNeedingUpdate(true);
-            this.score[playerId] += scoreFromNoOfDotsCleared(noOfDotsCleared);
+            this.scores[playerId] += scoreFromNoOfDotsCleared(noOfDotsCleared);
         }
 
+        // if a scores exceeds the maximum constant, set to game over
+        for (int score : this.scores) {
+            if (score > DotsConstants.MAX_SCORE_BEFORE_GAME_OVER) {
+                this.dotsLocks.setGameRunning(false);
+            }
+        }
     }
 
     /**
-     * Maps the number of dots cleared to a score
-     * @return
+     * Maps the number of dots cleared to a scores
+     * @return scores
      */
     private int scoreFromNoOfDotsCleared(int noOfDotsCleared) {
 
@@ -312,12 +260,12 @@ public class DotsGame {
     }
 
     /**
-     * Escape to get a copy of the score
-     * @return
+     * Escape to get a copy of the scores
+     * @return copied scores
      */
-    public int[] getScore() {
-        int[] copiedArray = new int[this.score.length];
-        System.arraycopy(this.score, 0, copiedArray, 0, this.score.length);
+    public int[] getScores() {
+        int[] copiedArray = new int[this.scores.length];
+        System.arraycopy(this.scores, 0, copiedArray, 0, this.scores.length);
         return copiedArray;
     }
 
@@ -344,6 +292,7 @@ public class DotsGame {
         ArrayList<DotsPoint> currentPlayerPoints = this.playerMoves[currentPlayerId];
         ArrayList<DotsPoint> otherPlayerPoints = this.getOtherPlayerPoints(currentPlayerId);
 
+        // null pointer here is only if getOtherPlayerPoints returns null from an invalid player id
         for (DotsPoint otherPlayerDotsPoint : otherPlayerPoints) {
             for (DotsPoint currentPlayerPoint : currentPlayerPoints) {
                 // same column
@@ -351,16 +300,13 @@ public class DotsGame {
 
                     // interaction point is above the other player point
                     if (otherPlayerDotsPoint.y < currentPlayerPoint.y) {
-//                        System.err.println("POINT ABOVE, CURRENT PLAYER: " + currentPlayerId);
                         return true;
                     }
                 }
 
             }
         }
-
         return false;
-
     }
 
 }

@@ -58,14 +58,8 @@ public class DotsClient extends DotsServerClientParent {
 
         // start thread to deal with messages from server
         listenerThread.start();
-
-
         super.setGameStarted(true);
-
-
         System.out.println("Waiting for interactions");
-
-
 
     }
 
@@ -74,7 +68,7 @@ public class DotsClient extends DotsServerClientParent {
      * @param dotsInteraction touch interactions on the screen
      */
     @Override
-    public void doInteraction(DotsInteraction dotsInteraction) throws IOException, InterruptedException {
+    public void doInteraction(final DotsInteraction dotsInteraction) throws IOException, InterruptedException {
         this.runtimeStopwatch.startMeasurement();
 
         // Package the interaction in to a message
@@ -83,24 +77,36 @@ public class DotsClient extends DotsServerClientParent {
         // and send it to the server
         DotsSocketHelper.sendMessageToServer(this.clientSocket, interactionMessage);
 
+        // put dealing with response into a separate thread
+        Runnable dealWithResponse = new Runnable() {
+            // Todo might have to synchronise methods and variables accessed here
+            @Override
+            public void run() {
+                // Read the response from the server for the interaction
+                // Here, we use a queue which is populated by the other serverListener thread with appropriate
+                // responses
+                boolean response = false;
+                try {
+                    response = responseQueue.take();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-        // Read the response from the server for the interaction
-        // Here, we use a queue which is populated by the other serverListener thread with appropriate
-        // responses
-        boolean response = this.responseQueue.take();
+                System.out.println("Received response: " + response);
 
-        System.out.println("Received response: " + response);
+                // if the response is valid, it means that the move we have made is valid
+                // Therefore, we update the screen based on our touches
+                if (response) {
+                    updateScreenForTouchInteractions(dotsInteraction);
+                }
 
-        // if the response is valid, it means that the move we have made is valid
-        // Therefore, we update the screen based on our touches
-        if (response) {
-            updateScreenForTouchInteractions(dotsInteraction);
-        }
+                getAndroidCallback().latencyChanged(runtimeStopwatch.stopMeasurement());
 
+            }
+        };
 
-
-        this.getAndroidCallback().latencyChanged(this.runtimeStopwatch.stopMeasurement());
-
+        Thread thread = new Thread(dealWithResponse);
+        thread.start();
 
     }
 

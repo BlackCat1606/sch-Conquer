@@ -116,12 +116,7 @@ public class GameFragment extends Fragment {
             // Connection failed, go back to connection fragment
             FragmentTransactionHelper.pushFragment(1, this, new String[2], (MainActivity)getActivity(), false);
 
-            Context context = this.getActivity().getApplicationContext();
-            CharSequence text = "Connection Failed!";
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
+            FragmentTransactionHelper.showToast("Connection Failed!", this.getActivity());
 
         } catch (java.lang.InstantiationException e) {
             e.printStackTrace();
@@ -129,6 +124,8 @@ public class GameFragment extends Fragment {
 
         view.bringToFront();
     }
+
+
 
     /**
      * Starts a server or client
@@ -176,19 +173,37 @@ public class GameFragment extends Fragment {
 
             @Override
             public void onGameOver(int i, int[] ints) {
-                Log.d(TAG, "GAME OVER, WINNER: " + i + " FINAL SCORE: " + Arrays.toString(ints));
-                // TODO something wrong with game over logic checking
+                final String message = "GAME OVER, WINNER: " + i + " FINAL SCORE: " + Arrays.toString(ints);
+                Log.d(TAG, message);
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FragmentTransactionHelper.showToast(message, getActivity());
+
+                    }
+                });
+
+
             }
 
 
             @Override
-            public void onScoreUpdated(int[] ints) {
+            public void onScoreUpdated(final int[] ints) {
+                Log.d(TAG, "Score: " + Arrays.toString(ints));
 
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        FragmentTransactionHelper.showToast(Arrays.toString(ints), getActivity());
+                    }
+                });
             }
 
             @Override
             public void latencyChanged(long l) {
-
+                Log.d(TAG, "Latency: " + l);
             }
         };
 
