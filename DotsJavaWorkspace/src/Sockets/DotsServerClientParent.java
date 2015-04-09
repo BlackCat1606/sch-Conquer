@@ -61,6 +61,10 @@ public abstract class DotsServerClientParent {
 
     }
 
+    /**
+     * Used in the android to determine if the game is started to cancel touches
+     * @return
+     */
     public boolean isGameStarted() {
         return gameStarted;
     }

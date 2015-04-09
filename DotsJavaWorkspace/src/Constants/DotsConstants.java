@@ -17,6 +17,6 @@ public class DotsConstants {
     // Constants to be used on the same computer for debugging
     public static final int CLIENT_PORT = 4321;
 
-
+    public static final int SINGLE_PLAYER_PORT = 537823789;
 
 }

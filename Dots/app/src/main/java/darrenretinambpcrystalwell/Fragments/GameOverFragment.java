@@ -48,6 +48,8 @@ public class GameOverFragment extends Fragment {
 
     private void assignViews() {
 
+        // Todo tell player no more moves or score cap reached?
+        // Todo add button to return to main menu
         TextView winningPlayerTextView = (TextView)this.getActivity().findViewById(R.id.winning_player_text_view);
         TextView yourScoreTextView = (TextView)this.getActivity().findViewById(R.id.your_score);
         TextView opponentScoreTextView = (TextView)this.getActivity().findViewById(R.id.opponent_score);

@@ -27,30 +27,62 @@ public class DotsServer extends DotsServerClientParent{
 
     private final RuntimeStopwatch runtimeStopwatch;
 
+    private final boolean isSinglePlayer;
+
+
+
     public DotsServer(int port) throws IOException {
 
-        // initialize server
-        this.serverSocket = new AwesomeServerSocket(port);
 
         // initialize game object
         this.dotsGame = new DotsGame();
         this.dotsLocks = dotsGame.getGameLocks();
         this.runtimeStopwatch = new RuntimeStopwatch();
 
-        // init listener thread
-        DotsServerClientListener dotsClientListener = new DotsServerClientListener(this.serverSocket, this.dotsGame, this);
-        listenerThread = new Thread(dotsClientListener);
+
+        if (port == DotsConstants.SINGLE_PLAYER_PORT) {
+            this.isSinglePlayer = true;
+            this.serverSocket = null;
+            this.listenerThread = null;
+
+            DotsSocketHelper.enabled = false;
+
+        } else {
+            this.serverSocket = new AwesomeServerSocket(port);
+            this.isSinglePlayer = false;
+            // init listener thread
+            DotsServerClientListener dotsClientListener = new DotsServerClientListener(this.serverSocket, this.dotsGame, this);
+            this.listenerThread = new Thread(dotsClientListener);
+        }
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
 
     public void start() throws IOException, InstantiationException, InterruptedException {
         // Super checks if callbacks have been initialized
         super.start();
 
-        // Accepts the client (BLOCKS)
-        this.serverSocket.acceptClient();
 
-        // starts thread to listen for messages
-        listenerThread.start();
+        if (!this.isSinglePlayer) {
+
+            // Accepts the client (BLOCKS)
+            this.serverSocket.acceptClient();
+            // starts thread to listen for messages
+            this.listenerThread.start();
+
+        }
+
 
         // First time run to display the board on the client and server
         this.updateBoard();
@@ -218,22 +250,25 @@ public class DotsServer extends DotsServerClientParent{
         this.dotsLocks.setGameRunning(false);
 
         // close the socket
-        try {
-            this.serverSocket.closeServer();
-        } catch (IOException e) {
-            System.err.println("IO Exception with closing server: " + e);
+        if (!this.isSinglePlayer) {
+            try {
+                this.serverSocket.closeServer();
+            } catch (IOException e) {
+                System.err.println("IO Exception with closing server: " + e);
+            }
         }
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
         // Initialise the server
-        DotsServer dotsServer = new DotsServer(DotsConstants.CLIENT_PORT);
-
+//        DotsServer dotsServer = new DotsServer(DotsConstants.CLIENT_PORT);
+        DotsServer dotsServer = new DotsServer(DotsConstants.SINGLE_PLAYER_PORT);
         // Compulsory to set listeners
         dotsServer.setAndroidCallback(new DotsAndroidCallback() {
             @Override
             public void onValidPlayerInteraction(DotsInteraction interaction) {
+
 
             }
 
@@ -298,8 +333,11 @@ class DotsServerClientListener implements Runnable {
                 DotsMessage message = DotsSocketHelper.readMessageFromClient(serverSocket);
                 this.dealWithMessage(message);
 
+
             } catch(IOException e){
                 System.err.println("DotsServerClientListener IO Exception: " + e);
+                // this happens when the connection is cut on the client side
+                break;
             } catch(ClassNotFoundException e){
                 System.err.println("DotsServerClientListener ClassNotFoundException: " + e);
             } catch(InterruptedException e){
@@ -308,6 +346,8 @@ class DotsServerClientListener implements Runnable {
         }
 
         System.out.println("Server listener thread reached end");
+
+
     }
 
     /**

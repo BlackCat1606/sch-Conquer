@@ -145,8 +145,8 @@ public class GameFragment extends Fragment {
         final DotsScreen dotsScreen = new DotsScreen(rootLayout, this.getActivity());
         final ScoreBoard scoreBoard = new ScoreBoard(rootLayout, this.getActivity());
 
-        final DotsGameTask dotsGameTask = new DotsGameTask(playerId, PORT, serverIp);
-
+//        final DotsGameTask dotsGameTask = new DotsGameTask(playerId, PORT, serverIp);
+        final DotsGameTask dotsGameTask = new DotsGameTask(playerId, DotsConstants.SINGLE_PLAYER_PORT, serverIp);
 
         final SurfaceViewDots surfaceViewDots = new SurfaceViewDots(this.getActivity(), rootLayout, dotsGameTask.getDotsServerClientParent(), dotsScreen.getCorrespondingDotCoordinates());
 
