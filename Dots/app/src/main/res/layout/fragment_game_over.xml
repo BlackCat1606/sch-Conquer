@@ -29,6 +29,11 @@
             android:text="opponent score"
             android:id="@+id/opponent_score"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Main Menu"
+            android:id="@+id/go_to_main_menu_button"/>
 
 
 

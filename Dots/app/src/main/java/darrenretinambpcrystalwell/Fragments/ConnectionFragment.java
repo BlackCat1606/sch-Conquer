@@ -91,6 +91,7 @@ public class ConnectionFragment extends Fragment {
 
         ImageButton startServerButton = (ImageButton) this.getActivity().findViewById(R.id.startServerButton);
         ImageButton startClientButton = (ImageButton) this.getActivity().findViewById(R.id.startClientButton);
+
         startClientButton.setBackgroundColor(Color.TRANSPARENT);
         startServerButton.setBackgroundColor(Color.TRANSPARENT);
 
@@ -116,6 +117,8 @@ public class ConnectionFragment extends Fragment {
                 FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"1", serverIp}, (MainActivity)getActivity(), true);
             }
         });
+
+
 
         // Set a default ip address here so you dont have to type it in every time
         String placeholderIpAddress = "10.12.20.13";

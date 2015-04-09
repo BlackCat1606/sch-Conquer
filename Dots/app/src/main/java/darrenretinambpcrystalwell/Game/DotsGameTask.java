@@ -3,6 +3,7 @@ package darrenretinambpcrystalwell.Game;
 import java.io.IOException;
 
 import AndroidCallback.DotsAndroidCallback;
+import Constants.DotsConstants;
 import Sockets.DotsClient;
 import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
@@ -21,8 +22,9 @@ public class DotsGameTask implements Runnable {
 
     public DotsGameTask(int playerId, int port, String ipAddress) throws IOException {
 
-
-        if (playerId == 0) {
+        // if the player is 0 or the port indicates a single player, we force the player to be
+        // the server
+        if (playerId == 0 || port == DotsConstants.SINGLE_PLAYER_PORT) {
             this.dotsServerClientParent = new DotsServer(port);
         } else {
             this.dotsServerClientParent = new DotsClient(ipAddress, port);

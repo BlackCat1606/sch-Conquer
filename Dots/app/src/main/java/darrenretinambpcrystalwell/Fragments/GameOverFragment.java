@@ -5,9 +5,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import Sockets.DotsServerClientParent;
+import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
 
 public class GameOverFragment extends Fragment {
@@ -44,6 +46,17 @@ public class GameOverFragment extends Fragment {
         super.onResume();
 
         this.assignViews();
+
+        final GameOverFragment thisFragment = this;
+
+        Button mainMenuButton = (Button)this.getActivity().findViewById(R.id.go_to_main_menu_button);
+        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransactionHelper.pushFragment(0, thisFragment,new String[2], (MainActivity)getActivity(), true);
+            }
+        });
+
     }
 
     private void assignViews() {
