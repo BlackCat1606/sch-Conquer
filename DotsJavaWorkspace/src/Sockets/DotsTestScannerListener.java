@@ -2,8 +2,8 @@ package Sockets;
 
 import Constants.DotsConstants;
 import Dots.DotsPoint;
-import Model.DotsInteraction;
-import Model.DotsInteractionStates;
+import Model.Interaction.DotsInteraction;
+import Model.Interaction.DotsInteractionStates;
 
 import java.io.IOException;
 import java.util.Random;

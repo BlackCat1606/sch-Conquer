@@ -1,9 +1,9 @@
 package Dots;
 
 import Constants.DotsConstants;
-import Model.DotsInteraction;
-import Model.DotsInteractionStates;
-import Model.DotsLocks;
+import Model.Interaction.DotsInteraction;
+import Model.Interaction.DotsInteractionStates;
+import Model.Locks.DotsLocks;
 
 import java.util.ArrayList;
 
@@ -21,17 +21,23 @@ public class DotsGame {
     private final DotsLogic dotsLogic;
     private final DotsLocks dotsLocks;
 
+
+
+    private final int[] scores;
+
     private ArrayList<DotsPoint>[] playerMoves;
+
 
 
     public DotsGame() {
         this.dotsBoard = new DotsBoard(DotsConstants.BOARD_SIZE);
-        this.dotsLogic = new DotsLogic(this.dotsBoard);
+
 
 
         this.dotsLocks = new DotsLocks();
+        this.dotsLogic = new DotsLogic(this.dotsBoard, this.dotsLocks);
 
-
+        this.scores = new int[DotsConstants.NO_OF_PLAYERS];
         this.playerMoves = new ArrayList[DotsConstants.NO_OF_PLAYERS];
 
         for (int i = 0; i < DotsConstants.NO_OF_PLAYERS; i++) {
@@ -44,7 +50,7 @@ public class DotsGame {
         return this.dotsLocks.isGameRunning();
     }
 
-    public synchronized DotsBoard getDotsBoard() {
+    public DotsBoard getDotsBoard() {
         return dotsBoard;
     }
 
@@ -55,8 +61,6 @@ public class DotsGame {
     public DotsLocks getGameLocks() {
         return dotsLocks;
     }
-
-
 
     /**
      * The primary method that we will call on our game, to update the game based on
@@ -71,57 +75,57 @@ public class DotsGame {
      * @param interaction touch interaction
      * @return true if valid, false if invalid
      */
-    public synchronized boolean doMove(DotsInteraction interaction) {
+    public boolean doMove(DotsInteraction interaction) {
 
-        // Todo shouldnt be escaping here
-        // Todo fix touch below reserved dot as well
         // if conflict detected
-        if (conflictIsDetected(interaction)) {
-            // invalid move
-            return false;
-
-        }
+        boolean samePointConflict = samePointConflict(interaction);
 
         // gets details from the interaction
         int player = interaction.getPlayerId();
         DotsPoint dotsPoint = interaction.getDotsPoint();
 
-        // if its a new touch down, recreate the array list
-        if (interaction.getState() == DotsInteractionStates.TOUCH_DOWN) {
+        boolean moveResult = false;
 
-            this.playerMoves[player] = new ArrayList<DotsPoint>();
-        }
+        // Invariant: at the end of this block, this.playerMoves always contains valid moves for both players
+        if (!samePointConflict) {
+            // Check first to determine if the point has already been recorded
+            boolean pointAlreadyRecorded = false;
+            for (DotsPoint storedPoints : this.playerMoves[player]) {
 
-        // Check first to determine if the point has already been recorded
-        boolean pointAlreadyRecorded = false;
-        for (DotsPoint storedPoints : this.playerMoves[player]) {
+                if (storedPoints.compareWith(dotsPoint)) {
+                    pointAlreadyRecorded = true;
+                }
+            }
 
-            if (storedPoints.compareWith(dotsPoint)) {
-                pointAlreadyRecorded = true;
+            // If the point has not been added previously, we add it into the list of points
+            if (!pointAlreadyRecorded) {
+                this.playerMoves[player].add(dotsPoint);
+            }
+
+
+            // perform a check for adjacency with the new points
+            moveResult = this.dotsLogic.checkMove(this.playerMoves[player]);
+            System.out.println("MoveResult: " + moveResult);
+            // remove the point if it is invalid, so this.playerMoves[player] always contains valid moves
+            if (!moveResult) {
+
+                this.playerMoves[player].remove(this.playerMoves[player].size()-1);
             }
         }
 
-        // If the point has not been added previously, we add it into the list of points
-        if (!pointAlreadyRecorded) {
-            this.playerMoves[player].add(dotsPoint);
-        }
-
-
-        // perform a check for adjacency with the new points
-        boolean moveResult = this.dotsLogic.checkMove(this.playerMoves[player]);
-        System.out.println("MoveResult: " + moveResult);
-        // remove the point if it is invalid, so this.playerMoves[player] always contains valid moves
-        if (!moveResult) {
-
-            this.playerMoves[player].remove(this.playerMoves[player].size()-1);
-        }
 
         boolean needToUpdateBoard = false;
 
         if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
-            System.out.println("HELLO " + this.playerMoves[player]);
 
-            needToUpdateBoard = this.dotsLogic.moveCompleted(this.playerMoves[player]);
+            int noOfDotsCleared = this.dotsLogic.moveCompleted(this.playerMoves[player]);
+            this.scoreChanged(player, noOfDotsCleared);
+
+            System.out.println("Dots cleared: " + noOfDotsCleared);
+            if (noOfDotsCleared != 0) {
+                needToUpdateBoard = true;
+//            needToUpdateBoard = this.dotsLogic.moveCompleted(this.playerMoves[player]);
+            }
 
             /**
              * A touchUp is always a valid move, so even if there is no need to update the board, this interaction
@@ -135,13 +139,29 @@ public class DotsGame {
             // if the board is changed, notify lock
             if (needToUpdateBoard) {
 
-                // TODO We no longer use wait/notify, might want to remove the synchronized
-                synchronized (this.dotsLocks) {
-                    this.dotsLocks.setBoardChanged(true);
-                    this.dotsLocks.notifyAll();
+                /*
+                If the current interaction contains points below than that of the other player, we want to trigger a
+                playerAffected() for the other player to clear displayed touches
+                */
+                if (this.playerPointBelowOtherPlayer(player)) {
+
+                    int otherPlayerAffected;
+                    if (player == 0) {
+                        otherPlayerAffected = 1;
+                    } else {
+                        otherPlayerAffected = 0;
+                    }
+
+                    playerAffected(otherPlayerAffected);
                 }
 
+                this.dotsLocks.setBoardChanged(true);
+//                this.dotsLocks.notifyAll();
+
             }
+
+            // After a touch up, clear the stored moves
+            this.playerMoves[player] = new ArrayList<DotsPoint>();
 
         }
 
@@ -152,51 +172,10 @@ public class DotsGame {
          * Case 3: invalid touch not adjacent to previous points, board no need to update: return moveResult = false
          * Case 4: invalid touch not adjacent to previous points, but touch up and board needs to update with previous points: return moveResult || needToUpdateBoard = true
          */
+
+        // No idea why warning here about needToUpdateBoard always null
+        //noinspection ConstantConditions
         return moveResult || needToUpdateBoard;
-    }
-
-    /**
-     * General method to check for conflicts in the same point selected
-     * and when points are selected above points that can be cleared
-     * @param dotsInteraction
-     * @return
-     */
-    private boolean conflictIsDetected(DotsInteraction dotsInteraction) {
-
-        boolean samePointConflict = this.samePointConflict(dotsInteraction);
-        boolean cascadingConflict = this.cascadingConflict(dotsInteraction);
-
-        return samePointConflict || cascadingConflict;
-
-    }
-
-    /**
-     * Helper method to check for an interaction that selects points
-     * which are above the points another player has selected
-     * @param dotsInteraction interaction of a particular player
-     * @return false if no conflict, true if there is a conflict
-     */
-    private boolean cascadingConflict(DotsInteraction dotsInteraction) {
-
-        DotsPoint interactionDotsPoint = dotsInteraction.getDotsPoint();
-
-        ArrayList<DotsPoint> otherPlayerDotsPoints = this.getOtherPlayerPoints(dotsInteraction.getPlayerId());
-
-        for (DotsPoint otherPlayerDotsPoint : otherPlayerDotsPoints) {
-
-            // same column
-            if (otherPlayerDotsPoint.x == interactionDotsPoint.x) {
-
-                // interaction point is above the other player point
-                if (otherPlayerDotsPoint.y > interactionDotsPoint.y) {
-                    System.out.println("DotsGame: Cascading conflict detected");
-                    return true;
-                }
-            }
-        }
-
-        return false;
-
     }
 
     /**
@@ -223,7 +202,6 @@ public class DotsGame {
 
         }
 
-
         return false;
     }
 
@@ -248,5 +226,87 @@ public class DotsGame {
 
     }
 
+    /**
+     * Method to update the player scores based on the number of dots cleared by a player
+     * @param playerId player id
+     * @param noOfDotsCleared number of dots cleared
+     */
+    private void scoreChanged(int playerId, int noOfDotsCleared) {
+
+        if (noOfDotsCleared != 0) {
+
+            this.dotsLocks.setScoreNeedingUpdate(true);
+            this.scores[playerId] += scoreFromNoOfDotsCleared(noOfDotsCleared);
+        }
+
+        // if a scores exceeds the maximum constant, set to game over
+        for (int score : this.scores) {
+            if (score > DotsConstants.MAX_SCORE_BEFORE_GAME_OVER) {
+                this.dotsLocks.setGameRunning(false);
+            }
+        }
+    }
+
+    /**
+     * Maps the number of dots cleared to a scores
+     * @return scores
+     */
+    private int scoreFromNoOfDotsCleared(int noOfDotsCleared) {
+
+        // Sum of natural numbers
+        // 1 + 2 + ... noOfDotsCleared
+        return noOfDotsCleared * (noOfDotsCleared + 1) / 2;
+
+    }
+
+    /**
+     * Escape to get a copy of the scores
+     * @return copied scores
+     */
+    public int[] getScores() {
+        int[] copiedArray = new int[this.scores.length];
+        System.arraycopy(this.scores, 0, copiedArray, 0, this.scores.length);
+        return copiedArray;
+    }
+
+    /**
+     * Triggered when the input player is affected
+     * @param playerAffected the player that is affected
+     */
+    private void playerAffected(int playerAffected) {
+
+        // clear stored touches of the affected player
+        this.playerMoves[playerAffected] = new ArrayList<DotsPoint>();
+
+        // updates the state variable
+        this.dotsLocks.setPlayerAffected(playerAffected);
+    }
+
+    /**
+     * Checks if the current player Id contains moves below the other player
+     * @param currentPlayerId player that is currently making touches
+     * @return true if the current player contains points below that of the other player, false otherwise
+     */
+    private boolean playerPointBelowOtherPlayer(int currentPlayerId) {
+
+        ArrayList<DotsPoint> currentPlayerPoints = this.playerMoves[currentPlayerId];
+        ArrayList<DotsPoint> otherPlayerPoints = this.getOtherPlayerPoints(currentPlayerId);
+
+        // null pointer here is only if getOtherPlayerPoints returns null from an invalid player id
+        for (DotsPoint otherPlayerDotsPoint : otherPlayerPoints) {
+            for (DotsPoint currentPlayerPoint : currentPlayerPoints) {
+                // same column
+                if (otherPlayerDotsPoint.x == currentPlayerPoint.x) {
+
+                    // interaction point is above the other player point
+                    if (otherPlayerDotsPoint.y < currentPlayerPoint.y) {
+                        return true;
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
 
 }

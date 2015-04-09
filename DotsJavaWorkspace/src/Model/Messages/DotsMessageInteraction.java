@@ -1,4 +1,6 @@
-package Model;
+package Model.Messages;
+
+import Model.Interaction.DotsInteraction;
 
 /**
  * Container for a message that holds a DotsInteraction
@@ -6,8 +8,6 @@ package Model;
  * Created by JiaHao on 25/3/15.
  */
 public class DotsMessageInteraction implements DotsMessage {
-
-
 
     private final DotsInteraction dotsInteraction;
 

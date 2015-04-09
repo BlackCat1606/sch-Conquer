@@ -8,10 +8,10 @@ import java.util.ArrayList;
 public class RuntimeStopwatch {
 
 
-    private double previousAverage;
-    private double noOfReadingsTaken;
+    private long previousAverage;
+    private long noOfReadingsTaken;
 
-    private double startTime;
+    private long startTime;
 
     public RuntimeStopwatch() {
     }
@@ -26,10 +26,10 @@ public class RuntimeStopwatch {
     /**
      * @return the timing of the current measurement
      */
-    public double stopMeasurement() {
+    public long stopMeasurement() {
 
         if (this.startTime != 0) {
-            double timing = System.currentTimeMillis() - this.startTime;
+            long timing = System.currentTimeMillis() - this.startTime;
             this.startTime = 0;
 
             this.previousAverage = (this.previousAverage * this.noOfReadingsTaken + timing)/(this.noOfReadingsTaken + 1);
@@ -41,7 +41,7 @@ public class RuntimeStopwatch {
         return 0;
     }
 
-    public double getAverageRuntime() {
+    public long getAverageRuntime() {
         return this.previousAverage;
     }
 

@@ -4,7 +4,34 @@
     tools:context="darrenretinambpcrystalwell.Fragments.GameOverFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="winning player here"
+            android:id="@+id/winning_player_text_view"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="your score"
+            android:id="@+id/your_score"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="opponent score"
+            android:id="@+id/opponent_score"/>
+
+
+
+
+
+    </LinearLayout>
 </FrameLayout>

@@ -8,21 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 
 import AndroidCallback.DotsAndroidCallback;
-import Dots.DotsBoard;
-import Dots.DotsGame;
-import Model.DotsInteraction;
-import Sockets.DotsClient;
-import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
 import darrenretinambpcrystalwell.Fragments.ConnectionFragment;
 import darrenretinambpcrystalwell.Fragments.GameFragment;
@@ -46,24 +34,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        //   TODO Android does not like running network requests on the main thread.
-        // This is a temporary workaaround.
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-
-
-
         setUpFragment(savedInstanceState);
-
-
-
-
-
-
-
-
 
     }
 
@@ -117,7 +88,9 @@ public class MainActivity extends ActionBarActivity {
             this.fragments = new Fragment[DotsAndroidConstants.NO_OF_FRAGMENTS];
         }
 
-        if (this.fragments[i] == null) {
+        // This if else is to check if the fragment has already been created and start it again
+        // Somehow we cant reuse fragments that have already been created
+//        if (this.fragments[i] == null) {
 
             Fragment fragmentToCreate;
             if (i == 0) {
@@ -134,8 +107,6 @@ public class MainActivity extends ActionBarActivity {
 
             this.fragments[i] = fragmentToCreate;
 
-
-        }
 
         return this.fragments[i];
 

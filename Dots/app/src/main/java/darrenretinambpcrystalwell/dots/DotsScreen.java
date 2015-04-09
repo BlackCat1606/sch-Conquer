@@ -2,11 +2,8 @@ package darrenretinambpcrystalwell.dots;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Point;
-import android.media.effect.Effect;
-import android.transition.Fade;
+
 import android.util.Log;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -15,7 +12,6 @@ import java.util.Arrays;
 
 import Constants.DotsConstants;
 import Dots.Dot;
-import Dots.DotColor;
 
 
 /**
@@ -30,6 +26,7 @@ public class DotsScreen {
     private static final float SCREEN_WIDTH_PERCENTAGE = .8f;
     private static final float SCREEN_Y_PERCENTAGE = .2f;
     private float              x, y;
+
 
     DotView[] dotsList = new DotView[36];
     DotView[] touchList = new DotView[36];
@@ -46,7 +43,7 @@ public class DotsScreen {
     int                     screenHeight;
 
 
-    public float                   dotWidth;
+    public float            dotWidth;
 
 //    DotView                 dotView;
 
@@ -200,9 +197,9 @@ public class DotsScreen {
 //        }
     }
 
-//    public DotView[] getDotList() {
-//        return dotsList;
-//    }
+    public DotView[] getDotList() {
+        return dotsList;
+    }
 
     public DotView[] getTouchedList() { return touchList;}
 }

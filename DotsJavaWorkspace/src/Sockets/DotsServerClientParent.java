@@ -1,7 +1,7 @@
 package Sockets;
 
 import AndroidCallback.DotsAndroidCallback;
-import Model.DotsInteraction;
+import Model.Interaction.DotsInteraction;
 
 import java.io.IOException;
 
@@ -16,6 +16,8 @@ import java.io.IOException;
 public abstract class DotsServerClientParent {
 
     private DotsAndroidCallback androidCallback;
+
+    private boolean gameStarted = false;
 
     /**
      * Compulsory method to set a listener to update the screen
@@ -37,6 +39,9 @@ public abstract class DotsServerClientParent {
             System.err.println("Listener not set up, exiting");
             throw new InstantiationException();
         }
+
+
+
     }
 
     /**
@@ -56,4 +61,39 @@ public abstract class DotsServerClientParent {
 
     }
 
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        this.gameStarted = gameStarted;
+    }
+
+    /**
+     * Call this method to stop the game from running, and terminate threads
+     */
+    public void stopGame() {
+
+    }
+
+    /**
+     * Static helper method to determine who the winner is
+     * @param score
+     * @return index of winning player from score array
+     */
+    public static int getWinner(int[] score) {
+
+        int winningPlayer;
+
+        if (score[0] > score[1]) {
+            winningPlayer = 0;
+        } else if (score[0] < score[1]) {
+            winningPlayer = 1;
+        } else {
+            // Draw
+            winningPlayer = -1;
+        }
+
+        return winningPlayer;
+    }
 }

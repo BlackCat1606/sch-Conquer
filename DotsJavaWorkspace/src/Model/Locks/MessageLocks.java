@@ -1,4 +1,4 @@
-package Model;
+package Model.Locks;
 
 /**
  * A simple object that contains four separate locks to be used in DotSocketHelper.

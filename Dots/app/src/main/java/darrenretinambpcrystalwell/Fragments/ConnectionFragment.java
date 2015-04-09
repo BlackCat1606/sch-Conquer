@@ -101,7 +101,7 @@ public class ConnectionFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity)getActivity());
+                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity)getActivity(), true);
 
             }
         });
@@ -112,12 +112,12 @@ public class ConnectionFragment extends Fragment {
 
                 EditText text = (EditText) getActivity().findViewById(R.id.ipAddress);
                 String serverIp = text.getText().toString();
-                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"1", serverIp}, (MainActivity)getActivity());
+                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"1", serverIp}, (MainActivity)getActivity(), true);
             }
         });
 
-        // Set a default ip address here so you dont have to type it in everytime
-        String placeholderIpAddress = "10.12.20.13";
+        // Set a default ip address here so you dont have to type it in every time
+        String placeholderIpAddress = "10.12.18.51";
 
         EditText editText = (EditText) this.getActivity().findViewById(R.id.ipAddress);
 
@@ -145,7 +145,7 @@ public class ConnectionFragment extends Fragment {
         }
 
         return ipAddressString;
-    }
 
+    }
 
 }

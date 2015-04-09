@@ -12,9 +12,10 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.Arrays;
 
+import Dots.DotColor;
 import Dots.DotsPoint;
-import Model.DotsInteraction;
-import Model.DotsInteractionStates;
+import Model.Interaction.DotsInteraction;
+import Model.Interaction.DotsInteractionStates;
 import Sockets.DotsClient;
 import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
@@ -42,7 +43,6 @@ public class SurfaceViewDots extends RelativeLayout
     private static final float SCREEN_Y_PERCENTAGE     = .2f;
 
 
-    CrossHairView   blackDotView;
 
     float           dotWidth;
 
@@ -88,7 +88,6 @@ public class SurfaceViewDots extends RelativeLayout
         setLayoutParams(layoutParams);
 
         relativeLayout.addView(this);
-        blackDotView = new CrossHairView(context);
 
 //        blackDotView.setX(dotsXOffset + dotWidth);
 //        blackDotView.setY(dotsYOffset + dotWidth);
@@ -118,7 +117,12 @@ public class SurfaceViewDots extends RelativeLayout
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        //Todo fix this to fix the touch and drag over invalid tiles problem
+
+        // if game is not started yet, we just return to avoid nullpointer exceptions
+        if (!this.dotsServerClientParent.isGameStarted()) {
+            return false;
+        }
+
 
         DotsInteractionStates interactionState;
 
@@ -146,10 +150,6 @@ public class SurfaceViewDots extends RelativeLayout
             return false;
         }
 
-        // Draw the crosshair
-        blackDotView.setVisibility(VISIBLE);
-        blackDotView.setX(event.getX() - blackDotView.getWidth() / 2);
-        blackDotView.setY(event.getY() - blackDotView.getHeight() / 2);
 
 
         boolean notActionUp = action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE;
@@ -261,16 +261,19 @@ public class SurfaceViewDots extends RelativeLayout
             Log.d(TAG, interaction.toString());
             this.dotsServerClientParent.doInteraction(interaction);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Do interaction IO exception: " + e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Do interaction interrupted exception: " + e);
         }
 
 
     }
 
     // Filled by Darren
+    // Updated to only clear touchedPath of player and not opponent
     public void setTouchedPath(DotsInteraction interaction, DotsScreen dotsScreen) {
+
+        Log.d(TAG, "TOUCHPATH: " + interaction.toString());
         if (interaction.getPlayerId() == 0) {
             if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
                 int index = interaction.getDotsPoint().y*6 + interaction.getDotsPoint().x;
@@ -278,7 +281,9 @@ public class SurfaceViewDots extends RelativeLayout
                 dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
             } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
                 for (DotView touched : dotsScreen.getTouchedList()) {
-                    touched.setVisibility(INVISIBLE);
+                    if (touched.getColor().equals(DotColor.PLAYER_0)) {
+                        touched.setVisibility(INVISIBLE);
+                    }
                 }
             }
         } else if (interaction.getPlayerId() == 1) {
@@ -288,7 +293,9 @@ public class SurfaceViewDots extends RelativeLayout
                 dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
             } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
                 for (DotView touched : dotsScreen.getTouchedList()) {
-                    touched.setVisibility(INVISIBLE);
+                    if (touched.getColor().equals(DotColor.PLAYER_1)){
+                        touched.setVisibility(INVISIBLE);
+                    }
                 }
             }
         }

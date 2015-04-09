@@ -1,52 +1,20 @@
 package darrenretinambpcrystalwell.Fragments;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import Sockets.DotsServerClientParent;
 import darrenretinambpcrystalwell.dots.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link GameOverFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link GameOverFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class GameOverFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GameOverFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static GameOverFragment newInstance(String param1, String param2) {
-        GameOverFragment fragment = new GameOverFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private int mCurrentPlayerId;
+    private int[] mScores;
 
     public GameOverFragment() {
         // Required empty public constructor
@@ -55,11 +23,14 @@ public class GameOverFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
+
+    public void setArguments(int currentPlayerId, int[] scores) {
+        this.mCurrentPlayerId = currentPlayerId;
+        this.mScores = scores;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,43 +39,45 @@ public class GameOverFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_game_over, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+    public void onResume() {
+        super.onResume();
+
+        this.assignViews();
+    }
+
+    private void assignViews() {
+
+        TextView winningPlayerTextView = (TextView)this.getActivity().findViewById(R.id.winning_player_text_view);
+        TextView yourScoreTextView = (TextView)this.getActivity().findViewById(R.id.your_score);
+        TextView opponentScoreTextView = (TextView)this.getActivity().findViewById(R.id.opponent_score);
+
+        int winnerId = DotsServerClientParent.getWinner(this.mScores);
+
+        String winnerText;
+
+        if (winnerId == -1) {
+            winnerText = "DRAW";
+        } else if (winnerId == this.mCurrentPlayerId) {
+            winnerText = "YOU WIN";
+        } else {
+            winnerText = "YOU LOSE";
         }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+        winningPlayerTextView.setText(winnerText);
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-    }
 
+        yourScoreTextView.setText(Integer.toString(mScores[mCurrentPlayerId]));
+
+        int opponentId;
+
+        if (mCurrentPlayerId == 0) {
+            opponentId = 1;
+        } else {
+            opponentId = 0;
+        }
+
+        opponentScoreTextView.setText(Integer.toString(mScores[opponentId]));
+
+    }
 }

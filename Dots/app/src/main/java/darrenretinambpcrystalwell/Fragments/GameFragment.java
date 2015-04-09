@@ -1,31 +1,32 @@
 package darrenretinambpcrystalwell.Fragments;
 
-import android.app.Activity;
-import android.net.Uri;
+import android.content.Context;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import AndroidCallback.DotsAndroidCallback;
+import Constants.DotsConstants;
 import Dots.DotsBoard;
-import Model.DotsInteraction;
-import Model.DotsInteractionStates;
-import Sockets.DotsClient;
-import Sockets.DotsServer;
-import Sockets.DotsServerClientParent;
+import Model.Interaction.DotsInteraction;
+import Model.Interaction.DotsInteractionStates;
+import darrenretinambpcrystalwell.Game.DotsGameTask;
+import darrenretinambpcrystalwell.SoundHelper;
+import darrenretinambpcrystalwell.dots.DotsAndroidConstants;
 import darrenretinambpcrystalwell.dots.DotsScreen;
-import darrenretinambpcrystalwell.dots.GifRun;
+import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
+import darrenretinambpcrystalwell.dots.ScoreBoard;
 import darrenretinambpcrystalwell.dots.SurfaceViewDots;
 
 /**
@@ -95,6 +96,17 @@ public class GameFragment extends Fragment {
 //        GifRun gifRun = new GifRun(this.getActivity());
 //        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
 
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        TextView view = (TextView)this.getActivity().findViewById(R.id.latency);
+
+
         int playerId = Integer.parseInt(this.mParam1);
         try {
             startServerOrClient(playerId);
@@ -102,44 +114,45 @@ public class GameFragment extends Fragment {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+
+
+            // Connection failed, go back to connection fragment
+            FragmentTransactionHelper.pushFragment(1, this, new String[2], (MainActivity)getActivity(), false);
+
+            FragmentTransactionHelper.showToast("Connection Failed!", this.getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
+
         } catch (java.lang.InstantiationException e) {
             e.printStackTrace();
         }
+
+        view.bringToFront();
     }
+
+
 
     /**
      * Starts a server or client
      * @param playerId 0 for server, 1 for client
      */
-    private void startServerOrClient(int playerId) throws InterruptedException, IOException, java.lang.InstantiationException {
+    private void startServerOrClient(final int playerId) throws InterruptedException, IOException, java.lang.InstantiationException {
 
         Log.d(TAG, "Starting game, playerId: " + playerId + " ip: " + this.mParam2);
         final int PORT = 4321;
 
-
-        //TODO uncomment this to set a dynamic ip address
         String serverIp = this.mParam2;
-//        serverIp = "192.168.1.13";
-
-        DotsServerClientParent dotsServerClientParent;
-
-        if (playerId == 0) {
-
-            dotsServerClientParent = new DotsServer(PORT);
-        } else {
-
-            dotsServerClientParent = new DotsClient(serverIp, PORT);
-        }
-
 
         RelativeLayout rootLayout = (RelativeLayout) this.getActivity().findViewById(R.id.gameFragment);
         final DotsScreen dotsScreen = new DotsScreen(rootLayout, this.getActivity());
+        final ScoreBoard scoreBoard = new ScoreBoard(rootLayout, this.getActivity());
 
-        final SurfaceViewDots surfaceViewDots = new SurfaceViewDots(this.getActivity(), rootLayout, dotsServerClientParent, dotsScreen.getCorrespondingDotCoordinates());
+        final DotsGameTask dotsGameTask = new DotsGameTask(playerId, PORT, serverIp);
 
-//        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
-//        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
 
+        final SurfaceViewDots surfaceViewDots = new SurfaceViewDots(this.getActivity(), rootLayout, dotsGameTask.getDotsServerClientParent(), dotsScreen.getCorrespondingDotCoordinates());
+
+        final SoundHelper soundHelper = new SoundHelper(this.getActivity());
+
+        final Fragment thisFragment = this;
 
         DotsAndroidCallback androidCallback = new DotsAndroidCallback() {
             @Override
@@ -148,9 +161,11 @@ public class GameFragment extends Fragment {
                     @Override
                     public void run() {
                         surfaceViewDots.setTouchedPath(dotsInteraction, dotsScreen);
-                        playSoundForInteraction(dotsInteraction);
                     }
                 });
+
+                playSoundForInteraction(dotsInteraction, soundHelper);
+
             }
 
             @Override
@@ -166,26 +181,69 @@ public class GameFragment extends Fragment {
             }
 
             @Override
-            public void onGameOver() {
-                // print game over
+            public void onGameOver(int i, int[] ints) {
+                final String message = "GAME OVER, WINNER: " + i + " FINAL SCORE: " + Arrays.toString(ints);
+                Log.d(TAG, message);
+
+                // kill threads and stop the game
+                dotsGameTask.getDotsServerClientParent().stopGame();
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FragmentTransactionHelper.showToast(message, getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
+
+                    }
+                });
+
+                // initialise the game over fragments with arguments
+                GameOverFragment gameOverFragment = new GameOverFragment();
+                gameOverFragment.setArguments(playerId, ints);
+
+                // Push the game over fragment out
+                FragmentTransactionHelper.pushFragment(gameOverFragment, thisFragment, (MainActivity)getActivity(), true);
+
+            }
+
+
+            @Override
+            public void onScoreUpdated(final int[] ints) {
+                Log.d(TAG, "Score: " + Arrays.toString(ints));
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("SHOWING TOAST");
+                        FragmentTransactionHelper.showToast(Arrays.toString(ints), getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
+                    }
+                });
+            }
+
+            @Override
+            public void latencyChanged(long l) {
+                Log.d(TAG, "Latency: " + l);
             }
         };
 
-        dotsServerClientParent.setAndroidCallback(androidCallback);
-        dotsServerClientParent.start();
+        dotsGameTask.setDotsAndroidCallback(androidCallback);
+
+//        surfaceViewDots.setDotsServerClientParent(this.dotsServerClientParent);
+//        surfaceViewDots.setCorrespondingDotCoordinates(dotsScreen.getCorrespondingDotCoordinates());
+
+        Thread thread = new Thread(dotsGameTask);
+        thread.start();
+
 
     }
 
-    private void playSoundForInteraction(DotsInteraction interaction) {
+    private void playSoundForInteraction(DotsInteraction interaction, SoundHelper soundHelper) {
 
         DotsInteractionStates state = interaction.getState();
 
-        if (state == DotsInteractionStates.TOUCH_UP) {
-            // play high pitch
+        int soundId = state.ordinal();
 
-        } else if (state == DotsInteractionStates.TOUCH_DOWN) {
-            // play low pitch
-        }
+        // Temporarily comment out bad sound
+//        soundHelper.playSoundForInteraction(soundId);
 
     }
 

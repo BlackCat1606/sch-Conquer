@@ -23,4 +23,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.2'
     compile files('libs/DotsJavaWorkspace.jar')
+    compile 'com.github.johnpersano:supertoasts:1.3.4@aar'
 }
