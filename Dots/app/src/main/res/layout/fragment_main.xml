@@ -24,8 +24,14 @@
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start Game"
-            android:id="@+id/startGameButton"
+            android:text="Multiplayer"
+            android:id="@+id/start_multi_player_button"
             android:layout_gravity="center_horizontal|bottom"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Singleplayer"
+        android:id="@+id/start_single_player_button"
+        android:layout_gravity="center_horizontal|bottom|right"/>
 
 </FrameLayout>

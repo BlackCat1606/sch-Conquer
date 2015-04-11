@@ -10,6 +10,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import darrenretinambpcrystalwell.dots.GifRun;
 import darrenretinambpcrystalwell.dots.MainActivity;
@@ -79,13 +80,21 @@ public class MainFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        Button startGameButton = (Button) this.getActivity().findViewById(R.id.startGameButton);
+        Button startMultiplayerButton = (Button) this.getActivity().findViewById(R.id.start_multi_player_button);
 
         final Fragment thisFragment = this;
-        startGameButton.setOnClickListener(new View.OnClickListener() {
+        startMultiplayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransactionHelper.pushFragment(1, thisFragment,new String[2], (MainActivity)getActivity(), true);
+            }
+        });
+
+        Button startSinglePlayerButton = (Button) this.getActivity().findViewById(R.id.start_single_player_button);
+        startSinglePlayerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"-1", "0"}, (MainActivity)getActivity(), true);
             }
         });
 

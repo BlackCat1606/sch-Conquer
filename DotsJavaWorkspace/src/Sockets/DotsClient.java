@@ -127,6 +127,7 @@ public class DotsClient extends DotsServerClientParent {
         // this will terminate the while loop in DotsServerClientListener and stop the game
         this.dotsLocks.setGameRunning(false);
 
+
         try {
             this.clientSocket.closeClient();
         } catch (IOException e) {

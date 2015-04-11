@@ -132,12 +132,10 @@ public class GameFragment extends Fragment {
 
     /**
      * Starts a server or client
-     * @param playerId 0 for server, 1 for client
+     * @param inputPlayerId 0 for server, 1 for client, -1 for single player
      */
-    private void startServerOrClient(final int playerId) throws InterruptedException, IOException, java.lang.InstantiationException {
+    private void startServerOrClient(final int inputPlayerId) throws InterruptedException, IOException, java.lang.InstantiationException {
 
-        Log.d(TAG, "Starting game, playerId: " + playerId + " ip: " + this.mParam2);
-        final int PORT = 4321;
 
         String serverIp = this.mParam2;
 
@@ -145,8 +143,20 @@ public class GameFragment extends Fragment {
         final DotsScreen dotsScreen = new DotsScreen(rootLayout, this.getActivity());
         final ScoreBoard scoreBoard = new ScoreBoard(rootLayout, this.getActivity());
 
-        final DotsGameTask dotsGameTask = new DotsGameTask(playerId, PORT, serverIp);
 
+        final DotsGameTask dotsGameTask;
+        final int playerId;
+
+        if (inputPlayerId == -1) {
+            playerId = 0;
+            dotsGameTask = new DotsGameTask(inputPlayerId, DotsConstants.SINGLE_PLAYER_PORT, serverIp);
+
+        } else {
+            playerId = inputPlayerId;
+            dotsGameTask = new DotsGameTask(inputPlayerId, DotsConstants.CLIENT_PORT, serverIp);
+        }
+
+//        Log.d(TAG, "Starting game, playerId: " + playerId + " ip: " + this.mParam2);
 
         final SurfaceViewDots surfaceViewDots = new SurfaceViewDots(this.getActivity(), rootLayout, dotsGameTask.getDotsServerClientParent(), dotsScreen.getCorrespondingDotCoordinates());
 
