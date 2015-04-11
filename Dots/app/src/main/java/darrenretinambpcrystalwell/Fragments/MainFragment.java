@@ -80,8 +80,7 @@ public class MainFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        Button startMultiplayerButton = (Button) this.getActivity().findViewById(R.id.start_multi_player_button);
-
+        ImageButton startMultiplayerButton = (ImageButton) this.getActivity().findViewById(R.id.start_multi_player_button);
         final Fragment thisFragment = this;
         startMultiplayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +89,7 @@ public class MainFragment extends Fragment {
             }
         });
 
-        Button startSinglePlayerButton = (Button) this.getActivity().findViewById(R.id.start_single_player_button);
+        ImageButton startSinglePlayerButton = (ImageButton) this.getActivity().findViewById(R.id.start_single_player_button);
         startSinglePlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
