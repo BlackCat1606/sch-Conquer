@@ -1,5 +1,6 @@
 package darrenretinambpcrystalwell.Fragments;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.view.SurfaceView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -25,9 +27,11 @@ import darrenretinambpcrystalwell.SoundHelper;
 import darrenretinambpcrystalwell.dots.DotsAndroidConstants;
 import darrenretinambpcrystalwell.dots.DotsScreen;
 import darrenretinambpcrystalwell.dots.MainActivity;
+import darrenretinambpcrystalwell.dots.MainScreen;
 import darrenretinambpcrystalwell.dots.R;
 import darrenretinambpcrystalwell.dots.ScoreBoard;
 import darrenretinambpcrystalwell.dots.SurfaceViewDots;
+import darrenretinambpcrystalwell.dots.GifRun;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,6 +83,7 @@ public class GameFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override

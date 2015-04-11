@@ -15,12 +15,6 @@
     </AbsoluteLayout>
 
 
-    <ImageView
-            android:layout_width="542dp"
-            android:layout_height="721dp"
-            android:id="@+id/imageView"
-            android:src="@drawable/conquer"
-            android:layout_gravity="center"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

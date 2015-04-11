@@ -24,7 +24,7 @@ import Dots.Dot;
 public class DotsScreen {
 
     private static final float SCREEN_WIDTH_PERCENTAGE = .8f;
-    private static final float SCREEN_Y_PERCENTAGE = .2f;
+    private static final float SCREEN_Y_PERCENTAGE = .3f;
     private float              x, y;
 
 
@@ -41,6 +41,8 @@ public class DotsScreen {
     RelativeLayout          dotsLayout;
     int                     screenWidth;
     int                     screenHeight;
+    ScoreBoard              scoreBoard0;
+    ScoreBoard              scoreBoard1;
 
 
     public float            dotWidth;
@@ -50,7 +52,7 @@ public class DotsScreen {
     private float[][][] correspondingDotCoordinates;
 
 
-    final int FADE_DURATION = 2000;
+    final int FADE_DURATION = 300;
     final int END_ALPHA = 1;
 
     public float[][][] getCorrespondingDotCoordinates() {
@@ -68,13 +70,24 @@ public class DotsScreen {
 //        green  = new          GreenDotView(context);
 //        yellow = new          YellowDotView(context);
 
-        this.screenWidth =  ScreenDimensions.getWidth(context);
-        this.screenHeight = ScreenDimensions.getHeight(context);
+        this.screenWidth    =  ScreenDimensions.getWidth(context);
+        this.screenHeight   = ScreenDimensions.getHeight(context);
+
+        scoreBoard0         = new ScoreBoard(relativeLayout, context);
+        scoreBoard1         = new ScoreBoard(relativeLayout, context);
+
 
         this.dotsLayout = new RelativeLayout(context);
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(screenWidth, screenHeight);
         dotsLayout.setLayoutParams(rlp);
         relativeLayout.addView(dotsLayout);
+        scoreBoard0.setX((screenWidth / 4) - scoreBoard0.getFontSize());
+        scoreBoard0.setY((screenHeight/7) - scoreBoard0.getFontSize());
+        dotsLayout.addView(scoreBoard0);
+
+        scoreBoard1.setX(((screenWidth /4)*3) - scoreBoard1.getFontSize());
+        scoreBoard1.setY((screenHeight/7)    - scoreBoard1.getFontSize());
+        dotsLayout.addView(scoreBoard1);
 
         this.dotWidth = SCREEN_WIDTH_PERCENTAGE * screenWidth / 6.f;
 
@@ -138,20 +151,22 @@ public class DotsScreen {
                 final DotView currentDotView = dotsList[index];
 
                 // if the updated board color is different from the current dotView's color
+
                 if (!(currentDotView.getColor() == updatedBoardDot.color)) {
+
 
                     // do fading effects
 //                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
 //                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
 
-                    ((Activity)context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
-
-
-                        }
-                    });
+//                    ((Activity)context).runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, false);
+//
+//
+//                        }
+//                    });
 
                     // Create a thread to cast a fade in animation
                     Thread fadeIn = new Thread(new Runnable() {
@@ -182,7 +197,7 @@ public class DotsScreen {
                     });
 
                     fadeIn.start();
-                    
+
                 }
                 
             }
