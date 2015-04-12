@@ -70,8 +70,7 @@ public class MainFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        FrameLayout rootLayout = (FrameLayout) this.getActivity().findViewById(R.id.root_layout);
-        final MainScreen mainScreen = new MainScreen(rootLayout,this.getActivity());
+
 
     }
 
@@ -87,6 +86,9 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        FrameLayout frameLayout = (FrameLayout) this.getActivity().findViewById(R.id.root_layout);
+        MainScreen mainScreen = new MainScreen(frameLayout,this.getActivity());
 
         ImageButton startMultiplayerButton = (ImageButton) this.getActivity().findViewById(R.id.start_multi_player_button);
         final Fragment thisFragment = this;
