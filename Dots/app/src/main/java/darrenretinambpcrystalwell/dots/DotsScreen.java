@@ -6,6 +6,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.Arrays;
@@ -30,6 +31,9 @@ public class DotsScreen {
 
     DotView[] dotsList = new DotView[36];
     DotView[] touchList = new DotView[36];
+
+    ImageView score;
+    ImageView opponent;
 //    private BlueDotView      blue;
 //    private RedDotView       red;
 //    private GreenDotView     green;
@@ -41,6 +45,7 @@ public class DotsScreen {
     RelativeLayout          dotsLayout;
     int                     screenWidth;
     int                     screenHeight;
+    float                   screenDensity;
     ScoreBoard              scoreBoard0;
     ScoreBoard              scoreBoard1;
 
@@ -72,22 +77,45 @@ public class DotsScreen {
 
         this.screenWidth    =  ScreenDimensions.getWidth(context);
         this.screenHeight   = ScreenDimensions.getHeight(context);
+        this.screenDensity  = ScreenDimensions.getDensity(context);
 
         scoreBoard0         = new ScoreBoard(relativeLayout, context);
         scoreBoard1         = new ScoreBoard(relativeLayout, context);
+
 
 
         this.dotsLayout = new RelativeLayout(context);
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(screenWidth, screenHeight);
         dotsLayout.setLayoutParams(rlp);
         relativeLayout.addView(dotsLayout);
+
+        score    = new ImageView(context);
+        opponent = new ImageView(context);
+        score.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
+                context.getResources(), R.drawable.score,
+                (int)screenDensity*300,(int)screenDensity*300
+        ));
+
+        opponent.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
+                context.getResources(), R.drawable.enemy,
+                (int)screenDensity*300,(int)screenDensity*300
+        ));
+
+        score.setX((screenWidth/4)- scoreBoard0.getFontSize() - (300/4));
+        score.setY((screenHeight/7) - scoreBoard0.getFontSize()*2);
+
         scoreBoard0.setX((screenWidth / 4) - scoreBoard0.getFontSize());
         scoreBoard0.setY((screenHeight/7) - scoreBoard0.getFontSize());
         dotsLayout.addView(scoreBoard0);
 
+        opponent.setX(((screenWidth /4)*3) - scoreBoard1.getFontSize() - (300/3));
+        opponent.setY((screenHeight/7)    - scoreBoard1.getFontSize()*2);
+
         scoreBoard1.setX(((screenWidth /4)*3) - scoreBoard1.getFontSize());
         scoreBoard1.setY((screenHeight/7)    - scoreBoard1.getFontSize());
         dotsLayout.addView(scoreBoard1);
+        dotsLayout.addView(score);
+        dotsLayout.addView(opponent);
 
         this.dotWidth = SCREEN_WIDTH_PERCENTAGE * screenWidth / 6.f;
 
