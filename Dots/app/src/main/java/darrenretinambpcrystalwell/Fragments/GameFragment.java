@@ -232,8 +232,15 @@ public class GameFragment extends Fragment {
                     public void run() {
                         System.out.println("SHOWING TOAST");
                         FragmentTransactionHelper.showToast(Arrays.toString(ints), getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
-                        dotsScreen.scoreBoard0.setScore(ints[0]);
-                        dotsScreen.scoreBoard1.setScore(ints[1]);
+                        //fixed playerID to update score
+                        if (playerId == 0) {
+                            dotsScreen.scoreBoard0.setScore(ints[0]);
+                            dotsScreen.scoreBoard1.setScore(ints[1]);
+                        } else {
+                            dotsScreen.scoreBoard0.setScore(ints[1]);
+                            dotsScreen.scoreBoard1.setScore(ints[0]);
+                        }
+
                     }
                 });
 
