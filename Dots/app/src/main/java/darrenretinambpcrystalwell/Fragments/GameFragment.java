@@ -55,6 +55,7 @@ public class GameFragment extends Fragment {
     private String mParam2;
 
 
+    private int playerId;
 
     /**
      * Use this factory method to create a new instance of
@@ -148,12 +149,9 @@ public class GameFragment extends Fragment {
 
         RelativeLayout rootLayout = (RelativeLayout) this.getActivity().findViewById(R.id.gameFragment);
         final DotsScreen dotsScreen = new DotsScreen(rootLayout, this.getActivity());
-        final ScoreBoard scoreBoard = new ScoreBoard(rootLayout, this.getActivity());
-
-
 
         final DotsGameTask dotsGameTask;
-        final int playerId;
+
 
         if (inputPlayerId == -1) {
             playerId = 0;
@@ -232,8 +230,8 @@ public class GameFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println("SHOWING TOAST");
-                        FragmentTransactionHelper.showToast(Arrays.toString(ints), getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
+//                        System.out.println("SHOWING TOAST");
+//                        FragmentTransactionHelper.showToast(Arrays.toString(ints), getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
                         //fixed playerID to update score
                         if (playerId == 0) {
                             dotsScreen.scoreBoard0.setScore(ints[0]);
@@ -271,8 +269,11 @@ public class GameFragment extends Fragment {
 
         int soundId = state.ordinal();
 
-        // Temporarily comment out bad sound
-//        soundHelper.playSoundForInteraction(soundId);
+
+        if (interaction.getPlayerId() == this.playerId) {
+
+            soundHelper.playSoundForInteraction(soundId);
+        }
 
     }
 
