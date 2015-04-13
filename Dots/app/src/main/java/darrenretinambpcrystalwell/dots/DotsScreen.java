@@ -271,6 +271,16 @@ public class DotsScreen {
     }
 
     public DotView[] getTouchedList() { return touchList;}
+
+    /**
+     * Sets the score
+     * @param score index 0 is you, index 1 is enemy
+     */
+    public void setScore(int[] score) {
+        this.scoreBoard0.setScore(score[0]);
+        this.scoreBoard1.setScore(score[1]);
+
+    }
 }
 
 

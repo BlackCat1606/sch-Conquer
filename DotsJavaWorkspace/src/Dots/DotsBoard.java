@@ -1,7 +1,11 @@
 package Dots;
 
+import Model.Locks.DotsLocks;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A wrapper for a 2D array representing the board, with some helper functions
@@ -21,15 +25,22 @@ public class DotsBoard implements Serializable {
 //            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.RED), new Dot(DotColor.RED), new Dot(DotColor.GREEN)},
 //    };
 
+    private final DotsLocks dotsLocks;
+
     /**
      * Designated initialize that sets up a n x n board
      *
      * @param n rows and columns to have
      */
-    public DotsBoard(int n) {
+    public DotsBoard(int n, DotsLocks dotsLocks) {
         // Uncomment this to initialize board properly
+        this.dotsLocks = dotsLocks;
         initializeBoard(n);
+
+
     }
+
+
 
     /**
      * Randomly assigns different colored dots to board
@@ -37,12 +48,27 @@ public class DotsBoard implements Serializable {
      * @param n number of rows and columns to have
      */
     private void initializeBoard(int n) {
+        ArrayList<DotsPoint> initialPoints = new ArrayList<DotsPoint>();
+
         boardArray = new Dot[n][n];
-        for (Dot[] currentRow : boardArray) {
+
+        for (int i = 0; i < boardArray.length; i++) {
+            Dot[] currentRow = boardArray[i];
+
             for (int j = 0; j < currentRow.length; j++) {
-                currentRow[j] = new Dot();
+                Dot createdDot = new Dot();
+                currentRow[j] = createdDot;
+
+                // add the point to the lock
+                DotsPoint currentPoint = new DotsPoint(j, i, createdDot.color);
+                initialPoints.add(currentPoint);
+
+
             }
         }
+
+        // initialise the lock
+        this.dotsLocks.setChangedDots(initialPoints);
     }
 
     /**
@@ -97,7 +123,6 @@ public class DotsBoard implements Serializable {
 
 
             // fill in nulls with new randomised dots
-
             for (int i = 0; i < currentColumnNullsRemoved.length; i++) {
                 if (currentColumnNullsRemoved[i] == null) {
                     currentColumnNullsRemoved[i] = new Dot();
@@ -109,6 +134,8 @@ public class DotsBoard implements Serializable {
                 boardArray[boardArray.length - 1 - i][columnIndex] = currentColumnNullsRemoved[i];
             }
         }
+
+        this.updateChangedPoints(dotsPointList);
 
     }
 
@@ -134,6 +161,45 @@ public class DotsBoard implements Serializable {
      */
     private void setElement(DotsPoint dotsPoint, Dot dot) {
         boardArray[dotsPoint.y][dotsPoint.x] = dot;
+    }
+
+    private void updateChangedPoints(ArrayList<DotsPoint> clearedPoints) {
+
+        // find affected columns
+
+        HashMap<Integer, Integer> affectedMap = new HashMap<Integer, Integer>();
+
+        for (DotsPoint point : clearedPoints) {
+
+            if (affectedMap.get(point.x) == null) {
+                affectedMap.put(point.x, point.y);
+            } else {
+                if (affectedMap.get(point.x) < point.y) {
+                    affectedMap.put(point.x, point.y);
+                }
+            }
+        }
+
+        ArrayList<DotsPoint> pointsNeedingUpdate = new ArrayList<DotsPoint>();
+        // for each column in map
+        for (Map.Entry<Integer, Integer> entry : affectedMap.entrySet()) {
+            int columnIndex = entry.getKey();
+            int rowMax = entry.getValue();
+
+
+
+            // iterate the rows from top to bottom
+            for (int i = 0; i < rowMax + 1; i++) {
+
+                DotColor color = this.getBoard()[columnIndex][i].color;
+
+                DotsPoint pointToAdd = new DotsPoint(i, columnIndex, color);
+                pointsNeedingUpdate.add(pointToAdd);
+            }
+        }
+
+        // todo add the points that need update into locks
+        this.dotsLocks.setChangedDots(pointsNeedingUpdate);
     }
 
 

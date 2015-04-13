@@ -1,5 +1,10 @@
 package Model.Locks;
 
+import Dots.Dot;
+import Dots.DotsPoint;
+
+import java.util.ArrayList;
+
 /**
  * A thread-safe(?) object that holds locks, to track the state of the game
  *
@@ -11,6 +16,8 @@ public class DotsLocks {
     // Todo not sure why i synchronise methods as well
     private boolean boardChanged;
     private boolean gameRunning;
+
+    private ArrayList<DotsPoint> changedDots;
 
     private int playerAffected;
 
@@ -34,6 +41,8 @@ public class DotsLocks {
         return gameRunning;
     }
 
+
+
     public synchronized void setGameRunning(boolean gameRunning) {
         this.gameRunning = gameRunning;
     }
@@ -43,6 +52,14 @@ public class DotsLocks {
         return this.boardChanged;
     }
 
+    public ArrayList<DotsPoint> getChangedDots() {
+
+        return this.changedDots;
+    }
+
+    public void setChangedDots(ArrayList<DotsPoint> changedDots) {
+        this.changedDots = changedDots;
+    }
 
     public synchronized boolean isScoreNeedingUpdate() {
         return scoreNeedingUpdate;

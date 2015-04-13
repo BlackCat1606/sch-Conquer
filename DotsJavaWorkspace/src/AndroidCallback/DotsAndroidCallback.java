@@ -1,7 +1,10 @@
 package AndroidCallback;
 
 import Dots.DotsBoard;
+import Dots.DotsPoint;
 import Model.Interaction.DotsInteraction;
+
+import java.util.ArrayList;
 
 /**
  * Callback interface, to link android front end with the back end
@@ -12,7 +15,7 @@ public interface DotsAndroidCallback {
 
     void onValidPlayerInteraction(DotsInteraction interaction);
 
-    void onBoardChanged(DotsBoard board);
+    void onBoardChanged(ArrayList<DotsPoint> changedPoints);
 
     void onGameOver(int winningPlayerId, int[] finalScore);
 

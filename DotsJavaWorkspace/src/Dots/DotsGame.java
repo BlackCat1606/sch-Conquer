@@ -30,11 +30,10 @@ public class DotsGame {
 
 
     public DotsGame() {
-        this.dotsBoard = new DotsBoard(DotsConstants.BOARD_SIZE);
-
-
-
         this.dotsLocks = new DotsLocks();
+
+        this.dotsBoard = new DotsBoard(DotsConstants.BOARD_SIZE, this.dotsLocks);
+
         this.dotsLogic = new DotsLogic(this.dotsBoard, this.dotsLocks);
 
         this.scores = new int[DotsConstants.NO_OF_PLAYERS];
@@ -68,9 +67,6 @@ public class DotsGame {
      *
      * In this method, we will also check for a change for the board, when the interaction is touchUp
      * and certain dots on the screen need to be cleared.
-     *
-     * If so, this method will notify the dotsLock, which will in turn awaken the main thread to update
-     * the screen
      *
      * @param interaction touch interaction
      * @return true if valid, false if invalid

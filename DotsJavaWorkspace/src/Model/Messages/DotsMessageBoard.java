@@ -1,6 +1,9 @@
 package Model.Messages;
 
 import Dots.DotsBoard;
+import Dots.DotsPoint;
+
+import java.util.ArrayList;
 
 /**
  * Container for a message that holds a DotsBoard
@@ -8,14 +11,23 @@ import Dots.DotsBoard;
  */
 public class DotsMessageBoard implements DotsMessage {
 
-    private final DotsBoard dotsBoard;
+//    private final DotsBoard dotsBoard;
+//
+//    public DotsMessageBoard(DotsBoard dotsBoard) {
+//        this.dotsBoard = dotsBoard;
+//    }
+//
+//    public DotsBoard getDotsBoard() {
+//        return dotsBoard;
+//    }
 
-    public DotsMessageBoard(DotsBoard dotsBoard) {
-        this.dotsBoard = dotsBoard;
+    private final ArrayList<DotsPoint> changedPoints;
+
+    public DotsMessageBoard(ArrayList<DotsPoint> changedPoints) {
+        this.changedPoints = changedPoints;
     }
 
-    public DotsBoard getDotsBoard() {
-        return dotsBoard;
+    public ArrayList<DotsPoint> getChangedPoints() {
+        return changedPoints;
     }
-
 }

@@ -11,6 +11,7 @@ import Model.Locks.DotsLocks;
 import Model.Messages.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -195,13 +196,18 @@ public class DotsServer extends DotsServerClientParent{
     public void updateBoard() throws IOException {
 
         // update the board on the current device
-        DotsBoard updatedBoard = dotsGame.getDotsBoard();
-        updatedBoard.printWithIndex();
 
-        this.getAndroidCallback().onBoardChanged(updatedBoard);
+        ArrayList<DotsPoint> changedDots = this.dotsLocks.getChangedDots();
+
+        if (changedDots == null) {
+            return;
+        }
+
+        this.getAndroidCallback().onBoardChanged(changedDots);
+        this.dotsLocks.setChangedDots(null);
 
         // update the board on the remote device
-        DotsMessageBoard messageBoard = new DotsMessageBoard(dotsGame.getDotsBoard());
+        DotsMessageBoard messageBoard = new DotsMessageBoard(changedDots);
         DotsSocketHelper.sendMessageToClient(this.serverSocket, messageBoard);
 
         this.dotsLocks.setBoardChanged(false);
@@ -249,8 +255,8 @@ public class DotsServer extends DotsServerClientParent{
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
         // Initialise the server
-//        DotsServer dotsServer = new DotsServer(DotsConstants.CLIENT_PORT);
-        DotsServer dotsServer = new DotsServer(DotsConstants.SINGLE_PLAYER_PORT);
+        DotsServer dotsServer = new DotsServer(DotsConstants.CLIENT_PORT);
+//        DotsServer dotsServer = new DotsServer(DotsConstants.SINGLE_PLAYER_PORT);
         // Compulsory to set listeners
         dotsServer.setAndroidCallback(new DotsAndroidCallback() {
             @Override
@@ -260,8 +266,8 @@ public class DotsServer extends DotsServerClientParent{
             }
 
             @Override
-            public void onBoardChanged(DotsBoard board) {
-
+            public void onBoardChanged(ArrayList<DotsPoint> changedPoints) {
+                System.out.println("Changed points: " + changedPoints.toString());
             }
 
             @Override

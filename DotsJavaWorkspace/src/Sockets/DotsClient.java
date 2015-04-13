@@ -5,6 +5,7 @@ import Constants.DotsConstants;
 import Dots.DotsBoard;
 
 import AndroidCallback.DotsAndroidCallback;
+import Dots.DotsPoint;
 import Latency.RuntimeStopwatch;
 import Model.Interaction.DotsInteraction;
 import Model.Locks.DotsLocks;
@@ -12,6 +13,7 @@ import Model.Messages.*;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -138,8 +140,8 @@ public class DotsClient extends DotsServerClientParent {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
-        final String SERVER_ADDRESS = "10.12.17.172";
-//        final String SERVER_ADDRESS = "127.0.0.1";
+//        final String SERVER_ADDRESS = "10.12.17.172";
+        final String SERVER_ADDRESS = "127.0.0.1";
 
         // Initialise the client
         DotsClient dotsClient = new DotsClient(SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
@@ -152,8 +154,9 @@ public class DotsClient extends DotsServerClientParent {
             }
 
             @Override
-            public void onBoardChanged(DotsBoard board) {
+            public void onBoardChanged(ArrayList<DotsPoint> changedPoints) {
 
+                System.out.println("Changed points: " + changedPoints.toString());
             }
 
             @Override
@@ -244,9 +247,8 @@ class DotsClientServerListener implements Runnable {
         if (message instanceof DotsMessageBoard) {
 
             DotsMessageBoard receivedBoardMessage = (DotsMessageBoard) message;
-            DotsBoard receivedBoard = receivedBoardMessage.getDotsBoard();
-
-            this.updateScreenWithNewBoard(receivedBoard);
+            ArrayList<DotsPoint> receivedPoints = receivedBoardMessage.getChangedPoints();
+            this.updateScreenWithNewPoints(receivedPoints);
 
         } else if (message instanceof DotsMessageResponse) {
 
@@ -279,21 +281,16 @@ class DotsClientServerListener implements Runnable {
             System.err.println("Unknown message type: ");
             System.err.println(message.toString());
         }
-
-
     }
 
     /**
      * Method to update the screen with the board using a callback
-     * @param dotsBoard board
+     * @param updatedPoints board
      */
-    private void updateScreenWithNewBoard(DotsBoard dotsBoard) {
-
-        // Debug method to print the board to the console
-        dotsBoard.printWithIndex();
+    private void updateScreenWithNewPoints(ArrayList<DotsPoint> updatedPoints) {
 
         // update the board on the current device
-        this.dotsAndroidCallback.onBoardChanged(dotsBoard);
+        this.dotsAndroidCallback.onBoardChanged(updatedPoints);
 
     }
 
