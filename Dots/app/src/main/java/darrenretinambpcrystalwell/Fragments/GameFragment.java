@@ -270,6 +270,8 @@ public class GameFragment extends Fragment {
         thread.start();
 
 
+
+
     }
 
     private void playSoundForInteraction(DotsInteraction interaction, SoundHelper soundHelper) {

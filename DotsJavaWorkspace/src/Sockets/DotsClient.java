@@ -188,10 +188,6 @@ public class DotsClient extends DotsServerClientParent {
 
     }
 
-    /**
-     * This is needed
-     * @return
-     */
     public DotsLocks getDotsLocks() {
         return dotsLocks;
     }

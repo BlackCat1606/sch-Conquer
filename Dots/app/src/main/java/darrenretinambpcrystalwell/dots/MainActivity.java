@@ -10,6 +10,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 import AndroidCallback.DotsAndroidCallback;
 import Sockets.DotsServerClientParent;
 import darrenretinambpcrystalwell.Fragments.ConnectionFragment;
@@ -32,8 +35,19 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        // Initialize parse
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "jtDIpaAPL4ZT2CkLcBnP4QznoFVrH4ZTk6tCtEhk", "dbQ63Aur5FqeMQ2offnDXUPFsz5gxpw9vUlIr2jE");
+
+        // Saves my IP address into the cloud
+        ParseObject ipAddressObject = new ParseObject(DotsAndroidConstants.PARSE_OBJECT_NAME);
+        String myIpAddress = ConnectionFragment.wifiIpAddress(this);
+        ipAddressObject.put(DotsAndroidConstants.PARSE_IP_KEY, myIpAddress);
+        ipAddressObject.saveInBackground();
+
+        // sets up views
+        setContentView(R.layout.activity_main);
         setUpFragment(savedInstanceState);
 
     }
