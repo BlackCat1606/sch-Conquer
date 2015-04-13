@@ -283,8 +283,8 @@ public class SurfaceViewDots extends RelativeLayout
                 for (int i=0; i< dotsScreen.getTouchedList().length;i++) {
                     if (dotsScreen.getTouchedList()[i].getColor().equals(DotColor.PLAYER_0)) {
                         dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
-                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],200,false,false);
-                        dotsScreen.getTouchedList()[i].setTouchedDot();
+//                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],200,false,false);
+//                        dotsScreen.getTouchedList()[i].setTouchedDot();
 //                        dotsScreen.scoreBoard0.setScore(1);
                     }
                 }
@@ -299,8 +299,8 @@ public class SurfaceViewDots extends RelativeLayout
                 for (int i=0; i< dotsScreen.getTouchedList().length;i++) {
                     if (dotsScreen.getTouchedList()[i].getColor().equals(DotColor.PLAYER_1)) {
                         dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
-                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],200,false,false);
-                        dotsScreen.getTouchedList()[i].setTouchedDot();
+//                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],200,false,false);
+//                        dotsScreen.getTouchedList()[i].setTouchedDot();
 //                        dotsScreen.scoreBoard1.setScore(1);
                     }
                 }

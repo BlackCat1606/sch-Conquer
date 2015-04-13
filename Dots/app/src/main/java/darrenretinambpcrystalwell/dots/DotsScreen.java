@@ -46,8 +46,8 @@ public class DotsScreen {
     int                     screenWidth;
     int                     screenHeight;
     float                   screenDensity;
-    ScoreBoard              scoreBoard0;
-    ScoreBoard              scoreBoard1;
+    public ScoreBoard              scoreBoard0;
+    public ScoreBoard              scoreBoard1;
 
 
     public float            dotWidth;
