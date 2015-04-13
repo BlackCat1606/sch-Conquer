@@ -34,9 +34,6 @@
             android:layout_height="wrap_content"
             android:text="Main Menu"
             android:id="@+id/go_to_main_menu_button"/>
-
-
-
-
     </LinearLayout>
+
 </FrameLayout>
