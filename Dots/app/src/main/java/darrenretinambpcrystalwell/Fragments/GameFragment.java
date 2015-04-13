@@ -149,6 +149,7 @@ public class GameFragment extends Fragment {
         final ScoreBoard scoreBoard = new ScoreBoard(rootLayout, this.getActivity());
 
 
+
         final DotsGameTask dotsGameTask;
         final int playerId;
 
@@ -200,6 +201,7 @@ public class GameFragment extends Fragment {
                 final String message = "GAME OVER, WINNER: " + i + " FINAL SCORE: " + Arrays.toString(ints);
                 Log.d(TAG, message);
 
+
                 // kill threads and stop the game
                 dotsGameTask.getDotsServerClientParent().stopGame();
 
@@ -230,8 +232,11 @@ public class GameFragment extends Fragment {
                     public void run() {
                         System.out.println("SHOWING TOAST");
                         FragmentTransactionHelper.showToast(Arrays.toString(ints), getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
+                        dotsScreen.scoreBoard0.setScore(ints[0]);
+                        dotsScreen.scoreBoard1.setScore(ints[1]);
                     }
                 });
+
             }
 
             @Override

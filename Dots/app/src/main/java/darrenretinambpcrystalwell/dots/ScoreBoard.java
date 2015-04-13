@@ -56,7 +56,7 @@ public class ScoreBoard extends TextView {
 
     public void setScore(int score) {
         synchronized (this) {
-            actualScore = score + getScore();
+            actualScore = score;
             this.setText(SCORE_FORMAT.format(actualScore));
         }
     }

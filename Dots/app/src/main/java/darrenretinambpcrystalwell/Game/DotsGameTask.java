@@ -1,5 +1,7 @@
 package darrenretinambpcrystalwell.Game;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 import AndroidCallback.DotsAndroidCallback;
@@ -13,7 +15,7 @@ import Sockets.DotsServerClientParent;
  */
 public class DotsGameTask implements Runnable {
 
-
+    private final String TAG = "DotsGameTask";
     private final DotsServerClientParent dotsServerClientParent;
 
 
@@ -22,6 +24,7 @@ public class DotsGameTask implements Runnable {
 
     public DotsGameTask(int playerId, int port, String ipAddress) throws IOException {
 
+        Log.d(TAG, "PlayerId: " + playerId + " port: " + port + " IP address: " + ipAddress);
         // if the player is 0 or the port indicates a single player, we force the player to be
         // the server
         if (playerId == 0 || port == DotsConstants.SINGLE_PLAYER_PORT) {

@@ -89,39 +89,37 @@ public class ConnectionFragment extends Fragment {
         TextView myIpView = (TextView) this.getActivity().findViewById(R.id.player_ip_address);
         myIpView.setText(this.wifiIpAddress(this.getActivity()));
 
-//        ImageButton startServerButton = (ImageButton) this.getActivity().findViewById(R.id.startServerButton);
-//        ImageButton startClientButton = (ImageButton) this.getActivity().findViewById(R.id.startClientButton);
-//
-//        startClientButton.setBackgroundColor(Color.TRANSPARENT);
-//        startServerButton.setBackgroundColor(Color.TRANSPARENT);
+        Button startServerButton = (Button) this.getActivity().findViewById(R.id.start_server_button);
+        Button startClientButton = (Button) this.getActivity().findViewById(R.id.start_client_button);
+
+        startClientButton.setBackgroundColor(Color.TRANSPARENT);
+        startServerButton.setBackgroundColor(Color.TRANSPARENT);
 
         final Fragment thisFragment = this;
 
 
-//        startServerButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity)getActivity(), true);
-//
-//
-//            }
-//        });
-//
-//        startClientButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                EditText text = (EditText) getActivity().findViewById(R.id.ipAddress);
-//                String serverIp = text.getText().toString();
-//                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"1", serverIp}, (MainActivity)getActivity(), true);
-//            }
-//        });
+        startServerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity)getActivity(), true);
 
 
+            }
+        });
+
+        startClientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                EditText text = (EditText) getActivity().findViewById(R.id.ipAddress);
+                String serverIp = text.getText().toString();
+                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"1", serverIp}, (MainActivity)getActivity(), true);
+            }
+        });
 
         // Set a default ip address here so you dont have to type it in every time
-        String placeholderIpAddress = "10.12.20.13";
+        String placeholderIpAddress = "10.12.20.144";
 
         EditText editText = (EditText) this.getActivity().findViewById(R.id.ipAddress);
 
