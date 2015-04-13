@@ -26,8 +26,7 @@
             android:layout_marginRight="5dp"
             android:id="@+id/imageView"
             android:src="@drawable/conquer"
-            android:layout_gravity="center"
-            />
+            android:layout_gravity="center"/>
 
 
     <ImageButton
@@ -41,7 +40,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:id="@+id/start_multi_player_button"
-            android:src="@drawable/ptwo"
+            android:src="@drawable/btn_ptwo_normal"
             android:background="@android:color/transparent"
         android:layout_gravity="center_horizontal|bottom"/>
 
@@ -57,7 +56,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:id="@+id/start_single_player_button"
-            android:src="@drawable/pone"
+            android:src="@drawable/btn_pone_normal"
             android:background="@android:color/transparent"
             android:layout_gravity="center_horizontal|bottom"/>
 
@@ -75,14 +74,6 @@
             android:src="@drawable/rules"
             android:background="@android:color/transparent"
             android:layout_gravity="center_horizontal|bottom"/>
-    <ImageView
-            android:layout_width="100px"
-            android:layout_height="100px"
-            android:layout_marginLeft="35dp"
-            android:layout_marginBottom="90dp"
-            android:id="@+id/imageView4"
-            android:src="@drawable/spaceshipchoose"
-            android:layout_gravity="left|bottom"/>
 
 
 </FrameLayout>
