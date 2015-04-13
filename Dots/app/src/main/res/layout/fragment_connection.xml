@@ -1,13 +1,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="darrenretinambpcrystalwell.Fragments.ConnectionFragment">
+    tools:context="darrenretinambpcrystalwell.Fragments.ConnectionFragment"
+    android:background="@drawable/background">
 
-    <ImageView
-            android:layout_width="538dp"
-            android:layout_height="716dp"
-            android:src="@drawable/background"
-            android:layout_gravity="center"/>
+
 
     <TextView
             android:layout_width="wrap_content"

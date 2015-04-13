@@ -1,20 +1,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="darrenretinambpcrystalwell.Fragments.MainFragment">
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
 
-    <AbsoluteLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    </AbsoluteLayout>
-
-    <ImageView
-            android:layout_width="473dp"
-            android:layout_height="624dp"
-            android:id="@+id/imageView2"
-            android:src="@drawable/backgroundtwo"
-            android:layout_gravity="center"/>
+    android:layout_marginTop="0dp"
+    tools:context="darrenretinambpcrystalwell.Fragments.MainFragment"
+    android:id="@+id/root_layout"
+    android:background="@drawable/background">
 
     <ImageView
             android:layout_width="200dp"
@@ -35,7 +26,8 @@
             android:layout_marginRight="5dp"
             android:id="@+id/imageView"
             android:src="@drawable/conquer"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            />
 
 
     <ImageButton
@@ -51,7 +43,8 @@
             android:id="@+id/start_multi_player_button"
             android:src="@drawable/ptwo"
             android:background="@android:color/transparent"
-            android:layout_gravity="center_horizontal|bottom"/>
+        android:layout_gravity="center_horizontal|bottom"/>
+
 
     <ImageButton
             android:layout_width="200dp"
@@ -90,5 +83,6 @@
             android:id="@+id/imageView4"
             android:src="@drawable/spaceshipchoose"
             android:layout_gravity="left|bottom"/>
+
 
 </FrameLayout>
