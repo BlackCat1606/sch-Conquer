@@ -24,6 +24,7 @@ public class DotsGameTask implements Runnable {
 
     public DotsGameTask(int playerId, int port, String ipAddress) throws IOException {
 
+
         Log.d(TAG, "PlayerId: " + playerId + " port: " + port + " IP address: " + ipAddress);
         // if the player is 0 or the port indicates a single player, we force the player to be
         // the server

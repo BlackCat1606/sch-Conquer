@@ -19,7 +19,7 @@ import Dots.Dot;
  * Created by DarrenRetinaMBP on 13/3/15.
  *
  * Main Screen when the game is loaded first
- * Takes in 1st randomised matrix from randomiser class
+ * Takes in 1st randomised matrix from randomising class
  *
  */
 public class DotsScreen {
@@ -183,18 +183,16 @@ public class DotsScreen {
                 if (!(currentDotView.getColor() == updatedBoardDot.color)) {
 
 
-                    // do fading effects
-//                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
-//                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
+//                    do fading effects
+                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
+                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
 
-//                    ((Activity)context).runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, false);
-//
-//
-//                        }
-//                    });
+                    ((Activity)context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, false);
+                        }
+                    });
 
                     // Create a thread to cast a fade in animation
                     Thread fadeIn = new Thread(new Runnable() {

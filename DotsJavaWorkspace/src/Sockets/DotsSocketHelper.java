@@ -15,7 +15,7 @@ import java.io.ObjectOutputStream;
  */
 public class DotsSocketHelper {
 
-    public static boolean enabled;
+    public static boolean enabled = true;
 
     // Initialise a lock object so that threads do not try to send message simultaneously
     public static MessageLocks locks = new MessageLocks();

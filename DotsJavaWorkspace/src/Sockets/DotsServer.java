@@ -54,20 +54,7 @@ public class DotsServer extends DotsServerClientParent{
             DotsServerClientListener dotsClientListener = new DotsServerClientListener(this.serverSocket, this.dotsGame, this);
             this.listenerThread = new Thread(dotsClientListener);
         }
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
 
     public void start() throws IOException, InstantiationException, InterruptedException {
         // Super checks if callbacks have been initialized

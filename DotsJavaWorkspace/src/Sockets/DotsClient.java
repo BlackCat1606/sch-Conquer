@@ -42,6 +42,7 @@ public class DotsClient extends DotsServerClientParent {
         this.responseQueue = new LinkedBlockingQueue<Boolean>();
         this.runtimeStopwatch = new RuntimeStopwatch();
 
+
     }
 
     public void start() throws IOException, InterruptedException, InstantiationException {

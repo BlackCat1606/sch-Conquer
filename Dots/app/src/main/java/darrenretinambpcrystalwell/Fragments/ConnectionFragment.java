@@ -119,7 +119,7 @@ public class ConnectionFragment extends Fragment {
         });
 
         // Set a default ip address here so you dont have to type it in every time
-        String placeholderIpAddress = "10.12.20.144";
+        String placeholderIpAddress = "10.12.17.172";
 
         EditText editText = (EditText) this.getActivity().findViewById(R.id.ipAddress);
 
