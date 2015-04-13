@@ -54,6 +54,9 @@ public class GameFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    // variable to keep track of whether elements have already been initialised, so onResume does
+    // not double create the views
+    private boolean initialized = false;
 
     private int playerId;
 
@@ -112,28 +115,34 @@ public class GameFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        TextView view = (TextView)this.getActivity().findViewById(R.id.latency);
+        if (!this.initialized) {
+
+            this.initialized = true;
+
+            TextView view = (TextView)this.getActivity().findViewById(R.id.latency);
 
 
-        int playerId = Integer.parseInt(this.mParam1);
-        try {
-            startServerOrClient(playerId);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            int playerId = Integer.parseInt(this.mParam1);
+            try {
+                startServerOrClient(playerId);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
 
 
-            // Connection failed, go back to connection fragment
-            FragmentTransactionHelper.pushFragment(1, this, new String[2], (MainActivity)getActivity(), false);
+                // Connection failed, go back to connection fragment
+                FragmentTransactionHelper.pushFragment(1, this, new String[2], (MainActivity)getActivity(), false);
 
-            FragmentTransactionHelper.showToast("Connection Failed!", this.getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
+                FragmentTransactionHelper.showToast("Connection Failed!", this.getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
 
-        } catch (java.lang.InstantiationException e) {
-            e.printStackTrace();
+            } catch (java.lang.InstantiationException e) {
+                e.printStackTrace();
+            }
+
+            view.bringToFront();
         }
 
-        view.bringToFront();
     }
 
 

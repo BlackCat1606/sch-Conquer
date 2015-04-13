@@ -188,6 +188,10 @@ public class DotsClient extends DotsServerClientParent {
 
     }
 
+    /**
+     * This is needed
+     * @return
+     */
     public DotsLocks getDotsLocks() {
         return dotsLocks;
     }
@@ -232,6 +236,7 @@ class DotsClientServerListener implements Runnable {
                 break;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+                System.err.println("Message received cannot be resolved to a class");
                 break;
             } catch (InterruptedException e) {
                 System.err.println("Adding to response queue has been interrupted");
@@ -242,6 +247,11 @@ class DotsClientServerListener implements Runnable {
 
     }
 
+    /**
+     * Primary method to deal with received messages appropriately
+     * @param message a message that belongs to the parent DotsMessage
+     * @throws InterruptedException if placing a response in the responseQueue is interrupted
+     */
     private void dealWithMessage(DotsMessage message) throws InterruptedException {
 
         if (message instanceof DotsMessageBoard) {
