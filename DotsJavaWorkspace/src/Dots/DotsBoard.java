@@ -14,7 +14,6 @@ import java.util.Map;
  */
 public class DotsBoard implements Serializable {
 
-    // TODO swap comments here to use default randomised board
     private Dot[][] boardArray;
 //    private Dot[][] boardArray = {
 //            {new Dot(DotColor.RED), new Dot(DotColor.YELLOW), new Dot(DotColor.BLUE), new Dot(DotColor.RED), new Dot(DotColor.BLUE), new Dot(DotColor.RED)},
@@ -25,6 +24,7 @@ public class DotsBoard implements Serializable {
 //            {new Dot(DotColor.BLUE), new Dot(DotColor.BLUE), new Dot(DotColor.GREEN), new Dot(DotColor.RED), new Dot(DotColor.RED), new Dot(DotColor.GREEN)},
 //    };
 
+    // Dotslocks is used for setChangedDots, to update the arrayList if dots have been cleared
     private final DotsLocks dotsLocks;
 
     /**
@@ -90,6 +90,8 @@ public class DotsBoard implements Serializable {
     /**
      * Method to clear and cascade new dots down when an arrayList of points is entered
      *
+     * Clearing of dots will trigger an update of the dotsLocks for the dots which need updating
+     *
      * @param dotsPointList points to be removed from the boardArray. Does not check for validity of move, should have
      *                  already been in DotsLogic before calling this
      */
@@ -135,6 +137,7 @@ public class DotsBoard implements Serializable {
             }
         }
 
+        // updates dotLocks with the corresponding changed dots
         this.updateChangedPoints(dotsPointList);
 
     }
@@ -163,17 +166,25 @@ public class DotsBoard implements Serializable {
         boardArray[dotsPoint.y][dotsPoint.x] = dot;
     }
 
+    /**
+     * Based on the input dots which are cleared, this method creates and populates an ArrayList of affected dots,
+     * namely dots which are cleared and those which are above them, and puts it in the dotsLocks container
+     * @param clearedPoints points which are cleared from interaction or whatnot
+     */
     private void updateChangedPoints(ArrayList<DotsPoint> clearedPoints) {
-
-        // find affected columns
 
         HashMap<Integer, Integer> affectedMap = new HashMap<Integer, Integer>();
 
+        // find affected columns
+
+        // This loop iterates through all cleared points and finds the position of the dot which is the closest
+        // to the bottom of the board for each column
         for (DotsPoint point : clearedPoints) {
 
             if (affectedMap.get(point.x) == null) {
                 affectedMap.put(point.x, point.y);
             } else {
+
                 if (affectedMap.get(point.x) < point.y) {
                     affectedMap.put(point.x, point.y);
                 }
@@ -181,24 +192,27 @@ public class DotsBoard implements Serializable {
         }
 
         ArrayList<DotsPoint> pointsNeedingUpdate = new ArrayList<DotsPoint>();
+
         // for each column in map
         for (Map.Entry<Integer, Integer> entry : affectedMap.entrySet()) {
-            int columnIndex = entry.getKey();
-            int rowMax = entry.getValue();
+            // the column
+            int xIndex = entry.getKey();
 
-
+            // the largest y value (closest to bottom of the board) of the element in that column
+            int yMax = entry.getValue();
 
             // iterate the rows from top to bottom
-            for (int i = 0; i < rowMax + 1; i++) {
+            for (int i = 0; i < yMax + 1; i++) {
 
-                DotColor color = this.getBoard()[columnIndex][i].color;
+                DotColor color = this.getBoard()[i][xIndex].color;
 
-                DotsPoint pointToAdd = new DotsPoint(i, columnIndex, color);
+                DotsPoint pointToAdd = new DotsPoint(xIndex, i, color);
                 pointsNeedingUpdate.add(pointToAdd);
+
             }
         }
 
-        // todo add the points that need update into locks
+        // updates the dotsLocks with the points
         this.dotsLocks.setChangedDots(pointsNeedingUpdate);
     }
 

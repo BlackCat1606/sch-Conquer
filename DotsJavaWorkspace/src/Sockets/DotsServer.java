@@ -61,7 +61,6 @@ public class DotsServer extends DotsServerClientParent{
         // Super checks if callbacks have been initialized
         super.start();
 
-
         if (!this.isSinglePlayer) {
 
             // Accepts the client (BLOCKS)
@@ -127,7 +126,7 @@ public class DotsServer extends DotsServerClientParent{
 
                 // finally, we check if the board needs to be updated
                 // dotsGame will automatically update this variable if the board is changed
-                if (this.dotsLocks.isBoardChanged()) {
+                if (this.dotsLocks.getChangedDots() != null) {
 
                     this.updateBoard();
 
@@ -198,19 +197,22 @@ public class DotsServer extends DotsServerClientParent{
         // update the board on the current device
 
         ArrayList<DotsPoint> changedDots = this.dotsLocks.getChangedDots();
+//
+//        if (changedDots == null) {
+//            return;
+//        }
 
-        if (changedDots == null) {
-            return;
-        }
+        // debug
 
         this.getAndroidCallback().onBoardChanged(changedDots);
-        this.dotsLocks.setChangedDots(null);
+
 
         // update the board on the remote device
         DotsMessageBoard messageBoard = new DotsMessageBoard(changedDots);
         DotsSocketHelper.sendMessageToClient(this.serverSocket, messageBoard);
 
-        this.dotsLocks.setBoardChanged(false);
+        this.dotsLocks.setChangedDots(null);
+//        this.dotsLocks.setBoardChanged(false);
 
     }
 

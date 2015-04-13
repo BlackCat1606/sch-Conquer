@@ -151,9 +151,6 @@ public class DotsGame {
                     playerAffected(otherPlayerAffected);
                 }
 
-                this.dotsLocks.setBoardChanged(true);
-//                this.dotsLocks.notifyAll();
-
             }
 
             // After a touch up, clear the stored moves

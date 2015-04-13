@@ -15,11 +15,13 @@ import android.view.SurfaceView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import AndroidCallback.DotsAndroidCallback;
 import Constants.DotsConstants;
 import Dots.DotsBoard;
+import Dots.DotsPoint;
 import Model.Interaction.DotsInteraction;
 import Model.Interaction.DotsInteractionStates;
 import darrenretinambpcrystalwell.Game.DotsGameTask;
@@ -185,16 +187,16 @@ public class GameFragment extends Fragment {
             }
 
             @Override
-            public void onBoardChanged(final DotsBoard dotsBoard) {
-//                dotsScreen.updateScreen(dotsBoard.getBoardArray());
-
+            public void onBoardChanged(final ArrayList<DotsPoint> dotsPoints) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        dotsScreen.updateScreen(dotsBoard.getBoardArray());
+                        dotsScreen.updateScreen(dotsPoints);
                     }
                 });
             }
+
+
 
             @Override
             public void onGameOver(int i, int[] ints) {

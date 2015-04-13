@@ -9,10 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import Constants.DotsConstants;
 import Dots.Dot;
+import Dots.DotsPoint;
 
 
 /**
@@ -164,71 +166,124 @@ public class DotsScreen {
         return dotWidth;
     }
 
-    public void updateScreen(Dot[][] board) {
-        Log.d("Screen", Arrays.deepToString(board));
+    public void updateScreen(ArrayList<DotsPoint> updatedPoints) {
 
+        for (final DotsPoint point : updatedPoints) {
 
+            int index = point.y * DotsConstants.BOARD_SIZE + point.x;
 
-        for (int j = 0; j < 6; j++) {
-
-            for (int i = 0; i < board[j].length; i++) {
-
-                int index = j*6 + i;
-
-                final Dot updatedBoardDot = board[j][i];
-                final DotView currentDotView = dotsList[index];
-
-                // if the updated board color is different from the current dotView's color
-
-                if (!(currentDotView.getColor() == updatedBoardDot.color)) {
+            final DotView currentDotView = dotsList[index];
 
 
 //                    do fading effects
-                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
-                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
+            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
+            Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
 
+            ((Activity)context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, false);
+                }
+            });
+
+            // Create a thread to cast a fade in animation
+            Thread fadeIn = new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    // first sleep for the duration where the views are fading out
+                    try {
+                        Thread.sleep(FADE_DURATION);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // run this on the UI thread
                     ((Activity)context).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, false);
+
+                            // update the color
+                            currentDotView.setColor(point.getColor());
+
+                            // cast the fade in effect
+                            Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
                         }
                     });
-
-                    // Create a thread to cast a fade in animation
-                    Thread fadeIn = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            // first sleep for the duration where the views are fading out
-                            try {
-                                Thread.sleep(FADE_DURATION);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            // run this on the UI thread
-                            ((Activity)context).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                     // update the color
-                                    currentDotView.setColor(updatedBoardDot.color);
-
-                                    // cast the fade in effect
-                                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
-                                }
-                            });
-
-                        }
-                    });
-
-                    fadeIn.start();
 
                 }
-                
-            }
+            });
+
+            fadeIn.start();
 
         }
+
+    }
+//    public void updateScreen(Dot[][] board) {
+//        Log.d("Screen", Arrays.deepToString(board));
+//
+//
+//
+//        for (int j = 0; j < 6; j++) {
+//
+//            for (int i = 0; i < board[j].length; i++) {
+//
+//                int index = j*6 + i;
+//
+//                final Dot updatedBoardDot = board[j][i];
+//                final DotView currentDotView = dotsList[index];
+//
+//                // if the updated board color is different from the current dotView's color
+//
+//                if (!(currentDotView.getColor() == updatedBoardDot.color)) {
+//
+//
+////                    do fading effects
+//                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
+//                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
+//
+//                    ((Activity)context).runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, false);
+//                        }
+//                    });
+//
+//                    // Create a thread to cast a fade in animation
+//                    Thread fadeIn = new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//
+//                            // first sleep for the duration where the views are fading out
+//                            try {
+//                                Thread.sleep(FADE_DURATION);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                            // run this on the UI thread
+//                            ((Activity)context).runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//
+//                                     // update the color
+//                                    currentDotView.setColor(updatedBoardDot.color);
+//
+//                                    // cast the fade in effect
+//                                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
+//                                }
+//                            });
+//
+//                        }
+//                    });
+//
+//                    fadeIn.start();
+//
+//                }
+//
+//            }
+//
+//        }
 
 //        for (int index = 0; index < 36; ++index) {
 //
@@ -264,7 +319,7 @@ public class DotsScreen {
 //                }
 //            }
 //        }
-    }
+//    }
 
     public DotView[] getDotList() {
         return dotsList;
