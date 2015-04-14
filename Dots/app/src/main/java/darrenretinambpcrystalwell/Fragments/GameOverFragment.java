@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import Sockets.DotsServerClientParent;
@@ -38,7 +39,21 @@ public class GameOverFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_game_over, container, false);
+        //return inflater.inflate(R.layout.fragment_game_over, container, false);
+
+        int winnerId = DotsServerClientParent.getWinner(this.mScores);
+
+        if (winnerId == -1) {
+            //winnerText = "DRAW";
+            return inflater.inflate(R.layout.fragment_game_over, container, false);
+
+        } else if (winnerId == this.mCurrentPlayerId) {
+            //winnerText = "YOU WIN";
+            return inflater.inflate(R.layout.fragment_win_game, container, false);
+        } else {
+            //winnerText = "YOU LOSE";
+            return inflater.inflate(R.layout.fragment_lose_game, container, false);
+        }
     }
 
     @Override
@@ -49,13 +64,21 @@ public class GameOverFragment extends Fragment {
 
         final GameOverFragment thisFragment = this;
 
-        Button mainMenuButton = (Button)this.getActivity().findViewById(R.id.go_to_main_menu_button);
-        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton playAgainButton = (ImageButton)this.getActivity().findViewById(R.id.playAgain);
+        playAgainButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 FragmentTransactionHelper.pushFragment(0, thisFragment,new String[2], (MainActivity)getActivity(), true);
             }
         });
+
+//        Button mainMenuButton = (Button)this.getActivity().findViewById(R.id.go_to_main_menu_button);
+//        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                FragmentTransactionHelper.pushFragment(0, thisFragment,new String[2], (MainActivity)getActivity(), true);
+//            }
+//        });
 
     }
 
@@ -79,10 +102,10 @@ public class GameOverFragment extends Fragment {
             winnerText = "YOU LOSE";
         }
 
-        winningPlayerTextView.setText(winnerText);
+        //winningPlayerTextView.setText(winnerText);
 
 
-        yourScoreTextView.setText(Integer.toString(mScores[mCurrentPlayerId]));
+        // yourScoreTextView.setText(Integer.toString(mScores[mCurrentPlayerId]));
 
         int opponentId;
 
@@ -92,7 +115,7 @@ public class GameOverFragment extends Fragment {
             opponentId = 0;
         }
 
-        opponentScoreTextView.setText(Integer.toString(mScores[opponentId]));
+        //opponentScoreTextView.setText(Integer.toString(mScores[opponentId]));
 
     }
 }
