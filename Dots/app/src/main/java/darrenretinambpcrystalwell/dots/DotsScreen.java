@@ -26,13 +26,11 @@ import Dots.DotsPoint;
  */
 public class DotsScreen {
 
-    private static final float SCREEN_WIDTH_PERCENTAGE = .8f;
+    private static final float SCREEN_WIDTH_PERCENTAGE = .9f;
     private static final float SCREEN_Y_PERCENTAGE = .3f;
     private float              x, y;
 
 
-    DotView[] dotsList = new DotView[36];
-    DotView[] touchList = new DotView[36];
 
     ImageView score;
     ImageView opponent;
@@ -50,8 +48,16 @@ public class DotsScreen {
     float                   screenDensity;
     float                   scoreWidth;
     float                   scoreHeight;
-    public ScoreBoard              scoreBoard0;
-    public ScoreBoard              scoreBoard1;
+    public ScoreBoard       scoreBoard0;
+    public ScoreBoard       scoreBoard1;
+
+    //Added by Darren
+    //Change this to change the board size Dot X Dot
+    private float           numberdotXdot = 6.f;
+
+    DotView[] dotsList = new DotView[(int)(numberdotXdot*numberdotXdot)];
+    DotView[] touchList = new DotView[(int)(numberdotXdot*numberdotXdot)];
+
 
 
     public float            dotWidth;
@@ -61,7 +67,7 @@ public class DotsScreen {
     private float[][][] correspondingDotCoordinates;
 
 
-    final int FADE_DURATION = 300;
+    final int FADE_DURATION = 200;
     final int END_ALPHA = 1;
 
     public float[][][] getCorrespondingDotCoordinates() {
@@ -113,18 +119,16 @@ public class DotsScreen {
 
 
 
-//        score.setX((screenWidth/4)- scoreBoard0.getFontSize() - (300/4));
-//        score.setY((screenHeight/7) - scoreBoard0.getFontSize()*2);
 
-        scoreBoard0.setX(((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + (SCREEN_WIDTH_PERCENTAGE * screenWidth / 6.f) );
+        scoreBoard0.setX(((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + (SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot) );
         scoreBoard0.setY((screenHeight/7)     - scoreBoard0.getFontSize());
-        scoreBoard1.setX(((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + ((float)4.5*SCREEN_WIDTH_PERCENTAGE * screenWidth / 6.f));
+        scoreBoard1.setX(((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + ((float)4.5*SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot));
         scoreBoard1.setY((screenHeight/7)     - scoreBoard1.getFontSize());
 
 
-        score.setX(scoreBoard0.getX()         - (scoreWidth/3));
+        score.setX(scoreBoard0.getX()         - (float)(scoreWidth/(numberdotXdot*0.5)));
         score.setY((screenHeight/8)           - scoreBoard1.getFontSize()*2);
-        opponent.setX((scoreBoard1.getX()     - (scoreWidth/3)));
+        opponent.setX((scoreBoard1.getX()     - (float)(scoreWidth/(numberdotXdot*0.5))));
         opponent.setY((screenHeight/8)        - scoreBoard1.getFontSize()*2);
 
 
@@ -135,18 +139,18 @@ public class DotsScreen {
         dotsLayout.addView(score);
         dotsLayout.addView(opponent);
 
-        this.dotWidth = SCREEN_WIDTH_PERCENTAGE * screenWidth / 6.f;
+        this.dotWidth = SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot;
 
         float dotsXOffset = (1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth;
         float dotsYOffset = SCREEN_Y_PERCENTAGE * screenHeight;
 
         this.correspondingDotCoordinates = new float[DotsConstants.BOARD_SIZE][DotsConstants.BOARD_SIZE][2];
 
-        for (int index = 0; index < 36; ++index) {
+        for (int index = 0; index < (numberdotXdot*numberdotXdot); ++index) {
             // i == row number (0-5)
             // j == col number (0-5)
-            int i = index / 6;
-            int j = index % 6;
+            int i = index / (int)numberdotXdot;
+            int j = index % (int)numberdotXdot;
 
             DotView d = new RedDotView(context);
             DotView t = new TouchedDot(context);
@@ -198,7 +202,7 @@ public class DotsScreen {
             ((Activity)context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, false);
+                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, false, false);
                 }
             });
 
