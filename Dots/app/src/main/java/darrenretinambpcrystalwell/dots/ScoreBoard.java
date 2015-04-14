@@ -26,7 +26,8 @@ public class ScoreBoard extends TextView {
 
     private static final float SCREEN_WIDTH_PERCENTAGE = .8f;
     private static final float SCREEN_Y_PERCENTAGE     = .2f;
-    private static final float FONT_SIZE               = 50.f;
+    private static final float FONT_SIZE               = 25.f;
+    private static float       screenDensity;
 
 
     private static final NumberFormat SCORE_FORMAT = NumberFormat.getNumberInstance(Locale.US);
@@ -38,12 +39,13 @@ public class ScoreBoard extends TextView {
     public ScoreBoard(RelativeLayout relativeLayout, Context context) {
         super(context);
         this.relativeLayout = relativeLayout;
+        this.screenDensity  = ScreenDimensions.getDensity(context);
 
         actualScore         = 0;
 
         // Formatting the Text
         setText(SCORE_FORMAT.format(actualScore));
-        setTextSize(FONT_SIZE);
+        setTextSize(FONT_SIZE*screenDensity);
         setTextIsSelectable(false);
         setTextAlignment(TEXT_ALIGNMENT_CENTER);
         setSingleLine(true);
