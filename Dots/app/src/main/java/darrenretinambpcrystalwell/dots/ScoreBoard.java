@@ -1,5 +1,6 @@
 package darrenretinambpcrystalwell.dots;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -32,10 +33,12 @@ public class ScoreBoard extends TextView {
     private float              x, y;
     private int                actualScore;
 
+    private final Context context;
+
     public ScoreBoard(RelativeLayout relativeLayout, Context context) {
         super(context);
         this.relativeLayout = relativeLayout;
-
+        this.context = context;
         actualScore         = 0;
 
         // Formatting the Text
@@ -54,12 +57,33 @@ public class ScoreBoard extends TextView {
         return FONT_SIZE;
     }
 
-    public void setScore(int score) {
+    public void setScore(final int score) {
         synchronized (this) {
-            actualScore = score;
-            this.setText(SCORE_FORMAT.format(actualScore));
+//            actualScore = score;
+
+            ((Activity)context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
 
 
+                    while (actualScore != score) {
+
+
+                        setText(SCORE_FORMAT.format(actualScore));
+                        actualScore+=1;
+//                        try {
+//                            Thread.sleep(1000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+                    }
+
+                }
+
+//            Thread animateThread = new Thread(
+//            });
+//            animateThread.start();
+            });
         }
     }
 

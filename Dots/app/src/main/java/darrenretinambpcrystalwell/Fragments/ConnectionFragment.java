@@ -33,6 +33,7 @@ import java.util.List;
 import darrenretinambpcrystalwell.dots.DotsAndroidConstants;
 import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -141,11 +142,17 @@ public class ConnectionFragment extends Fragment {
 //        });
 
 
+        final SmoothProgressBar progressBar = (SmoothProgressBar) this.getActivity().findViewById(R.id.loading_bar);
+        progressBar.setVisibility(View.INVISIBLE);
+
+
         ImageButton startGameButton = (ImageButton) this.getActivity().findViewById(R.id.start_multi_player_game_button);
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+//                progressBar.progressiveStart();
+                progressBar.setVisibility(View.VISIBLE);
 
                 // TODO implement loading bar
 
@@ -230,6 +237,9 @@ public class ConnectionFragment extends Fragment {
                         } else {
                             Log.d("PARSE", "Error: " + e.getMessage());
                         }
+
+                        progressBar.setVisibility(View.INVISIBLE);
+//                        progressBar.progressiveStop();
                     }
                 });
             }
