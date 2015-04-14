@@ -8,6 +8,7 @@ import AndroidCallback.DotsAndroidCallback;
 import Dots.DotsPoint;
 import Latency.RuntimeStopwatch;
 import Model.Interaction.DotsInteraction;
+import Model.Interaction.DotsInteractionStates;
 import Model.Locks.DotsLocks;
 import Model.Messages.*;
 
@@ -81,7 +82,10 @@ public class DotsClient extends DotsServerClientParent {
         // and send it to the server
         DotsSocketHelper.sendMessageToServer(this.clientSocket, interactionMessage);
 
-        // Todo make it draw interactions first on screen before validating it with the server, might make it seem more responsive?
+        // Temporarily draw interactions first on screen before validating it with the server
+        // to make the client seem more responsive
+        updateScreenForTouchInteractions(dotsInteraction);
+
 
         // put dealing with response into a separate thread
         Runnable dealWithResponse = new Runnable() {
@@ -104,6 +108,15 @@ public class DotsClient extends DotsServerClientParent {
                 // Therefore, we update the screen based on our touches
                 if (response) {
                     updateScreenForTouchInteractions(dotsInteraction);
+                } else {
+
+                    // if the response is false, we want to clear the temporarily interactions displayed which are
+                    // created earlier
+
+                    // create a touch up interaction at the touched position, which will trigger hiding of the displayed
+                    // interaction
+                    DotsInteraction clearTouchInteraction = new DotsInteraction(1, DotsInteractionStates.TOUCH_UP, dotsInteraction.getDotsPoint());
+                    updateScreenForTouchInteractions(clearTouchInteraction);
                 }
 
                 getAndroidCallback().latencyChanged(runtimeStopwatch.stopMeasurement());
@@ -155,7 +168,7 @@ public class DotsClient extends DotsServerClientParent {
         dotsClient.setAndroidCallback(new DotsAndroidCallback() {
             @Override
             public void onSocketConnected() {
-                
+
             }
 
             @Override
