@@ -65,6 +65,8 @@ public class DotsServer extends DotsServerClientParent{
 
             // Accepts the client (BLOCKS)
             this.serverSocket.acceptClient();
+            this.getAndroidCallback().onSocketConnected();
+
             // starts thread to listen for messages
             this.listenerThread.start();
 
@@ -261,6 +263,11 @@ public class DotsServer extends DotsServerClientParent{
 //        DotsServer dotsServer = new DotsServer(DotsConstants.SINGLE_PLAYER_PORT);
         // Compulsory to set listeners
         dotsServer.setAndroidCallback(new DotsAndroidCallback() {
+            @Override
+            public void onSocketConnected() {
+
+            }
+
             @Override
             public void onValidPlayerInteraction(DotsInteraction interaction) {
 

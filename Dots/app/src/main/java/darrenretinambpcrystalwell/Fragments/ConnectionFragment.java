@@ -147,6 +147,9 @@ public class ConnectionFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+
+                // TODO implement loading bar
+
                 // Create a query object
                 ParseQuery<ParseObject> query = ParseQuery.getQuery(DotsAndroidConstants.PARSE_OBJECT_NAME);
 
@@ -178,7 +181,11 @@ public class ConnectionFragment extends Fragment {
                                     // compares the system UTC time with the retrieved object and see if
                                     // it falls into the live window
                                     if (System.currentTimeMillis() - timeUpdatedAt < DotsAndroidConstants.IP_LIVE_WINDOW) {
+                                        // TODO filter ip address by network
                                         retrievedIps.add(retrievedIp);
+                                    } else {
+                                        // TODO deletes objects that don't fall into the window
+//                                        parseObject.deleteInBackground();
                                     }
 
                                 }
@@ -193,6 +200,7 @@ public class ConnectionFragment extends Fragment {
                                 // gets the first object
                                 String serverIp = retrievedIps.get(0);
 
+
                                 Log.d(TAG, "Starting client, connecting to IP: " + serverIp);
                                 // starts a client that will connect to the IP
                                 FragmentTransactionHelper.showToast("Connecting...", getActivity(), SuperToast.Duration.MEDIUM);
@@ -201,6 +209,16 @@ public class ConnectionFragment extends Fragment {
 
                             } else {
                                 // starts a server if no IP addresses are retrieved
+
+                                // Saves my IP address into the cloud so others can connect
+                                ParseObject ipAddressObject = new ParseObject(DotsAndroidConstants.PARSE_OBJECT_NAME);
+                                String myIpAddress = ConnectionFragment.wifiIpAddress(getActivity());
+                                ipAddressObject.put(DotsAndroidConstants.PARSE_IP_KEY, myIpAddress);
+                                ipAddressObject.saveInBackground();
+
+
+                                // TODO delete ip parseobject when the game is ended (onDestroy?) in gameFragment
+
                                 Log.d(TAG, "Starting server...");
                                 FragmentTransactionHelper.showToast("Waiting...", getActivity(), SuperToast.Duration.MEDIUM);
                                 FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity) getActivity(), true);

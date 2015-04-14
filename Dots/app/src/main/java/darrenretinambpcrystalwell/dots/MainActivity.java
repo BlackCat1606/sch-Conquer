@@ -40,11 +40,6 @@ public class MainActivity extends ActionBarActivity {
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "jtDIpaAPL4ZT2CkLcBnP4QznoFVrH4ZTk6tCtEhk", "dbQ63Aur5FqeMQ2offnDXUPFsz5gxpw9vUlIr2jE");
 
-        // Saves my IP address into the cloud
-        ParseObject ipAddressObject = new ParseObject(DotsAndroidConstants.PARSE_OBJECT_NAME);
-        String myIpAddress = ConnectionFragment.wifiIpAddress(this);
-        ipAddressObject.put(DotsAndroidConstants.PARSE_IP_KEY, myIpAddress);
-        ipAddressObject.saveInBackground();
 
         // sets up views
         setContentView(R.layout.activity_main);

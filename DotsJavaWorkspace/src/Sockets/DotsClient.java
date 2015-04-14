@@ -51,7 +51,10 @@ public class DotsClient extends DotsServerClientParent {
         super.start();
 
         // Initialize client socket
+
         this.clientSocket = new AwesomeClientSocket(this.serverAddress, this.port);
+
+        this.getAndroidCallback().onSocketConnected();
 
         // Init server listener thread
         DotsClientServerListener dotsServerListener = new DotsClientServerListener(this.clientSocket, dotsLocks, responseQueue, this.getAndroidCallback());
@@ -77,6 +80,8 @@ public class DotsClient extends DotsServerClientParent {
 
         // and send it to the server
         DotsSocketHelper.sendMessageToServer(this.clientSocket, interactionMessage);
+
+        // Todo make it draw interactions first on screen before validating it with the server, might make it seem more responsive?
 
         // put dealing with response into a separate thread
         Runnable dealWithResponse = new Runnable() {
@@ -148,6 +153,11 @@ public class DotsClient extends DotsServerClientParent {
 
         // Compulsory to add listeners for changes
         dotsClient.setAndroidCallback(new DotsAndroidCallback() {
+            @Override
+            public void onSocketConnected() {
+                
+            }
+
             @Override
             public void onValidPlayerInteraction(DotsInteraction interaction) {
 

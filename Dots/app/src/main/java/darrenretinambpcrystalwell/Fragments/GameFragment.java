@@ -14,9 +14,15 @@ import android.widget.TextView;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import AndroidCallback.DotsAndroidCallback;
 import Constants.DotsConstants;
@@ -181,6 +187,16 @@ public class GameFragment extends Fragment {
 
         DotsAndroidCallback androidCallback = new DotsAndroidCallback() {
             @Override
+            public void onSocketConnected() {
+
+                // when connected, we want to remove the server IP from parse
+
+                removeDeviceIpFromParse();
+
+
+            }
+
+            @Override
             public void onValidPlayerInteraction(final DotsInteraction dotsInteraction) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -287,6 +303,36 @@ public class GameFragment extends Fragment {
         }
 
     }
+    
+    /**
+     * Query for a parse object of the current ip address and deletes it from the cloud
+     */
+    private void removeDeviceIpFromParse() {
+        // Create a query object
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(DotsAndroidConstants.PARSE_OBJECT_NAME);
 
+        // Where the ip address is the same
+        query.whereEqualTo(DotsAndroidConstants.PARSE_IP_KEY, ConnectionFragment.wifiIpAddress(getActivity()));
 
+        // find the objects
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+
+                for (ParseObject parseObject : parseObjects) {
+                    parseObject.deleteInBackground();
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // call this here so we will also delete the ip from parse if the fragment is destroyed
+        removeDeviceIpFromParse();
+
+    }
 }

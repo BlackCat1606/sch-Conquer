@@ -58,6 +58,8 @@ public class ScoreBoard extends TextView {
         synchronized (this) {
             actualScore = score;
             this.setText(SCORE_FORMAT.format(actualScore));
+
+
         }
     }
 
