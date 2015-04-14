@@ -1,10 +1,9 @@
 package darrenretinambpcrystalwell.dots;
 
-<<<<<<< HEAD
-import android.app.Activity;
-=======
+import java.text.NumberFormat;
+
+
 import android.annotation.TargetApi;
->>>>>>> d633f2d2ce98d682ff32e23ab7aa4eddb80c7bac
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -39,21 +38,12 @@ public class ScoreBoard extends TextView {
     private float              x, y;
     private int                actualScore;
 
-<<<<<<< HEAD
-    private final Context context;
-
-    public ScoreBoard(RelativeLayout relativeLayout, Context context) {
-        super(context);
-        this.relativeLayout = relativeLayout;
-        this.context = context;
-=======
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public ScoreBoard(RelativeLayout relativeLayout, Context context) {
         super(context);
         this.relativeLayout = relativeLayout;
         this.screenDensity  = ScreenDimensions.getDensity(context);
 
->>>>>>> d633f2d2ce98d682ff32e23ab7aa4eddb80c7bac
         actualScore         = 0;
 
         // Formatting the Text
@@ -75,31 +65,9 @@ public class ScoreBoard extends TextView {
 
     public void setScore(final int score) {
         synchronized (this) {
-//            actualScore = score;
+            actualScore = score;
+            setText(SCORE_FORMAT.format(actualScore));
 
-            ((Activity)context).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-
-                    while (actualScore != score) {
-
-
-                        setText(SCORE_FORMAT.format(actualScore));
-                        actualScore+=1;
-//                        try {
-//                            Thread.sleep(1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-                    }
-
-                }
-
-//            Thread animateThread = new Thread(
-//            });
-//            animateThread.start();
-            });
         }
     }
 
