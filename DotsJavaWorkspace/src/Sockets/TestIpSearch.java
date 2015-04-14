@@ -4,6 +4,7 @@ import Constants.DotsConstants;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -14,8 +15,8 @@ public class TestIpSearch {
     public static void main(String[] args) throws IOException {
 
 
-        Socket client = new Socket();
-        client.connect(new InetSocketAddress("10.12.17.172", DotsConstants.CLIENT_PORT), 100);
+//        Socket client = new Socket();
+//        client.connect(new InetSocketAddress("10.12.17.172", DotsConstants.CLIENT_PORT), 100);
 
 //        try {
 //            checkHosts("10.12");
@@ -24,6 +25,9 @@ public class TestIpSearch {
 //        }
 
 
+        String ip0 = "10.12.17.172";
+        String ip1 = "10.12.20.13";
+        System.out.println(compareIpOnSameWifi(ip0, ip1));
 
     }
 
@@ -55,5 +59,27 @@ public class TestIpSearch {
 
 
         System.out.println("DOne");
+    }
+
+    public static boolean compareIpOnSameWifi(String ip0, String ip1) {
+
+        System.out.println("Compareing: " + ip0 + " " + ip1);
+        String[] ip0Parts = ip0.split("\\.");
+
+        String[] ip1Parts = ip1.split("\\.");
+
+        // perform a check of the first two elements of the ip address
+
+        for (int i = 0; i < 2; i++) {
+
+            if (!ip0Parts[i].equals(ip1Parts[i])) {
+                return false;
+            }
+
+        }
+
+        return true;
+
+
     }
 }

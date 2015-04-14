@@ -116,30 +116,29 @@ public class ConnectionFragment extends Fragment {
     private void setUpViews() {
         final Fragment thisFragment = this;
 
-        // TODO remove debug buttons
-
-        Button startServerButton = (Button) this.getActivity().findViewById(R.id.start_server_button);
-        Button startClientButton = (Button) this.getActivity().findViewById(R.id.start_client_button);
-
-//        startClientButton.setBackgroundColor(Color.TRANSPARENT);
-//        startServerButton.setBackgroundColor(Color.TRANSPARENT);
-
-        startServerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity)getActivity(), true);
-            }
-        });
-        startClientButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                EditText text = (EditText) getActivity().findViewById(R.id.ipAddress);
-                String serverIp = text.getText().toString();
-                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"1", serverIp}, (MainActivity)getActivity(), true);
-            }
-        });
+//
+//        Button startServerButton = (Button) this.getActivity().findViewById(R.id.start_server_button);
+//        Button startClientButton = (Button) this.getActivity().findViewById(R.id.start_client_button);
+//
+////        startClientButton.setBackgroundColor(Color.TRANSPARENT);
+////        startServerButton.setBackgroundColor(Color.TRANSPARENT);
+//
+//        startServerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity)getActivity(), true);
+//            }
+//        });
+//        startClientButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                EditText text = (EditText) getActivity().findViewById(R.id.ipAddress);
+//                String serverIp = text.getText().toString();
+//                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"1", serverIp}, (MainActivity)getActivity(), true);
+//            }
+//        });
 
 
         ImageButton startGameButton = (ImageButton) this.getActivity().findViewById(R.id.start_multi_player_game_button);
@@ -180,12 +179,19 @@ public class ConnectionFragment extends Fragment {
 
                                     // compares the system UTC time with the retrieved object and see if
                                     // it falls into the live window
-                                    if (System.currentTimeMillis() - timeUpdatedAt < DotsAndroidConstants.IP_LIVE_WINDOW) {
-                                        // TODO filter ip address by network
-                                        retrievedIps.add(retrievedIp);
+
+                                    boolean ipAddressStillLive = System.currentTimeMillis() - timeUpdatedAt < DotsAndroidConstants.IP_LIVE_WINDOW;
+                                    boolean ipAddressesOnSameNetwork = compareIpOnSameWifi(myIpAddress, retrievedIp);
+
+                                    if (ipAddressStillLive) {
+
+                                        if (ipAddressesOnSameNetwork) {
+                                            retrievedIps.add(retrievedIp);
+                                        }
+
                                     } else {
-                                        // TODO deletes objects that don't fall into the window
-//                                        parseObject.deleteInBackground();
+                                        // delete old objects that don't fall within the window
+                                        parseObject.deleteInBackground();
                                     }
 
                                 }
@@ -216,9 +222,6 @@ public class ConnectionFragment extends Fragment {
                                 ipAddressObject.put(DotsAndroidConstants.PARSE_IP_KEY, myIpAddress);
                                 ipAddressObject.saveInBackground();
 
-
-                                // TODO delete ip parseobject when the game is ended (onDestroy?) in gameFragment
-
                                 Log.d(TAG, "Starting server...");
                                 FragmentTransactionHelper.showToast("Waiting...", getActivity(), SuperToast.Duration.MEDIUM);
                                 FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity) getActivity(), true);
@@ -234,9 +237,7 @@ public class ConnectionFragment extends Fragment {
 
         // Set a default ip address here so you dont have to type it in every time
         String placeholderIpAddress = "10.12.20.13";
-
         EditText editText = (EditText) this.getActivity().findViewById(R.id.ipAddress);
-
         editText.setText(placeholderIpAddress);
     }
 
@@ -262,5 +263,31 @@ public class ConnectionFragment extends Fragment {
         return ipAddressString;
 
     }
+
+    /**
+     * Compares two ip addresses and checks if they are on the same wifi
+     * @return true if same wifi, false otherwise
+     */
+    public static boolean compareIpOnSameWifi(String ip0, String ip1) {
+
+        System.out.println("Compareing: " + ip0 + " " + ip1);
+        String[] ip0Parts = ip0.split("\\.");
+        String[] ip1Parts = ip1.split("\\.");
+
+        // perform a check of the first two elements of the ip address
+
+        for (int i = 0; i < 2; i++) {
+
+            if (!ip0Parts[i].equals(ip1Parts[i])) {
+                return false;
+            }
+
+        }
+
+        return true;
+
+
+    }
+
 
 }

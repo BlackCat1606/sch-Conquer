@@ -303,7 +303,7 @@ public class GameFragment extends Fragment {
         }
 
     }
-    
+
     /**
      * Query for a parse object of the current ip address and deletes it from the cloud
      */
