@@ -1,13 +1,16 @@
 package darrenretinambpcrystalwell.dots;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,13 +29,11 @@ import Dots.DotsPoint;
  */
 public class DotsScreen {
 
-    private static final float SCREEN_WIDTH_PERCENTAGE = .8f;
+    private static final float SCREEN_WIDTH_PERCENTAGE = .9f;
     private static final float SCREEN_Y_PERCENTAGE = .3f;
     private float              x, y;
 
 
-    DotView[] dotsList = new DotView[36];
-    DotView[] touchList = new DotView[36];
 
     ImageView score;
     ImageView opponent;
@@ -48,9 +49,17 @@ public class DotsScreen {
     int                     screenWidth;
     int                     screenHeight;
     float                   screenDensity;
-    public ScoreBoard              scoreBoard0;
-    public ScoreBoard              scoreBoard1;
+    float                   scoreWidth;
+    float                   scoreHeight;
+    public ScoreBoard       scoreBoard0;
+    public ScoreBoard       scoreBoard1;
 
+    //Added by Darren
+    //Change this to change the board size Dot X Dot
+    private float           numberdotXdot = DotsAndroidConstants.BOARD_SIZE;
+
+    DotView[] dotsList = new DotView[(int)(numberdotXdot*numberdotXdot)];
+    DotView[] touchList = new DotView[(int)(numberdotXdot*numberdotXdot)];
 
     public float            dotWidth;
 
@@ -59,7 +68,7 @@ public class DotsScreen {
     private float[][][] correspondingDotCoordinates;
 
 
-    final int FADE_DURATION = 300;
+    final int FADE_DURATION = 200;
     final int END_ALPHA = 1;
 
     public float[][][] getCorrespondingDotCoordinates() {
@@ -67,6 +76,7 @@ public class DotsScreen {
     }
 
     // Standard Initialising Constructor
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public DotsScreen(RelativeLayout relativeLayout, Context context) {
         this.context =        context;
         this.relativeLayout = relativeLayout;
@@ -84,6 +94,9 @@ public class DotsScreen {
         scoreBoard0         = new ScoreBoard(relativeLayout, context);
         scoreBoard1         = new ScoreBoard(relativeLayout, context);
 
+        scoreWidth          = (int) screenDensity*100;
+        scoreHeight         = (int) screenDensity*30;
+
 
 
         this.dotsLayout = new RelativeLayout(context);
@@ -95,42 +108,56 @@ public class DotsScreen {
         opponent = new ImageView(context);
         score.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
                 context.getResources(), R.drawable.score,
-                (int)screenDensity*300,(int)screenDensity*300
+                scoreWidth, scoreHeight
         ));
 
         opponent.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
                 context.getResources(), R.drawable.enemy,
-                (int)screenDensity*300,(int)screenDensity*300
+                scoreWidth, scoreHeight
         ));
+        score.setLayoutParams(new ViewGroup.LayoutParams((int) (scoreWidth), (int) scoreHeight));
+        opponent.setLayoutParams(new ViewGroup.LayoutParams((int) (scoreWidth), (int) scoreHeight));
 
-        score.setX((screenWidth/4)- scoreBoard0.getFontSize() - (300/4));
-        score.setY((screenHeight/7) - scoreBoard0.getFontSize()*2);
+        int x_score = (int) (((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + 0.5f*(SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot));
+        int x_oppo = (int) (((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + 5f*(SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot));
 
-        scoreBoard0.setX((screenWidth / 4) - scoreBoard0.getFontSize());
-        scoreBoard0.setY((screenHeight/7) - scoreBoard0.getFontSize());
-        dotsLayout.addView(scoreBoard0);
+        scoreBoard0.setWidth((int) scoreWidth);
+        scoreBoard0.setX(x_score);
 
-        opponent.setX(((screenWidth /4)*3) - scoreBoard1.getFontSize() - (300/3));
-        opponent.setY((screenHeight/7)    - scoreBoard1.getFontSize()*2);
+        scoreBoard0.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+        scoreBoard1.setWidth((int) scoreWidth);
+        scoreBoard1.setX(x_oppo);
+        scoreBoard0.setY(screenHeight/8);
+        scoreBoard1.setY(screenHeight/8);
+        scoreBoard1.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
 
-        scoreBoard1.setX(((screenWidth /4)*3) - scoreBoard1.getFontSize());
-        scoreBoard1.setY((screenHeight/7)    - scoreBoard1.getFontSize());
+
+        score.setX(x_score);
+        score.setY((screenHeight/9));
+
+        opponent.setX(x_oppo);
+        opponent.setY((screenHeight/9));
+
+
+
+
         dotsLayout.addView(scoreBoard1);
+        dotsLayout.addView(scoreBoard0);
         dotsLayout.addView(score);
         dotsLayout.addView(opponent);
 
-        this.dotWidth = SCREEN_WIDTH_PERCENTAGE * screenWidth / 6.f;
+        this.dotWidth = SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot;
 
         float dotsXOffset = (1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth;
         float dotsYOffset = SCREEN_Y_PERCENTAGE * screenHeight;
 
         this.correspondingDotCoordinates = new float[DotsConstants.BOARD_SIZE][DotsConstants.BOARD_SIZE][2];
 
-        for (int index = 0; index < 36; ++index) {
+        for (int index = 0; index < (numberdotXdot*numberdotXdot); ++index) {
             // i == row number (0-5)
             // j == col number (0-5)
-            int i = index / 6;
-            int j = index % 6;
+            int i = index / (int)numberdotXdot;
+            int j = index % (int)numberdotXdot;
 
             DotView d = new RedDotView(context);
             DotView t = new TouchedDot(context);
@@ -182,7 +209,7 @@ public class DotsScreen {
             ((Activity)context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, false);
+                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, false, false);
                 }
             });
 

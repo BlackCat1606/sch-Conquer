@@ -13,6 +13,8 @@ import java.util.ArrayList;
  */
 public interface DotsAndroidCallback {
 
+    void onSocketConnected();
+
     void onValidPlayerInteraction(DotsInteraction interaction);
 
     void onBoardChanged(ArrayList<DotsPoint> changedPoints);
