@@ -87,9 +87,9 @@ public class MainFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        SurfaceView v = (SurfaceView) this.getActivity().findViewById(R.id.surfaceViewMain);
-        GifRun gifRun = new GifRun(this.getActivity());
-        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
+//        SurfaceView v = (SurfaceView) this.getActivity().findViewById(R.id.surfaceViewMain);
+//        GifRun gifRun = new GifRun(this.getActivity());
+//        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
 
         FrameLayout frameLayout = (FrameLayout) this.getActivity().findViewById(R.id.root_layout);
         MainScreen mainScreen = new MainScreen(frameLayout,this.getActivity());
