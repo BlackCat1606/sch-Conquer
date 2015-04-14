@@ -86,8 +86,8 @@ public class DotsScreen {
         scoreBoard0         = new ScoreBoard(relativeLayout, context);
         scoreBoard1         = new ScoreBoard(relativeLayout, context);
 
-        scoreWidth          = (int) screenDensity*120;
-        scoreHeight         = (int) screenDensity*40;
+        scoreWidth          = (int) screenDensity*100;
+        scoreHeight         = (int) screenDensity*30;
 
 
 
@@ -105,7 +105,7 @@ public class DotsScreen {
 
         opponent.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
                 context.getResources(), R.drawable.enemy,
-                scoreWidth,scoreWidth
+                scoreWidth,scoreHeight
         ));
         score.setLayoutParams(new ViewGroup.LayoutParams((int) (scoreWidth), (int) scoreHeight));
         opponent.setLayoutParams(new ViewGroup.LayoutParams((int) (scoreWidth), (int) scoreHeight));
@@ -116,9 +116,9 @@ public class DotsScreen {
 //        score.setX((screenWidth/4)- scoreBoard0.getFontSize() - (300/4));
 //        score.setY((screenHeight/7) - scoreBoard0.getFontSize()*2);
 
-        scoreBoard0.setX((screenWidth / 4)    - scoreBoard0.getFontSize());
+        scoreBoard0.setX(((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + (SCREEN_WIDTH_PERCENTAGE * screenWidth / 6.f) );
         scoreBoard0.setY((screenHeight/7)     - scoreBoard0.getFontSize());
-        scoreBoard1.setX(screenWidth - scoreBoard0.getX() - 9*scoreBoard0.getFontSize());
+        scoreBoard1.setX(((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + ((float)4.5*SCREEN_WIDTH_PERCENTAGE * screenWidth / 6.f));
         scoreBoard1.setY((screenHeight/7)     - scoreBoard1.getFontSize());
 
 
