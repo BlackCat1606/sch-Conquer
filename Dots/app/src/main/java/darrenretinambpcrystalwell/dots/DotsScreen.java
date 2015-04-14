@@ -53,12 +53,10 @@ public class DotsScreen {
 
     //Added by Darren
     //Change this to change the board size Dot X Dot
-    private float           numberdotXdot = 6.f;
+    private float           numberdotXdot = DotsAndroidConstants.BOARD_SIZE;
 
     DotView[] dotsList = new DotView[(int)(numberdotXdot*numberdotXdot)];
     DotView[] touchList = new DotView[(int)(numberdotXdot*numberdotXdot)];
-
-
 
     public float            dotWidth;
 

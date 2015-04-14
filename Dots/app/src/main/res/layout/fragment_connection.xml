@@ -97,17 +97,17 @@
         android:orientation="vertical">
 
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/start_server_button"
-            android:text="Server"/>
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/start_server_button"-->
+            <!--android:text="Server"/>-->
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/start_client_button"
-            android:text="Client"/>
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/start_client_button"-->
+            <!--android:text="Client"/>-->
 
         </LinearLayout>
 

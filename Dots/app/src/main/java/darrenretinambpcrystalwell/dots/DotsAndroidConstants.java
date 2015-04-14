@@ -1,5 +1,7 @@
 package darrenretinambpcrystalwell.dots;
 
+import Constants.DotsConstants;
+
 /**
  * Created by JiaHao on 5/4/15.
  */
@@ -13,4 +15,7 @@ public class DotsAndroidConstants {
 
     // Time a retrieved IP address is considered live
     public static final long IP_LIVE_WINDOW = 5*60*1000;
+
+    // change this to change the board size
+    public static final int BOARD_SIZE = DotsConstants.BOARD_SIZE;
 }
