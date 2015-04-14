@@ -29,7 +29,7 @@ public class ScoreBoard extends TextView {
 
     private static final float SCREEN_WIDTH_PERCENTAGE = .8f;
     private static final float SCREEN_Y_PERCENTAGE     = .2f;
-    private static final float FONT_SIZE               = 25.f;
+    private static final float FONT_SIZE               = 20.f;
     private static float       screenDensity;
 
 
