@@ -1,8 +1,10 @@
 package darrenretinambpcrystalwell.dots;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.view.Gravity;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ public class ScoreBoard extends TextView {
     private float              x, y;
     private int                actualScore;
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public ScoreBoard(RelativeLayout relativeLayout, Context context) {
         super(context);
         this.relativeLayout = relativeLayout;
@@ -42,6 +45,7 @@ public class ScoreBoard extends TextView {
         setText(SCORE_FORMAT.format(actualScore));
         setTextSize(FONT_SIZE);
         setTextIsSelectable(false);
+        setTextAlignment(TEXT_ALIGNMENT_CENTER);
         setSingleLine(true);
         setTypeface(Typeface.DEFAULT_BOLD);
         setY(-2.f);
