@@ -22,6 +22,7 @@ import java.util.Locale;
  *
  * ScoreBoard View to display Score
  *
+ *
  */
 public class ScoreBoard extends TextView {
 
@@ -38,6 +39,16 @@ public class ScoreBoard extends TextView {
     private float              x, y;
     private int                actualScore;
 
+    /**
+     * Construtor to initialise scoreboard
+     *
+     * sets the board according to the default size
+     * based on the screen size
+     * @param relativeLayout
+     * @param context
+     *
+     *
+     */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public ScoreBoard(RelativeLayout relativeLayout, Context context) {
         super(context);
@@ -59,10 +70,19 @@ public class ScoreBoard extends TextView {
 
     }
 
+    /**
+     *
+     * @return the size of the font
+     */
     public float getFontSize() {
         return FONT_SIZE;
     }
 
+    /**
+     * use this to set the score of the current game
+     * @param score
+     *
+     */
     public void setScore(final int score) {
         synchronized (this) {
             actualScore = score;
@@ -71,6 +91,10 @@ public class ScoreBoard extends TextView {
         }
     }
 
+    /**
+     * use this to return the current score of the game
+     * @return int of the current score
+     */
     public int getScore() {
         synchronized (this) {
             return actualScore;
