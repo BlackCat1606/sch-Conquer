@@ -7,16 +7,7 @@
     android:id="@+id/root_layout"
     android:background="@drawable/backgroundtwo"
     android:animateLayoutChanges="true">
-    <SurfaceView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/surfaceViewMain"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true" />
+
     <ImageView
             android:layout_width="200dp"
             android:layout_height="200dp"
@@ -42,7 +33,7 @@
 
     <ImageButton
             android:layout_width="200dp"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:padding="5dp"
@@ -51,14 +42,13 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:id="@+id/start_multi_player_button"
-            android:src="@drawable/btn_ptwo_normal"
-            android:background="@android:color/transparent"
+            android:background="@drawable/button_main_ptwo"
         android:layout_gravity="center_horizontal|bottom"/>
 
 
     <ImageButton
             android:layout_width="200dp"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:padding="5dp"
@@ -67,8 +57,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:id="@+id/start_single_player_button"
-            android:src="@drawable/btn_pone_normal"
-            android:background="@android:color/transparent"
+            android:background="@drawable/button_main_pone"
             android:layout_gravity="center_horizontal|bottom"/>
 
     <ImageButton

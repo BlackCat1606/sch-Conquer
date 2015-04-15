@@ -1,13 +1,16 @@
 package darrenretinambpcrystalwell.dots;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +76,7 @@ public class DotsScreen {
     }
 
     // Standard Initialising Constructor
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public DotsScreen(RelativeLayout relativeLayout, Context context) {
         this.context =        context;
         this.relativeLayout = relativeLayout;
@@ -104,30 +108,35 @@ public class DotsScreen {
         opponent = new ImageView(context);
         score.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
                 context.getResources(), R.drawable.score,
-                scoreWidth,scoreHeight
+                scoreWidth, scoreHeight
         ));
 
         opponent.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
                 context.getResources(), R.drawable.enemy,
-                scoreWidth,scoreHeight
+                scoreWidth, scoreHeight
         ));
         score.setLayoutParams(new ViewGroup.LayoutParams((int) (scoreWidth), (int) scoreHeight));
         opponent.setLayoutParams(new ViewGroup.LayoutParams((int) (scoreWidth), (int) scoreHeight));
 
+        int x_score = (int) (((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + 0.5f*(SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot));
+        int x_oppo = (int) (((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + 5f*(SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot));
+
+        scoreBoard0.setWidth((int) scoreWidth);
+        scoreBoard0.setX(x_score);
+
+        scoreBoard0.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+        scoreBoard1.setWidth((int) scoreWidth);
+        scoreBoard1.setX(x_oppo);
+        scoreBoard0.setY(screenHeight/8);
+        scoreBoard1.setY(screenHeight/8);
+        scoreBoard1.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
 
 
+        score.setX(x_score);
+        score.setY((screenHeight/9));
 
-
-        scoreBoard0.setX(((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + (SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot) );
-        scoreBoard0.setY((screenHeight/7)     - scoreBoard0.getFontSize());
-        scoreBoard1.setX(((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth) + ((float)4.5*SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot));
-        scoreBoard1.setY((screenHeight/7)     - scoreBoard1.getFontSize());
-
-
-        score.setX(scoreBoard0.getX()         - (float)(scoreWidth/(numberdotXdot*0.5)));
-        score.setY((screenHeight/8)           - scoreBoard1.getFontSize()*2);
-        opponent.setX((scoreBoard1.getX()     - (float)(scoreWidth/(numberdotXdot*0.5))));
-        opponent.setY((screenHeight/8)        - scoreBoard1.getFontSize()*2);
+        opponent.setX(x_oppo);
+        opponent.setY((screenHeight/9));
 
 
 

@@ -28,7 +28,7 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:padding="5dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
@@ -45,7 +45,7 @@
             android:layout_marginBottom="50dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:id="@+id/go"
+            android:id="@+id/playAgain"
             android:src="@drawable/btn_playagain_normal"
             android:background="@android:color/transparent"
             android:layout_gravity="center_horizontal|bottom"/>
