@@ -40,6 +40,7 @@ import darrenretinambpcrystalwell.dots.R;
 import darrenretinambpcrystalwell.dots.ScoreBoard;
 import darrenretinambpcrystalwell.dots.SurfaceViewDots;
 import darrenretinambpcrystalwell.dots.GifRun;
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -110,8 +111,8 @@ public class GameFragment extends Fragment {
         super.onStart();
 
         SurfaceView v = (SurfaceView) this.getActivity().findViewById(R.id.surfaceView);
-        GifRun gifRun = new GifRun(this.getActivity());
-        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
+//        GifRun gifRun = new GifRun(this.getActivity());
+//        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
 
 
     }
@@ -190,6 +191,10 @@ public class GameFragment extends Fragment {
             public void onSocketConnected() {
 
                 // when connected, we want to remove the server IP from parse
+
+//                final SmoothProgressBar progressBar = (SmoothProgressBar) getActivity().findViewById(R.id.loading_bar);
+//                progressBar.setVisibility(View.INVISIBLE);
+
 
                 removeDeviceIpFromParse();
 
@@ -285,9 +290,6 @@ public class GameFragment extends Fragment {
         Thread thread = new Thread(dotsGameTask);
         thread.start();
 
-
-
-
     }
 
     private void playSoundForInteraction(DotsInteraction interaction, SoundHelper soundHelper) {
@@ -312,7 +314,7 @@ public class GameFragment extends Fragment {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(DotsAndroidConstants.PARSE_OBJECT_NAME);
 
         // Where the ip address is the same
-        query.whereEqualTo(DotsAndroidConstants.PARSE_IP_KEY, ConnectionFragment.wifiIpAddress(getActivity()));
+        query.whereEqualTo(DotsAndroidConstants.PARSE_IP_KEY, MainFragment.wifiIpAddress(getActivity()));
 
         // find the objects
         query.findInBackground(new FindCallback<ParseObject>() {
