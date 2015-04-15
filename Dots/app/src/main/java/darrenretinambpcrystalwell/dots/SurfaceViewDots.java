@@ -25,33 +25,25 @@ import Sockets.DotsServerClientParent;
 /**
  * Created by Darren Ng 1000568 on 20/3/15.
  *
- * Cursor to show where the finger is touching
- * Get the arraylist of move from getPointArrayList();
+ * surfaceview class that takes care of the interaction
+ * of finger gesture
  *
  */
 
 public class SurfaceViewDots extends RelativeLayout
         implements View.OnTouchListener {
 
-    private static final String TAG = "SurfaceViewDots";
-    DotsInteractionStates interactionState;
-
+    private static final String         TAG = "SurfaceViewDots";
+    DotsInteractionStates               interactionState;
 
     // Standard Variables call
-    RelativeLayout             relativeLayout;
-    Context                    context;
-    private static final float SCREEN_WIDTH_PERCENTAGE = .8f;
-    private static final float SCREEN_Y_PERCENTAGE     = .2f;
-
-
-
-    float           dotWidth;
-
-    private final int PLAYER_ID;
-
-//    float x,y;
-
-    private final float[][][] correspondingDotCoordinates;
+    RelativeLayout                       relativeLayout;
+    Context                              context;
+    private static final float           SCREEN_WIDTH_PERCENTAGE = .8f;
+    private static final float           SCREEN_Y_PERCENTAGE     = .2f;
+    float                                dotWidth;
+    private final int                    PLAYER_ID;
+    private final float[][][]            correspondingDotCoordinates;
     private final DotsServerClientParent dotsServerClientParent;
 
 
@@ -66,36 +58,33 @@ public class SurfaceViewDots extends RelativeLayout
 
     private static final Bitmap BLANK_BITMAP
             = Bitmap.createBitmap(1,1, Bitmap.Config.ARGB_8888);
-
-
+    /**
+     * Standard Initialising Constructor
+     *
+     * @param context
+     * @param relativeLayout
+     * @param dotsServerClientParent
+     * @param correspondingDotCoordinates
+     */
     public SurfaceViewDots(
             Context context,
             RelativeLayout relativeLayout,
             DotsServerClientParent dotsServerClientParent,
             float[][][] correspondingDotCoordinates) {
         super(context);
-        this.context              = context;
-        this.relativeLayout       = relativeLayout;
-        this.dotsServerClientParent = dotsServerClientParent;
+        this.context                     = context;
+        this.relativeLayout              = relativeLayout;
+        this.dotsServerClientParent      = dotsServerClientParent;
         this.correspondingDotCoordinates = correspondingDotCoordinates;
-
-
-        float dotsXOffset         = (1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * ScreenDimensions.getWidth(context);
-        float dotsYOffset         = SCREEN_Y_PERCENTAGE * ScreenDimensions.getHeight(context);
-        this.dotWidth             = SCREEN_WIDTH_PERCENTAGE * ScreenDimensions.getWidth(context) / DotsAndroidConstants.BOARD_SIZE;
-        LayoutParams layoutParams = new LayoutParams(ScreenDimensions.getWidth(context),
+        this.dotWidth                    = SCREEN_WIDTH_PERCENTAGE * ScreenDimensions.getWidth(context)
+                / DotsAndroidConstants.BOARD_SIZE;
+        LayoutParams layoutParams        = new LayoutParams(ScreenDimensions.getWidth(context),
                 ScreenDimensions.getHeight(context));
 
         setLayoutParams(layoutParams);
 
         relativeLayout.addView(this);
 
-//        blackDotView.setX(dotsXOffset + dotWidth);
-//        blackDotView.setY(dotsYOffset + dotWidth);
-//        blackDotView.setLayoutParams(new ViewGroup.LayoutParams((int) dotWidth, (int) dotWidth));
-//
-//        addView(blackDotView);
-//        blackDotView.setVisibility(INVISIBLE);
         setOnTouchListener(this);
 
 
@@ -115,7 +104,12 @@ public class SurfaceViewDots extends RelativeLayout
 
     private DotsInteraction previousInteraction;
 
-
+    /**
+     * use this to get the input && finger interaction states
+     * @param v
+     * @param event
+     * @return boolean, of the drag status of the finger
+     */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
@@ -129,29 +123,20 @@ public class SurfaceViewDots extends RelativeLayout
 
         int action = event.getAction();
 
-
         if (action == MotionEvent.ACTION_DOWN) {
             interactionState = DotsInteractionStates.TOUCH_DOWN;
-//            blackDotView.setVisibility(VISIBLE);
-//            blackDotView.setX(event.getX() - blackDotView.getWidth() / 2);
-//            blackDotView.setY(event.getY() - blackDotView.getHeight() / 2);
+
         } else if (action == MotionEvent.ACTION_MOVE) {
             interactionState = DotsInteractionStates.TOUCH_MOVE;
-//            blackDotView.setVisibility(VISIBLE);
-//            blackDotView.setX(event.getX() - blackDotView.getWidth() / 2);
-//            blackDotView.setY(event.getY() - blackDotView.getHeight() / 2);
+
 
         } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             interactionState = DotsInteractionStates.TOUCH_UP;
-//            blackDotView.setVisibility(INVISIBLE);
-
 
         } else {
             Log.d(TAG, "Unhandled motion event: " + action);
             return false;
         }
-
-
 
         boolean notActionUp = action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE;
 
@@ -244,6 +229,14 @@ public class SurfaceViewDots extends RelativeLayout
         return null;
     }
 
+    /**
+     *
+     * @param touchedX
+     * @param touchedY
+     * @param refX
+     * @param refY
+     * @return boolean of if the location finger touched is within the threshold of the dots nearby
+     */
     private boolean touchedLocationCloseEnoughToReference(float touchedX, float touchedY, float refX, float refY) {
 
         double distance = Math.hypot((touchedX - refX), (touchedY - refY));
@@ -256,6 +249,10 @@ public class SurfaceViewDots extends RelativeLayout
 
     }
 
+    /**
+     * execute the interaction of the player
+     * @param interaction
+     */
     public void doPlayerInteraction(DotsInteraction interaction) {
 
         try {
@@ -270,8 +267,14 @@ public class SurfaceViewDots extends RelativeLayout
 
     }
 
-    // Filled by Darren
-    // Updated to only clear touchedPath of player and not opponent
+    /**
+     * use this to set the touched path of both players
+     * if finger touched is within the threshold of dots
+     * nearby, path will change color to indicate selection of dots
+     * to be cleared
+     * @param interaction
+     * @param dotsScreen
+     */
     public void setTouchedPath(DotsInteraction interaction, DotsScreen dotsScreen) {
 
         Log.d(TAG, "TOUCHPATH: " + interaction.toString());
@@ -284,9 +287,9 @@ public class SurfaceViewDots extends RelativeLayout
                 for (int i=0; i< dotsScreen.getTouchedList().length;i++) {
                     if (dotsScreen.getTouchedList()[i].getColor().equals(DotColor.PLAYER_0)) {
                         dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
-//                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],200,false,false);
-//                        dotsScreen.getTouchedList()[i].setTouchedDot();
-//                        dotsScreen.scoreBoard0.setScore(1);
+                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
+                        dotsScreen.getTouchedList()[i].setTouchedDot();
+                        dotsScreen.scoreBoard0.setScore(1);
                     }
                 }
 
@@ -300,9 +303,9 @@ public class SurfaceViewDots extends RelativeLayout
                 for (int i=0; i< dotsScreen.getTouchedList().length;i++) {
                     if (dotsScreen.getTouchedList()[i].getColor().equals(DotColor.PLAYER_1)) {
                         dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
-//                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],200,false,false);
-//                        dotsScreen.getTouchedList()[i].setTouchedDot();
-//                        dotsScreen.scoreBoard1.setScore(1);
+                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
+                        dotsScreen.getTouchedList()[i].setTouchedDot();
+                        dotsScreen.scoreBoard1.setScore(1);
                     }
                 }
             }
