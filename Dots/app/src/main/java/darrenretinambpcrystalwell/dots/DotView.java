@@ -20,6 +20,9 @@ import Dots.DotColor;
 /**
  * Author: Darren Ng
  * ID: 1000568
+ *
+ * class of the various dotviews
+ * use this to initialise dots
  */
 class DotView extends ImageView {
     float x, y;
@@ -34,6 +37,11 @@ class DotView extends ImageView {
     private Drawable one;
     private Drawable two;
 
+    /**
+     * Constructor
+     * @param context
+     *
+     */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public DotView(Context context) {
         super(context);
@@ -55,12 +63,24 @@ class DotView extends ImageView {
 
     }
 
+    /**
+     * use this to get the square distance of the view
+     * @param x
+     * @param y
+     * @return float, the square distance of the view
+     */
     public float getSqDist(float x, float y) {
         float a = x - getX() + getHeight() * .5f;
         float b = y - getY() + getWidth() * .5f;
         return a * a + b * b;
     }
 
+    /**
+     * use this to resize the drawable
+     * @param id
+     * @return drawable, resized imageview according to reduce
+     * memory
+     */
     public Drawable getDrawable(int id) {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -77,6 +97,10 @@ class DotView extends ImageView {
         return new BitmapDrawable(getResources(), bitmap);
     }
 
+    /**
+     * use this to set the drawable
+     * @param a
+     */
     public void setDrawable(Drawable a) {
         setBackgroundDrawable(a);
     }
@@ -112,6 +136,10 @@ class DotView extends ImageView {
         }
     }
 
+    /**
+     * use this to get the color of the dot
+     * @return color of the dot
+     */
     public DotColor getColor() {
         return color;
     }
@@ -161,16 +189,6 @@ class DotView extends ImageView {
         setDrawable(toucheddot);
     }
 
-
-
-
-//    public void setColor(String color) {
-//        this.color = color;
-//    }
-//
-//    public String getColor() {
-//        return color;
-//    }
 }
 
 class RedDotView extends DotView {
