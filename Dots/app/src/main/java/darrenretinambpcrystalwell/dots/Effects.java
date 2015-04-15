@@ -77,6 +77,11 @@ public class Effects {
         }
     }
 
+    /**
+     *
+     * @param view
+     * @param runnable
+     */
     private static void recordAnimationRunnable(View view, TweenRunnable runnable) {
         handler.postDelayed(runnable, TIME_DELTA);
         if (animationRunnables.containsKey(view) == false) {
@@ -85,6 +90,11 @@ public class Effects {
         animationRunnables.get(view).add(runnable);
     }
 
+    /**
+     * clears the animation currently running to prevent
+     * faults in animation
+     * @param view
+     */
     private static void clearAllAnimations(View view) {
         if (animationRunnables.containsKey(view) == false) return;
         ArrayList<TweenRunnable> runnables = animationRunnables.get(view);
@@ -96,6 +106,13 @@ public class Effects {
         }
     }
 
+    /**
+     * use this to cast fading out effect on view
+     * @param view
+     * @param duration
+     * @param fillAfter
+     * @param hideViewAfter
+     */
     public static void castFadeOutEffect(View view,
                                          int duration, boolean fillAfter, boolean hideViewAfter) {
         clearAllAnimations(view);
@@ -107,6 +124,13 @@ public class Effects {
         recordAnimationRunnable(view, animationRunnable);
     }
 
+    /**
+     * use this to cast fading in effect on view
+     * @param view
+     * @param endAlpha
+     * @param duration
+     * @param fillAfter
+     */
     public static void castFadeInEffect(View view, float endAlpha,
                                         int duration, boolean fillAfter) {
         clearAllAnimations(view);
