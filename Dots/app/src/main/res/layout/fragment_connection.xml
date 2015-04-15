@@ -91,10 +91,10 @@
             android:background="@android:color/transparent"
             android:layout_gravity="center_horizontal|bottom"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical">-->
 
 
         <!--<Button-->
@@ -109,7 +109,7 @@
             <!--android:id="@+id/start_client_button"-->
             <!--android:text="Client"/>-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
 
     <fr.castorflex.android.smoothprogressbar.SmoothProgressBar

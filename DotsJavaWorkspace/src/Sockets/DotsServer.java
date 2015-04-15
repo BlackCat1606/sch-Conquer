@@ -262,6 +262,7 @@ public class DotsServer extends DotsServerClientParent{
         DotsServer dotsServer = new DotsServer(DotsConstants.CLIENT_PORT);
 //        DotsServer dotsServer = new DotsServer(DotsConstants.SINGLE_PLAYER_PORT);
         // Compulsory to set listeners
+
         dotsServer.setAndroidCallback(new DotsAndroidCallback() {
             @Override
             public void onSocketConnected() {

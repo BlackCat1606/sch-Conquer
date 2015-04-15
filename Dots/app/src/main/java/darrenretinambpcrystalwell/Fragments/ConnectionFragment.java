@@ -238,7 +238,7 @@ public class ConnectionFragment extends Fragment {
                             Log.d("PARSE", "Error: " + e.getMessage());
                         }
 
-                        progressBar.setVisibility(View.INVISIBLE);
+//                        progressBar.setVisibility(View.INVISIBLE);
 //                        progressBar.progressiveStop();
                     }
                 });
