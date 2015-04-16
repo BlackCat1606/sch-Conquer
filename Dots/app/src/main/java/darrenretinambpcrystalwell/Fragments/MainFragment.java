@@ -129,6 +129,14 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+
+                // If ip address is null, we assume that player has not connected to wifi
+                if (myIpAddress == null) {
+                    Log.e(TAG, "IP Address is NULL. Connect to WIFI");
+                    FragmentTransactionHelper.showToast("Connect to Wi-fi first to play", getActivity(), SuperToast.Duration.MEDIUM);
+                    return;
+                }
+
 //                progressBar.progressiveStart();
                 progressBar.setVisibility(View.VISIBLE);
 
@@ -190,7 +198,7 @@ public class MainFragment extends Fragment {
 
                                 Log.d(TAG, "Starting client, connecting to IP: " + serverIp);
                                 // starts a client that will connect to the IP
-                                FragmentTransactionHelper.showToast("Connecting...", getActivity(), SuperToast.Duration.MEDIUM);
+                                FragmentTransactionHelper.showToast("Connecting to opponent...", getActivity(), SuperToast.Duration.MEDIUM);
                                 FragmentTransactionHelper.pushFragment(1, thisFragment, new String[]{"1", serverIp}, (MainActivity)getActivity(), true);
 
 
@@ -203,7 +211,7 @@ public class MainFragment extends Fragment {
                                 ipAddressObject.saveInBackground();
 
                                 Log.d(TAG, "Starting server...");
-                                FragmentTransactionHelper.showToast("Waiting...", getActivity(), SuperToast.Duration.MEDIUM);
+                                FragmentTransactionHelper.showToast("Waiting for opponent...", getActivity(), SuperToast.Duration.MEDIUM);
                                 FragmentTransactionHelper.pushFragment(1, thisFragment, new String[]{"0", "0"}, (MainActivity) getActivity(), true);
                             }
 
