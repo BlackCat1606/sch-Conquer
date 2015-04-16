@@ -128,7 +128,7 @@ public class DotsClient extends DotsServerClientParent {
         thread.start();
 
     }
-    
+
     /**
      * Method here to update the screen for touch interaction, i.e. reflect touches
      * @param dotsInteraction interaction object

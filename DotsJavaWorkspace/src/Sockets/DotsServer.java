@@ -115,15 +115,9 @@ public class DotsServer extends DotsServerClientParent{
 
                 updateScreenForTouchInteractions(dotsInteraction);
 
-                // Here, we only send screen interactions to the client if the interaction is made by the server player.
-                // The client will draw its onw client player interactions based on the response it receives
-                if (dotsInteraction.getPlayerId() == 0) {
-
-                    // Sends the valid interaction to the client player so that the client can see the move made by the other player
+                    // sends the interaction to the client
                     DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
                     DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
-
-                }
 
 
                 // finally, we check if the board needs to be updated
