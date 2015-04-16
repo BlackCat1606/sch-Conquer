@@ -189,16 +189,7 @@ public class GameFragment extends Fragment {
         DotsAndroidCallback androidCallback = new DotsAndroidCallback() {
             @Override
             public void onSocketConnected() {
-
-                // when connected, we want to remove the server IP from parse
-
-//                final SmoothProgressBar progressBar = (SmoothProgressBar) getActivity().findViewById(R.id.loading_bar);
-//                progressBar.setVisibility(View.INVISIBLE);
-
-
                 removeDeviceIpFromParse();
-
-
             }
 
             @Override
@@ -235,13 +226,13 @@ public class GameFragment extends Fragment {
                 // kill threads and stop the game
                 dotsGameTask.getDotsServerClientParent().stopGame();
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        FragmentTransactionHelper.showToast(message, getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
-
-                    }
-                });
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        FragmentTransactionHelper.showToast(message, getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
+//
+//                    }
+//                });
 
                 // initialise the game over fragments with arguments
                 GameOverFragment gameOverFragment = new GameOverFragment();

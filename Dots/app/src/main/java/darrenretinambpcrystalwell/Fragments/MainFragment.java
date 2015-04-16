@@ -108,30 +108,14 @@ public class MainFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        this.myIpAddress = wifiIpAddress(this.getActivity());
-
-//        SurfaceView v = (SurfaceView) this.getActivity().findViewById(R.id.surfaceViewMain);
-//        GifRun gifRun = new GifRun(this.getActivity());
-//        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
-
-//        FrameLayout frameLayout = (FrameLayout) this.getActivity().findViewById(R.id.root_layout);
-
         final SmoothProgressBar progressBar = (SmoothProgressBar) this.getActivity().findViewById(R.id.loading_bar);
         progressBar.setVisibility(View.INVISIBLE);
-
-//        MainScreen mainScreen = new MainScreen(frameLayout,this.getActivity());
 
         ImageButton startMultiplayerButton = (ImageButton) this.getActivity().findViewById(R.id.start_multi_player_button);
         ImageButton startSinglePlayerButton = (ImageButton) this.getActivity().findViewById(R.id.start_single_player_button);
 
 
         final Fragment thisFragment = this;
-//        startMultiplayerButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                FragmentTransactionHelper.pushFragment(1, thisFragment,new String[2], (MainActivity)getActivity(), true);
-//            }
-//        });
 
         startSinglePlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,7 +147,6 @@ public class MainFragment extends Fragment {
                         if (e == null) {
 
                             ArrayList<String> retrievedIps = new ArrayList<String>();
-
                             // For each object retrieved, we want to filter them
                             for (ParseObject parseObject : parseObjects) {
 
@@ -189,7 +172,7 @@ public class MainFragment extends Fragment {
                                         }
 
                                     } else {
-                                        // delete old objects that don't fall within the window
+                                        // delete old objects that don't fall within the live window
                                         parseObject.deleteInBackground();
                                     }
 
@@ -201,7 +184,6 @@ public class MainFragment extends Fragment {
                             // If ips are retrieved, we want to start a server
                             if (!retrievedIps.isEmpty()) {
 
-                                // TODO check if its always the first object
                                 // gets the first object
                                 String serverIp = retrievedIps.get(0);
 
@@ -217,7 +199,6 @@ public class MainFragment extends Fragment {
 
                                 // Saves my IP address into the cloud so others can connect
                                 ParseObject ipAddressObject = new ParseObject(DotsAndroidConstants.PARSE_OBJECT_NAME);
-                                String myIpAddress = wifiIpAddress(getActivity());
                                 ipAddressObject.put(DotsAndroidConstants.PARSE_IP_KEY, myIpAddress);
                                 ipAddressObject.saveInBackground();
 
@@ -238,6 +219,20 @@ public class MainFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // refresh IP address
+        this.myIpAddress = wifiIpAddress(this.getActivity());
+    }
+
+    /**
+     * Method to get the private IP address if the device is connected to WIFI
+     * http://stackoverflow.com/a/18638588
+     * @param context current context
+     * @return private wifi ip address, or null if not connected to wifi
+     */
     public static String wifiIpAddress(Context context) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
