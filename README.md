@@ -51,10 +51,6 @@ Thus, the back end of the project is packaged as a `.jar` file that is imported 
 - `TouchMoved`
 - `TouchUp`
 
-The `DotsGame` object that runs on the server instance of the app will receive these interactions from both the current player, as well as remotely from the player running the client instance of the app.
-
-Whenever interactions are made by either player, `doMove(interaction)` in `DotsGame` on the server will be called with the corresponding interactions made. 
-
 #### Callbacks
 
 Usage of a callbacks system is implemented instead of using multiple threads when operations are executed, which will may create issues with thread safety. Also, such a callback system further preserves modularity and separates the front end of the Android game from the back end game logic. By using these callbacks, it would be simple to implement the back end code in another Java Virtual Machine apart from Android, by filling in the callback with the appropriate response that interfaces the front end and the back end.
@@ -73,7 +69,7 @@ latencyChanged(long latency);
 These methods are filled in within `GameFragment` within the Android project files, with appropriate actions that are to be taken, such as updating the screen when the board changes. The Javadoc can be referred to for more details.
 
 
-To follow polymorphism the `DotsServer` and `DotsClient` classes both share the same parent class `DotsServerClientParent`. 
+Following polymorphism, the `DotsServer` and `DotsClient` classes both share the same parent class `DotsServerClientParent`. 
 
 Here are the constructors for the respective classes:
 
@@ -139,17 +135,40 @@ Hence, we will discuss the differences in the game instance as a server or clien
 
 #### Server
 
-The server contains 
+The server contains the `DotsGame` object that app will receive these interactions from both the current player, as well as remotely from the player running the client instance of the app.
+
+Whenever interactions are made by either player, `doMove(interaction)` in `DotsGame` on the server will be called with the corresponding interactions made. 
 
 #### Client
 
 #### Message Sending
 
-`DotsMessage`
+All types messages that are sent subclass the `DotsMessage` interface, and sent and received through the socket's `objectInputStream` and `objectOutputStream`. A listener thread runs on each device that constantly waits and reads a `DotsMessage` object from the `objectInputStream`, and is handled by checking the type of the object. The simplified code below illustrates how the client handles received messages.
+
+```java
+while(gameIsRunning) {
+	DotsMessage message = DotsSocketHelper.readMessageFromServer(clientSocket);
+
+	if (message instanceOf DotsMessageBoard) {
+		
+		// trigger onBoardChanged in callback
+		
+	} else if (message instanceOf DotsMessageInteraction) {
+		
+		// trigger onValidPlayerInteraction in callback
+		
+	} else {
+	
+		//...
+		
+	}
+}
+
+```
 
 #### Helper Library
 
-To simplify sending of messages through sockets, and socket initialization, a helper Java Library [AwesomeSockets](https://github.com/skewedlines/AwesomeSockets "AwesomeSockets on GitHub") was written. 
+To simplify sending of messages through sockets, and socket initialization, a helper Java Library [AwesomeSockets](https://github.com/skewedlines/AwesomeSockets "AwesomeSockets on GitHub") was written and used. 
 
 ### Overview Application Activity Diagram
 
@@ -199,10 +218,6 @@ Since both players will be able to see each other’s input touch in real time o
 ### Concurrency between client and server
 
 In order to eliminate concurrency issues that stem from possible network issues, the server maintains a master of the game instance, and all the interactions from both players will go through it for conflict resolution and processing.
-
-
-
-
 
 #### Synchronisation
 
@@ -255,4 +270,4 @@ In general, when a player holds points below that of the other player or vice ve
 
 
 
-<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":15158,"type":"conflict","selectionEnd":15191,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"}}-->
+<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":15877,"type":"conflict","selectionEnd":15910,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"}}-->
