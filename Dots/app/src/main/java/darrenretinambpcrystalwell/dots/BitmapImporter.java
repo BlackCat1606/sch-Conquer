@@ -16,7 +16,14 @@ import java.io.InputStream;
  *
  */
 public class BitmapImporter {
-
+    /**
+     * use this to resize Images in resources to reduce memory
+     * @param res
+     * @param resId
+     * @param reqWidth
+     * @param reqHeight
+     * @return a bitmap of the size according to the screen density
+     */
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          float reqWidth, float reqHeight) {
 
@@ -33,6 +40,13 @@ public class BitmapImporter {
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
+    /**
+     *
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return calculate the largest inSampleSize value
+     */
     public static int calculateInSampleSize(
             BitmapFactory.Options options, float reqWidth, float reqHeight) {
         // Raw height and width of image

@@ -9,7 +9,8 @@ import android.graphics.Bitmap.Config;
 
 /**
  * @author Darren Ng 1000568
- *
+ * use this to decode the GIF into frames
+ * for animation playback
  *
  */
 
@@ -50,7 +51,10 @@ public class GIFDecode {
 		return frameindex;
 	}
 
-
+    /**
+     * sets the frame index
+     * @param frameindex
+     */
 	public void setFrameindex(int frameindex) {
 		this.frameindex = frameindex;
 		if(frameindex>frames.size()-1){
@@ -197,7 +201,12 @@ public class GIFDecode {
 		}
 		image = Bitmap.createBitmap(dest, width, height,Config.RGB_565);
 	}
-	
+
+    /**
+     *
+     * @param n
+     * @return the index of the frame
+     */
 	public Bitmap getFrame(int n) {
 		Bitmap im = null;
 		if ((n >= 0) && (n < frameCount)) {
@@ -233,6 +242,10 @@ public class GIFDecode {
 		}
 		return status;
 	}
+
+    /**
+     * decodes the image data
+     */
 	protected void decodeImageData() {
 		int NullCode = -1;
 		int npix = iw * ih;

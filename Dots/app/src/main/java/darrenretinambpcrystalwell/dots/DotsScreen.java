@@ -23,8 +23,8 @@ import Dots.DotsPoint;
 /**
  * Created by DarrenRetinaMBP on 13/3/15.
  *
- * Main Screen when the game is loaded first
- * Takes in 1st randomised matrix from randomising class
+ * Sets the main game screen
+ * Constructor to initialise the dotsBoard
  *
  */
 public class DotsScreen {
@@ -33,14 +33,8 @@ public class DotsScreen {
     private static final float SCREEN_Y_PERCENTAGE = .3f;
     private float              x, y;
 
-
-
-    ImageView score;
-    ImageView opponent;
-//    private BlueDotView      blue;
-//    private RedDotView       red;
-//    private GreenDotView     green;
-//    private YellowDotView    yellow;
+    ImageView               score;
+    ImageView               opponent;
 
     // Standard Variables call
     RelativeLayout          relativeLayout;
@@ -58,34 +52,36 @@ public class DotsScreen {
     //Change this to change the board size Dot X Dot
     private float           numberdotXdot = DotsAndroidConstants.BOARD_SIZE;
 
-    DotView[] dotsList = new DotView[(int)(numberdotXdot*numberdotXdot)];
+    DotView[] dotsList  = new DotView[(int)(numberdotXdot*numberdotXdot)];
     DotView[] touchList = new DotView[(int)(numberdotXdot*numberdotXdot)];
 
     public float            dotWidth;
 
-//    DotView                 dotView;
-
     private float[][][] correspondingDotCoordinates;
 
+    final int FADE_DURATION = 300;
+    final int END_ALPHA     = 1;
 
-    final int FADE_DURATION = 200;
-    final int END_ALPHA = 1;
-
+    /**
+     * To get the coordinates of the dots
+     * @return a nested list of dots with their corresponding x,y coordinates
+     */
     public float[][][] getCorrespondingDotCoordinates() {
         return correspondingDotCoordinates;
     }
 
-    // Standard Initialising Constructor
+    /**
+     *
+     *Standard Initialising Constructor
+     * @param relativeLayout
+     * @param  context
+     *
+      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public DotsScreen(RelativeLayout relativeLayout, Context context) {
         this.context =        context;
         this.relativeLayout = relativeLayout;
-//        this.dotView = new    DotView(context);
-//
-//        red    = new          RedDotView(context);
-//        blue   = new          BlueDotView(context);
-//        green  = new          GreenDotView(context);
-//        yellow = new          YellowDotView(context);
+
 
         this.screenWidth    =  ScreenDimensions.getWidth(context);
         this.screenHeight   = ScreenDimensions.getHeight(context);
@@ -96,8 +92,6 @@ public class DotsScreen {
 
         scoreWidth          = (int) screenDensity*100;
         scoreHeight         = (int) screenDensity*30;
-
-
 
         this.dotsLayout = new RelativeLayout(context);
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(screenWidth, screenHeight);
@@ -137,9 +131,6 @@ public class DotsScreen {
 
         opponent.setX(x_oppo);
         opponent.setY((screenHeight/9));
-
-
-
 
         dotsLayout.addView(scoreBoard1);
         dotsLayout.addView(scoreBoard0);
@@ -183,16 +174,20 @@ public class DotsScreen {
 
             this.correspondingDotCoordinates[i][j][0] = (float) (x + dotWidth/2.0);
             this.correspondingDotCoordinates[i][j][1] = (float) (y + dotWidth/2.0);
-
-
         }
 
     }
-
+    /**
+     * @return the width of the dot in float
+     */
     public float getDotWidth() {
         return dotWidth;
     }
 
+    /**
+     * updates the current board of dots to a new set of dots
+     * @param updatedPoints
+     */
     public void updateScreen(ArrayList<DotsPoint> updatedPoints) {
 
         for (final DotsPoint point : updatedPoints) {
@@ -202,16 +197,16 @@ public class DotsScreen {
             final DotView currentDotView = dotsList[index];
 
 
-//                    do fading effects
-            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
-            Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
-
-            ((Activity)context).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, false, false);
-                }
-            });
+////                    do fading effects
+//            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
+//            Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
+//
+//            ((Activity)context).runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, false, false);
+//                }
+//            });
 
             // Create a thread to cast a fade in animation
             Thread fadeIn = new Thread(new Runnable() {
@@ -246,108 +241,11 @@ public class DotsScreen {
         }
 
     }
-//    public void updateScreen(Dot[][] board) {
-//        Log.d("Screen", Arrays.deepToString(board));
-//
-//
-//
-//        for (int j = 0; j < 6; j++) {
-//
-//            for (int i = 0; i < board[j].length; i++) {
-//
-//                int index = j*6 + i;
-//
-//                final Dot updatedBoardDot = board[j][i];
-//                final DotView currentDotView = dotsList[index];
-//
-//                // if the updated board color is different from the current dotView's color
-//
-//                if (!(currentDotView.getColor() == updatedBoardDot.color)) {
-//
-//
-////                    do fading effects
-//                    Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, true);
-//                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
-//
-//                    ((Activity)context).runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Effects.castFadeOutEffect(currentDotView, FADE_DURATION, true, false);
-//                        }
-//                    });
-//
-//                    // Create a thread to cast a fade in animation
-//                    Thread fadeIn = new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//
-//                            // first sleep for the duration where the views are fading out
-//                            try {
-//                                Thread.sleep(FADE_DURATION);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//
-//                            // run this on the UI thread
-//                            ((Activity)context).runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//
-//                                     // update the color
-//                                    currentDotView.setColor(updatedBoardDot.color);
-//
-//                                    // cast the fade in effect
-//                                    Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
-//                                }
-//                            });
-//
-//                        }
-//                    });
-//
-//                    fadeIn.start();
-//
-//                }
-//
-//            }
-//
-//        }
 
-//        for (int index = 0; index < 36; ++index) {
-//
-//            // i == row number (0-5)
-//            // j == col number (0-5)
-//            int i = index / 6;
-//            int j = index % 6;
-//
-//            if (board[j][i].color == DotColor.RED) {
-//                if (!dotsList[index].getColor().equals("red")) {
-//                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
-//                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
-//                    dotsList[index].setRed();
-//                }
-//            } else if (board[j][i].color == DotColor.BLUE) {
-//                if (!dotsList[index].getColor().equals("blue")) {
-//                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
-//                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
-//                    dotsList[index].setBlue();
-//
-//                }
-//            } else if (board[j][i].color == DotColor.GREEN) {
-//                if (!dotsList[index].getColor().equals("green")) {
-//                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
-//                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
-//                    dotsList[index].setGreen();
-//                }
-//            } else if (board[j][i].color == DotColor.YELLOW) {
-//                if (!dotsList[index].getColor().equals("yellow")) {
-//                    Effects.castFadeOutEffect(getDotList()[index], 1000, false, true);
-//                    Effects.castFadeInEffect(getDotList()[index], 1000, 1, true);
-//                    dotsList[index].setYellow();
-//                }
-//            }
-//        }
-//    }
-
+    /**
+     * returns the list of dots in the board
+     * @return the list of DotView
+     */
     public DotView[] getDotList() {
         return dotsList;
     }
@@ -356,7 +254,7 @@ public class DotsScreen {
 
     /**
      * Sets the score
-     * @param score index 0 is you, index 1 is enemy
+     * @param score index 0 is score, index 1 is enemy
      */
     public void setScore(int[] score) {
         this.scoreBoard0.setScore(score[0]);
