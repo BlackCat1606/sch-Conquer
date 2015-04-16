@@ -71,7 +71,6 @@ public class DotsLogic {
         double y2 = end.y;
         if (Math.sqrt(Math.pow(y1 - y2, 2) + Math.pow(x1 - x2, 2)) != 1) {
 //            throw new UnsupportedOperationException("dots must be vertically or horizontally adjacent");
-            System.err.println("Points not vertically or horizontally adjacent");
             return false;
         }
 

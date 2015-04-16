@@ -1,8 +1,13 @@
 package Latency;
 
-import java.util.ArrayList;
 
 /**
+ * A stopwatch object used to make timings for latency
+ *
+ * By right, method calls should be synchronized, as DotsClient calls these methods across multiple threads. However, this is
+ * merely a debugging object, and we do not want synchronized calls to slow down any updates in the main thread. Hence,
+ * we leave the methods unsynchronized.
+ *
  * Created by JiaHao on 5/4/15.
  */
 public class RuntimeStopwatch {
@@ -16,11 +21,15 @@ public class RuntimeStopwatch {
     public RuntimeStopwatch() {
     }
 
+    /**
+     * Starts the internal stopwatch
+     * If it is called again before the stopMeasurement(), the previous start time is refreshed.
+     */
     public void startMeasurement() {
 
-        if (this.startTime == 0) {
-            this.startTime = System.currentTimeMillis();
-        }
+
+        this.startTime = System.currentTimeMillis();
+
     }
 
     /**
@@ -41,6 +50,10 @@ public class RuntimeStopwatch {
         return 0;
     }
 
+    /**
+     * Method to get the averaged run time.
+     * @return Average runtime
+     */
     public long getAverageRuntime() {
         return this.previousAverage;
     }

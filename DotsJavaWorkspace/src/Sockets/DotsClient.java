@@ -16,7 +16,6 @@ import Model.Messages.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Primary object to be run by the client for the game
@@ -30,7 +29,6 @@ public class DotsClient extends DotsServerClientParent {
 
     // States
     private final DotsLocks dotsLocks;
-    private final LinkedBlockingQueue<Boolean> responseQueue;
     private final RuntimeStopwatch runtimeStopwatch;
 
     private AwesomeClientSocket clientSocket;
@@ -42,7 +40,6 @@ public class DotsClient extends DotsServerClientParent {
 
         // Initialise Model
         this.dotsLocks = new DotsLocks();
-        this.responseQueue = new LinkedBlockingQueue<Boolean>();
         this.runtimeStopwatch = new RuntimeStopwatch();
 
 
@@ -58,7 +55,7 @@ public class DotsClient extends DotsServerClientParent {
         this.getAndroidCallback().onSocketConnected();
 
         // Init server listener thread
-        DotsClientServerListener dotsServerListener = new DotsClientServerListener(this.clientSocket, dotsLocks, responseQueue, this.getAndroidCallback());
+        DotsClientServerListener dotsServerListener = new DotsClientServerListener(this.clientSocket, dotsLocks, this.getAndroidCallback(), this.runtimeStopwatch);
         Thread listenerThread = new Thread(dotsServerListener);
 
         // start thread to deal with messages from server
@@ -74,6 +71,7 @@ public class DotsClient extends DotsServerClientParent {
      */
     @Override
     public void doInteraction(final DotsInteraction dotsInteraction) throws IOException, InterruptedException {
+
         this.runtimeStopwatch.startMeasurement();
 
         // Package the interaction in to a message
@@ -85,48 +83,6 @@ public class DotsClient extends DotsServerClientParent {
         // Temporarily draw interactions first on screen before validating it with the server
         // to make the client seem more responsive
         updateScreenForTouchInteractions(dotsInteraction);
-
-
-        // put dealing with response into a separate thread
-        Runnable dealWithResponse = new Runnable() {
-            // Todo might have to synchronise methods and variables accessed here
-            @Override
-            public void run() {
-                // Read the response from the server for the interaction
-                // Here, we use a queue which is populated by the other serverListener thread with appropriate
-                // responses
-                boolean response = false;
-                try {
-                    response = responseQueue.take();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                System.out.println("Received response: " + response);
-
-                // if the response is valid, it means that the move we have made is valid
-                // Therefore, we update the screen based on our touches
-                if (response) {
-                    updateScreenForTouchInteractions(dotsInteraction);
-                } else {
-
-                    // if the response is false, we want to clear the temporarily interactions displayed which are
-                    // created earlier
-
-                    // create a touch up interaction at the touched position, which will trigger hiding of the displayed
-                    // interaction
-                    DotsInteraction clearTouchInteraction = new DotsInteraction(1, DotsInteractionStates.TOUCH_UP, dotsInteraction.getDotsPoint());
-                    updateScreenForTouchInteractions(clearTouchInteraction);
-                }
-
-                getAndroidCallback().latencyChanged(runtimeStopwatch.stopMeasurement());
-
-            }
-        };
-
-        Thread thread = new Thread(dealWithResponse);
-        thread.start();
-
     }
 
     /**
@@ -144,7 +100,7 @@ public class DotsClient extends DotsServerClientParent {
     @Override
     public void stopGame() {
 
-        // this will terminate the while loop in DotsServerClientListener and stop the game
+        // this will terminate the while loop in DotsClientServerListener and stop the game
         this.dotsLocks.setGameRunning(false);
 
         try {
@@ -156,8 +112,8 @@ public class DotsClient extends DotsServerClientParent {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
-//        final String SERVER_ADDRESS = "10.12.17.172";
-        final String SERVER_ADDRESS = "127.0.0.1";
+        final String SERVER_ADDRESS = "10.12.17.172";
+//        final String SERVER_ADDRESS = "127.0.0.1";
 
         // Initialise the client
         DotsClient dotsClient = new DotsClient(SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
@@ -222,14 +178,15 @@ class DotsClientServerListener implements Runnable {
 
     private final AwesomeClientSocket clientSocket;
     private final DotsLocks locks;
-    private final LinkedBlockingQueue<Boolean> responseQueue;
     private final DotsAndroidCallback dotsAndroidCallback;
+    private final RuntimeStopwatch runtimeStopwatch;
 
-    public DotsClientServerListener(AwesomeClientSocket clientSocket, DotsLocks locks, LinkedBlockingQueue<Boolean> responseQueue, DotsAndroidCallback dotsAndroidCallback) {
+    public DotsClientServerListener(AwesomeClientSocket clientSocket, DotsLocks locks, DotsAndroidCallback dotsAndroidCallback, RuntimeStopwatch runtimeStopwatch) {
         this.clientSocket = clientSocket;
         this.locks = locks;
-        this.responseQueue = responseQueue;
+//        this.responseQueue = responseQueue;
         this.dotsAndroidCallback = dotsAndroidCallback;
+        this.runtimeStopwatch = runtimeStopwatch;
     }
 
     @Override
@@ -257,9 +214,7 @@ class DotsClientServerListener implements Runnable {
                 System.err.println("Adding to response queue has been interrupted");
                 e.printStackTrace();
             }
-
         }
-
     }
 
     /**
@@ -275,17 +230,23 @@ class DotsClientServerListener implements Runnable {
             ArrayList<DotsPoint> receivedPoints = receivedBoardMessage.getChangedPoints();
             this.updateScreenWithNewPoints(receivedPoints);
 
-        } else if (message instanceof DotsMessageResponse) {
-
-            DotsMessageResponse receivedResponse = (DotsMessageResponse) message;
-            boolean response = receivedResponse.getResponse();
-            this.responseQueue.put(response);
+//        } else if (message instanceof DotsMessageResponse) {
+//
+//            DotsMessageResponse receivedResponse = (DotsMessageResponse) message;
+//            boolean response = receivedResponse.getResponse();
+//            this.responseQueue.put(response);
 
         } else if (message instanceof DotsMessageInteraction) {
             // deal with interactions from the other player (server player)
             DotsMessageInteraction receivedInteractionMessage = (DotsMessageInteraction) message;
             DotsInteraction receivedInteraction = receivedInteractionMessage.getDotsInteraction();
             this.updateScreenWithInteraction(receivedInteraction);
+
+
+            if (receivedInteraction.getPlayerId() == 1) {
+                this.dotsAndroidCallback.latencyChanged(this.runtimeStopwatch.stopMeasurement());
+            }
+
 
         } else if (message instanceof DotsMessageGameOver) {
 

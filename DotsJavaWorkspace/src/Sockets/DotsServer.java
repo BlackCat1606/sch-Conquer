@@ -93,12 +93,20 @@ public class DotsServer extends DotsServerClientParent{
 
             boolean result = this.dotsGame.doMove(dotsInteraction);
 
-            // if the interaction came from the client, we have to send a response to the client
-            // that contains the validity of the move
+            // if the client made the move, send a response to the server
             if (dotsInteraction.getPlayerId() == 1) {
 
-                DotsMessageResponse dotsMessageResponse = new DotsMessageResponse(result);
-                DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageResponse);
+                DotsInteractionStates interactionStateToSend = dotsInteraction.getState();
+
+                // if it is an invalid move, we send a touch up interaction to tell the client to hide the displayed interaction
+                if (!result) {
+                    interactionStateToSend = DotsInteractionStates.TOUCH_UP;
+                }
+
+                DotsInteraction interactionToSend = new DotsInteraction(dotsInteraction.getPlayerId(), interactionStateToSend, dotsInteraction.getDotsPoint());
+
+                DotsMessageInteraction dotsMessageInteraction = new DotsMessageInteraction(interactionToSend);
+                DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageInteraction);
             }
 
 
@@ -115,9 +123,12 @@ public class DotsServer extends DotsServerClientParent{
 
                 updateScreenForTouchInteractions(dotsInteraction);
 
+                // send only valid interactions to the client if the move was made by the server
+                if (dotsInteraction.getPlayerId() == 0) {
                     // sends the interaction to the client
                     DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
                     DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
+                }
 
 
                 // finally, we check if the board needs to be updated
