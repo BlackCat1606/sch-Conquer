@@ -2,13 +2,11 @@ package Sockets;
 
 import AwesomeSockets.AwesomeClientSocket;
 import Constants.DotsConstants;
-import Dots.DotsBoard;
 
 import AndroidCallback.DotsAndroidCallback;
 import Dots.DotsPoint;
 import Latency.RuntimeStopwatch;
 import Model.Interaction.DotsInteraction;
-import Model.Interaction.DotsInteractionStates;
 import Model.Locks.DotsLocks;
 import Model.Messages.*;
 
@@ -229,12 +227,6 @@ class DotsClientServerListener implements Runnable {
             DotsMessageBoard receivedBoardMessage = (DotsMessageBoard) message;
             ArrayList<DotsPoint> receivedPoints = receivedBoardMessage.getChangedPoints();
             this.updateScreenWithNewPoints(receivedPoints);
-
-//        } else if (message instanceof DotsMessageResponse) {
-//
-//            DotsMessageResponse receivedResponse = (DotsMessageResponse) message;
-//            boolean response = receivedResponse.getResponse();
-//            this.responseQueue.put(response);
 
         } else if (message instanceof DotsMessageInteraction) {
             // deal with interactions from the other player (server player)
