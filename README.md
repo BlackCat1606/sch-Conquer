@@ -1,13 +1,61 @@
+# Dots Multiplayer
+
+## A. Introduction
+
+## B. System Requirements and Use Cases
+
+### Game Requirements Overview
+
+### Player Matchmaking
+
+#### Implementation
+
+Direct connection between two players is implemented using sockets. As response time is of critical importance in the gameplay, we want to ensure direct communication between the two players with as little overhead as possible. Using [Google Play Services](https://developer.android.com/google/play-services/) for matchmaking will introduce an additional overhead to the messages sent and add to the latency which should be minimised. 
+
+As such, we are able to achieve response time of up to `50ms` over the school network using sockets, which is essential for the fast paced gameplay.
+
+#### Seamless Connection
+
+The disadvantage of using a lower level implementation of sockets to matchmake opponents as compared to a higher level implementation like Google Play Services is that the IP address of the opponent is needed to initialise the socket connection. It is intrusive and disrupts the game experience when the player has to slowly enter the IP. 
+
+To address this issue, the [Parse](https://www.parse.com) cloud service is used to cache and retrieve IP addresses. When a player attempts to start a multiplayer game, a query is first made to the cloud to attempt to retrieve an IP address that corresponds to the local network, that has been created within a certain time window. If such an IP address is retrieved, the App will start a client game instance and attempt to connect to a server at that IP address. Otherwise, the App will start a server game instance and save its IP address into the cloud to allow other clients to connect. 
+
+A possible issue with this implementation is that matchmaking is done on a sequential basis, and if multiple users are using the app, they would connect to each other sequentially and are thus unable to select their opponent. A possible solution to this would be to allow the user to input a username and select from possible hosts. Another would be to use Google Play Services for the purpose of matching the IP addresses before initialised the current direct socket connection. 
+
+### Game Mechanics
+
 ## System Design
 
-### Server-Client Infrastructure
+### Choice of Game Engine
+
+
+### Client - Server Infrastructure
 
 Hence, we will discuss the differences in the game instance as a server or client below.
+
 
 #### Server
 
 #### Client
 
+
+### Overview Application Activity Diagram
+
+### Overall Game Logic
+
+### Game Components
+
+### Interaction between Classes
+
+### Detailed Class Diagrams
+
+## System Testing
+
+### Game Component Level Testing
+
+### Application Level Testing
+
+###Summary
 
 ## Ensuring Thread Safety
 
@@ -31,11 +79,9 @@ The `DotsGame` object that runs on the server instance of the app will receive t
 
 #### Synchronisation
 
-The concurrency issue with this game would be to synchronise the moves made by both players together, and ensure that the game logic detects and deals with these actions appropriately. This is actually the motivation behind the Master-slave design for the server and client, so that these issues are resolved easily by ensuring that moves can only be made on the game sequentially. 
+The concurrency issue with this game would be to synchronise the moves made by both players together, and ensure that the game logic detects and deals with these actions appropriately. This is actually the motivation behind the Master-slave design for the server and client, so that these issues are resolved easily by ensuring that moves can only be made on the game sequentially.
 
-Whenever interactions are made by either player, `doMove(interaction)` in `DotsGame` on the server will be called with the corresponding interactions made. 
-
-
+Whenever interactions are made by either player, `doMove(interaction)` in `DotsGame` on the server will be called with the corresponding interactions made. Benchmarking of `doMove()` reveals that this operation takes an average of `~1ms`,  and thus the impact of the synchronised method call is negligable when called over multiple threads.
 
 As this method can be called from either the main thread, when touches are made on the same device, or the listener thread which listens for messages from the client device, this method is synchronised to ensure that only one thread can modify the states of the board and other state variables at once.
 
@@ -67,5 +113,18 @@ If `player1` lifts his finger from the screen, `DotsGame` will recognize the `To
 However, consider the case where `player0` lifts his finger from the screen before `player1`. Points `(0,2)` and `(1,2)` will be cleared and points above these will cascade down. Now, we realise that points `(1,1)` and `(2,1)` which were held by `player` corresponds to the different colors `R` and `B` respectively, and is now an invalid move. Thefore, `DotsGame` has to recognise that, and clear the stored moves of the other player. 
 
 In general, when a player holds points below that of the other player or vice versa, if the points below are cleared first, the points held above will be deemed to be invalid and a cancellation message will be sent to remove the visual reflection of the touch on the screen for the player whom once held the touches.
+
+
+
+
+## Additional Features
+
+### Animations
+
+### Instructions
+
+## Conclusion
+
+
 
 
