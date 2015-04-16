@@ -128,8 +128,7 @@ public class DotsClient extends DotsServerClientParent {
         thread.start();
 
     }
-
-
+    
     /**
      * Method here to update the screen for touch interaction, i.e. reflect touches
      * @param dotsInteraction interaction object
@@ -147,7 +146,6 @@ public class DotsClient extends DotsServerClientParent {
 
         // this will terminate the while loop in DotsServerClientListener and stop the game
         this.dotsLocks.setGameRunning(false);
-
 
         try {
             this.clientSocket.closeClient();
@@ -200,14 +198,12 @@ public class DotsClient extends DotsServerClientParent {
             }
         });
 
-
         // Testing scanner thread
         Thread scannerThread = new Thread(new DotsTestScannerListener(dotsClient, 1, true));
 
         // Starts the client
         dotsClient.start();
         scannerThread.start();
-
 
     }
 
