@@ -3,7 +3,7 @@
 ## Introduction
 “Conquer” is a fast-paced real-time multiplayer puzzle game that combines the elements of competition, strategy and logical thinking that pushes the players to achieve a score of 100 first. Each game for “Conquer” can be played individually or up to a maximum of 2 players at any time.
 
-Based on the popular old-school classic, “Connect the dots," Conquer goes beyond being just a simple digital implementation, the rules are tweaked and players will have to think and strategise on the spot in order to win.
+Based on the popular old-school classic, “Dots," Conquer goes beyond being just a simple digital implementation, the rules are tweaked and players will have to think and strategise on the spot in order to win.
 
 Both players will be presented the same board of 8x8 dots, with the main goal to connect all the dots of the same colour that are adjacent to one another. Once the dots of the same colour has been cleared, points will be awarded based on the length of the selected dots.
 
@@ -16,6 +16,17 @@ This report discusses the various decision making and gives an overview of the e
 ## System Requirements and Use Cases
 
 ### Game Requirements Overview
+Use Cases:
+Two Players
+Actor: Player1/Server
+Objective: To connect to Player2 via IP address.
+Pre-Conditions: Android phone must be connected to Wifi.
+Post-conditions:
+Success: Gameplay will start when both parties are successfully  
+                connected.
+Failure: Will not proceed to gameplay. Need to enter a valid IP address.
+Normal Flow: Player1 selects Two Player option. Proceeds to enter Player2’s IP address to connect.
+
 
 ### Player Matchmaking
 
@@ -34,6 +45,8 @@ To address this issue, the [Parse](https://www.parse.com) cloud service is used 
 A possible issue with this implementation is that matchmaking is done on a sequential basis, and if multiple users are using the app, they would connect to each other sequentially and are thus unable to select their opponent. A possible solution to this would be to allow the user to input a username and select from possible hosts. Another would be to use Google Play Services for the purpose of matching the IP addresses before initialised the current direct socket connection. 
 
 ### Game Mechanics
+
+Conquer has a simple game play: players are presented with a 8x8 board of coloured dots, where the players will then try to link as many dots of the same colour as possible. The game then ends when either player hits 100 dots connected. Conquer has an even simpler game mechanic: to stop the other player from clearing dots while clearing more dots themselves real-time. This would make players competitive, and by giving the players this option to stop the opponent from reaching 100, the players could try to stop the opponent by interrupting their path of movement, or simply clearing more dots fast enough themselves.
 
 ## System Design
 
@@ -175,31 +188,55 @@ To simplify sending of messages through sockets, and socket initialization, a he
 ### Overall Game Logic
 
 ### Game Components
-
+####Theme
+Conquer planets in space by fighting against your opponent
+####Victory condition: Victory points 
+The first player to reach 100 dots wins the game
 ### Interaction between Classes
 
 ### Detailed Class Diagrams
+####Game classes
+DotsGameTask class
+![DotsGameTask class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Game/DotsGameTask.png?_subject_uid=132339545&w=AABCO8lnWwtB7mJrgq0vh6F33QlicVAOzte6F0M0UXWa9g)
+
+####Fragment classes
+MainFragment class
+![MainFragment class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Fragments/MainFragment.png?_subject_uid=132339545&w=AAApIr2H13-AidZljDsKUzDI8tcKMbda_XGEg-R4KI1vTg)
+
+GameOverFragment class
+![GameOverFragment class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Fragments/GameOverFragment.png?_subject_uid=132339545&w=AACSF4KtnpvL9S-SRGbcdduoP6Zk9SZQAsMfyfTkHD_8mQ)
+
+FragmentTransactionHelper class
+![FragmentTransactionHelper class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Fragments/FragmentTransactionHelper.png?_subject_uid=132339545&w=AAAJKr7UKOg3txM9rzuZj9iVdsKAeXQUHKJU_srVoDnisg)
+
+ConnectionFragment class
+![ConnectionFragment class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Fragments/ConnectionFragment.jpg?_subject_uid=132339545&w=AACx_o8ci6P9ZF8o2_ri9uUETqouR1aDea3CnMmKNrigcA)
+
+GameFragment class
+![GameFragment class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Fragments/GameFragment.png?_subject_uid=132339545&w=AACv3EePZDnOH7xGq_1bxV4UCEB2xyXDUgW5JAzria9eDA)
+
 
 ## System Testing
 As explored earlier, the overall game structure of Conquer is extremely complex, consisting of a variety of interactions between the various front-end android development classes with the game logic and as well as the concurrency architecture. Therefore, it is extremely important that testing must be carried out at both an individual game component level and on an overall application level. The following sections will discuss how the various testing of Conquer were carried out at these specified levels.
 
 ### Game Component Level Testing
-A two-pronged approach was adopted for individual game component level testing. The entire system is split into the various components which were then tested with the standard JUnit provided in Java Eclipse IDE.
+A two-pronged approach was adopted for individual game component level testing. The entire system is split into the various components which were then tested with the standard `JUnit` provided in Java Eclipse IDE.
 
  1. Basic Game Logic Testing
  2. Game Screen UI Components
 
 ####Basic Game Logic Testing
-One of the most crucial aspect of game development, the basic game logic testing covers testing from the most fundamental aspect of the game to the complex integration of the front-end android development and the back-end concurrency architecture. The various components of the game architecture were extracted into individual methods, and then tested with JUnit. The more important logic being tested are listed as follows:
+One of the most crucial aspect of game development, the basic game logic testing covers testing from the most fundamental aspect of the game to the complex integration of the front-end android development and the back-end concurrency architecture. The various components of the game architecture were extracted into individual methods, and then tested ⧸⧸with JUnit.⧸⧸⧸⧸with` JUnit`.⧸⧸with JUnit.⧸⧸⧸⧸ The more important logic being tested are listed as follows:
 
 - **Testing Board Clearing Method**
 In Conquer, the generation of new randomised coloured dots to replace dots to be cleared have to fulfil the two main criteria; it has to be randomised and the dots to be cleared should follow a cascading logic such that the rows above dots to be cleared should “fall” and cascade accordingly. This test ensures the integrity of the main game logic as it helps to ensure that the newly replaced dots are indeed randomised as well as the fulfilling the cascading requirement.
 
 - **Testing Player Interaction**
-Player interaction plays a rudimentary role in Conquer’s game logic framework. Testing was first carried out in console level, to ensure that the player’s intended input matches and is accurately received and processed by the game logic. Once extensive console level tests were done, the next level of player interaction includes the physical testing of the actual multi gesture finger touch by the player. As the `SurfaceViewDot` class tracks the x,y coordinate of a finger press, it is important to ensure that the three states of finger press is accurately detected by the game logic. The three main states includes `TouchDown`, `TouchMoved`, `TouchUp`. These checks ensure that both the correctness and incorrectness of a player’s intended input is detected, to accurately determine a player’s move.
+Player interaction plays a rudimentary role in Conquer’s game logic framework. Testing was first carried out in console level, to ensure that the player’s intended input matches and is accurately received and processed by the game logic. Once extensive console level tests were done, the next level of player interaction includes the physical testing of the actual multi gesture finger touch by the player. As the `SurfaceViewDot` class tracks the ⧸⧸x,y⧸⧸⧸⧸`x`,`y`⧸⧸x,y⧸⧸⧸⧸ coordinate of a finger press, it is important to ensure that the three states of finger press is accurately detected by the game logic. The three main states includes `TouchDown`, `TouchMoved`, `TouchUp`. These checks ensure that both the correctness and incorrectness of a player’s intended input is detected, to accurately determine a player’s move.
 
 The tests being described here are non exhaustive and more test have been implemented and carried out to ensure the integrity of the game as a whole.
-####Application Level Testing
+⧸⧸
+####Application⧸⧸####Application⧸⧸ Level Testing
 
 The next category of component level testing accounts for the various UI sub game components on the main Game Screen and its expected exhibited behaviour. This portion of testing helps to validate further the integrity of the messages being sent and processed by the concurrency architecture in placed. The test fundamental role is to check the correctness of messages sent and received and also the corresponding results are reflected to the player correctly. The following details are some of the sub game screen UI components tested:
 
@@ -207,7 +244,7 @@ The next category of component level testing accounts for the various UI sub gam
 The number of points received by each player should reflect the main game logic’s point system as well as the actual intended moves of the player. This test ensures that the arithmetic logic used in the point system is implemented accurately as well as the legal moves made by the players.
 
 - **Verify correctness of multiplayer input**
-Since both players will be able to see each other’s input touch in real time on their respective android device, it is important to ensure that the board reflects the actual real time input of each player. This test ensures that both players moves are visible and testes for the efficiency and time lag of the board to display both players’ highlighted moves in real time. Efficiency testing is carried out and verified through the logs in android studio to ensure an accurate display of players moves as well as an optimised concurrency architecture in ⧸⧸placed.⧸⧸placed.⧸⧸Testing⧸⧸⧸⧸⧸⧸
+Since both players will be able to see each other’s input touch in real time on their respective android device, it is important to ensure that the board reflects the actual real time input of each player. This test ensures that both players moves are visible and testes for the efficiency and time lag of the board to display both players’ highlighted moves in real time. Efficiency testing is carried out and verified through the logs in android studio to ensure an accurate display of players moves as well as an optimised concurrency architecture in ⧸⧸⧸⧸placed.⧸⧸placed.⧸⧸Testing⧸⧸⧸⧸⧸⧸⧸⧸⧸⧸placed.⧸⧸⧸⧸placed.⧸⧸placed.⧸⧸Testing⧸⧸⧸⧸⧸⧸⧸⧸⧸⧸
 
 
 ###Summary
@@ -270,4 +307,4 @@ In general, when a player holds points below that of the other player or vice ve
 
 
 
-<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":15877,"type":"conflict","selectionEnd":15910,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"}}-->
+<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":18432,"type":"conflict","selectionEnd":18517,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"},"AFOZL96qS9fdHLLBiA1lribg":{"selectionStart":15272,"type":"conflict","selectionEnd":15319,"discussionIndex":"AFOZL96qS9fdHLLBiA1lribg"},"mAWxxe8l38P6J7SMZZi0b68S":{"selectionStart":16374,"type":"conflict","selectionEnd":16399,"discussionIndex":"mAWxxe8l38P6J7SMZZi0b68S"},"3rXehXqwck6vfCRyFTjN8r4r":{"selectionStart":18432,"type":"conflict","selectionEnd":18517,"discussionIndex":"3rXehXqwck6vfCRyFTjN8r4r"},"w3nCXtktVpvMs1l2bAcSyziy":{"selectionStart":15272,"type":"conflict","selectionEnd":15319,"discussionIndex":"w3nCXtktVpvMs1l2bAcSyziy"},"7WacSW3NAe1gu5oOZbwCKgh1":{"selectionStart":16374,"type":"conflict","selectionEnd":16399,"discussionIndex":"7WacSW3NAe1gu5oOZbwCKgh1"},"uzXjTSkDEkGctURJtmKAFCK1":{"selectionStart":16903,"type":"conflict","selectionEnd":16940,"discussionIndex":"uzXjTSkDEkGctURJtmKAFCK1"},"oEqtj6M0vhPaB2308HxEaXue":{"selectionStart":18432,"type":"conflict","selectionEnd":18517,"discussionIndex":"oEqtj6M0vhPaB2308HxEaXue"}}-->
