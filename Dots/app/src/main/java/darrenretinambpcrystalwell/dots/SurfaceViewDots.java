@@ -46,6 +46,9 @@ public class SurfaceViewDots extends RelativeLayout
     private final int                    PLAYER_ID;
     private final float[][][]            correspondingDotCoordinates;
     private final DotsServerClientParent dotsServerClientParent;
+    private int countOne = 0;
+    private int countTwo = 0;
+    private int temp;
 
 
 //    public void setCorrespondingDotCoordinates(float[][][] correspondingDotCoordinates) {
@@ -311,12 +314,11 @@ public class SurfaceViewDots extends RelativeLayout
 //        }
 
 
-
         int player = interaction.getPlayerId();
         DotsPoint point = interaction.getDotsPoint();
 
         // get pointers to the corresponding views for the interaction point
-        int index = point.y*DotsAndroidConstants.BOARD_SIZE + point.x;
+        int index = point.y * DotsAndroidConstants.BOARD_SIZE + point.x;
         DotView correspondingTouchSquare = dotsScreen.getTouchedList()[index];
         DotView correspondingDot = dotsScreen.getDotList()[index];
 
@@ -327,13 +329,14 @@ public class SurfaceViewDots extends RelativeLayout
             // for player, draw touch path at point
             if (player == 0) {
                 correspondingTouchSquare.setOne();
+                countOne++;
             } else {
                 correspondingTouchSquare.setTwo();
+                countTwo++;
             }
             correspondingTouchSquare.setVisibility(VISIBLE);
 
         } else {
-
             // if the interaction is a touchUp, we need to handle the update of the display carefully
             // according to the state variable that is stored in the interaction
 
@@ -345,100 +348,102 @@ public class SurfaceViewDots extends RelativeLayout
             DotColor playerColor;
             if (player == 0) {
                 playerColor = DotColor.PLAYER_0;
+                temp = countOne;
             } else {
                 playerColor = DotColor.PLAYER_1;
+                temp = countTwo;
             }
 
-            // Initialise arrayLists used to store views that need to be updated
-            ArrayList<DotView> touchSquaresToClear = new ArrayList<>();
-            ArrayList<DotView> dotsToAnimate = new ArrayList<>();
-
-            // if we need to clear all dots, we find all the needed views for the player
-            // and add it to the arrayList
-            if (clearAll) {
-
-                // iterate through all the touchSquares
-                for (int i=0; i< dotsScreen.getTouchedList().length;i++){
-                    DotView currentSquare = dotsScreen.getTouchedList()[i];
-
-                    // if the square corresponds to the player
-                    if (currentSquare.getColor().equals(playerColor)) {
-
-                        // add the touch square view to the arrayList
-                        touchSquaresToClear.add(currentSquare);
-
-                        // if we need to animate
-                        if (animate) {
-
-                            // add the corresponding view of the circular dot to the dotToAnimate arrayList
-                            DotView dotToAnimate = dotsScreen.getDotList()[i];
-                            dotsToAnimate.add(dotToAnimate);
-                        }
-
+//            // Initialise arrayLists used to store views that need to be updated
+//            ArrayList<DotView> touchSquaresToClear = new ArrayList<>();
+//            ArrayList<DotView> dotsToAnimate = new ArrayList<>();
+//
+//            // if we need to clear all dots, we find all the needed views for the player
+//            // and add it to the arrayList
+//            if (clearAll) {
+//
+//                // iterate through all the touchSquares
+//                for (int i=0; i< dotsScreen.getTouchedList().length;i++){
+//                    DotView currentSquare = dotsScreen.getTouchedList()[i];
+//
+//                    // if the square corresponds to the player
+//                    if (currentSquare.getColor().equals(playerColor)) {
+//
+//                        // add the touch square view to the arrayList
+//                        touchSquaresToClear.add(currentSquare);
+//
+//                        // if we need to animate
+//                        if (animate) {
+//
+//                            // add the corresponding view of the circular dot to the dotToAnimate arrayList
+//                            DotView dotToAnimate = dotsScreen.getDotList()[i];
+//                            dotsToAnimate.add(dotToAnimate);
+//                        }
+//
+//                    }
+//                }
+//            } else {
+//
+//                // no need to clear all, we simply add the corresponding view for the point stored in the interaction
+//                // to the arrayLists
+//
+//                touchSquaresToClear.add(correspondingTouchSquare);
+//
+//                if (animate) {
+//                    dotsToAnimate.add(correspondingDot);
+//                }
+//
+//            }
+//
+//            // make touch squares that need to be cleared invisible
+//            for (DotView touchSquareToClear : touchSquaresToClear) {
+//                touchSquareToClear.setVisibility(INVISIBLE);
+//                touchSquareToClear.setTouchedDot();
+//
+//            }
+//
+//
+//            if (animate) {
+//                // fade out dots that need to be animated
+//                for (DotView dotToAnimate : dotsToAnimate) {
+//                    Effects.castFadeOutEffect(dotToAnimate,300,false,false);
+//                }
+//
+//            }
+//
+            if (!animate && clearAll) {
+                // for player, clear all touched paths without animating
+                for (int i = 0; i < dotsScreen.getTouchedList().length; i++) {
+                    if (dotsScreen.getTouchedList()[i].getColor().equals(playerColor)) {
+                        dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
+                        dotsScreen.getTouchedList()[i].setTouchedDot();
                     }
                 }
-            } else {
+            } else if (animate && clearAll) {
+                // to animate and to clear the touched path
+                for (int i = 0; i < dotsScreen.getTouchedList().length; i++) {
+                    // if it is not a single touch
+                    if (temp > 1) {
+                        if (dotsScreen.getTouchedList()[i].getColor().equals(playerColor)) {
+                            dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
+                            Effects.castFadeOutEffect(dotsScreen.getDotList()[i], 300, false, false);
+                            dotsScreen.getTouchedList()[i].setTouchedDot();
+                        }
+                    } else {
+                        dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
+                        dotsScreen.getTouchedList()[i].setTouchedDot();
+                    }
 
-                // no need to clear all, we simply add the corresponding view for the point stored in the interaction
-                // to the arrayLists
-
-                touchSquaresToClear.add(correspondingTouchSquare);
-
-                if (animate) {
-                    dotsToAnimate.add(correspondingDot);
                 }
+                // reset counter to determine if it is a single press
+                temp = 0;
+                countOne = 0;
+                countTwo = 0;
 
             }
-
-            // make touch squares that need to be cleared invisible
-            for (DotView touchSquareToClear : touchSquaresToClear) {
-                touchSquareToClear.setVisibility(INVISIBLE);
-                touchSquareToClear.setTouchedDot();
-
-            }
-
-
-            if (animate) {
-                // fade out dots that need to be animated
-                for (DotView dotToAnimate : dotsToAnimate) {
-                    Effects.castFadeOutEffect(dotToAnimate,300,false,false);
-                }
-
-            }
-//
-//            if (!animate && clearAll) {
-//                // for player, clear all touched paths without animating
-//                for (int i=0; i< dotsScreen.getTouchedList().length;i++){
-//                    if (dotsScreen.getTouchedList()[i].getColor().equals(playerColor)) {
-//                        dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
-//                        dotsScreen.getTouchedList()[i].setTouchedDot();
-//                    }
-//                }
-//            }
-//            else if (animate && !clearAll) {
-//                for (int i=0; i< dotsScreen.getTouchedList().length;i++){
-//                    if (dotsScreen.getTouchedList()[i].getColor().equals(playerColor)) {
-//                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
-//                    }
-//                }
-//
-//            }
-//            else if (animate && clearAll) {
-//                // animate and clear all touch paths for player
-//                for (int i=0; i< dotsScreen.getTouchedList().length;i++){
-//                    if (dotsScreen.getTouchedList()[i].getColor().equals(playerColor)) {
-//                        dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
-//                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
-//                        dotsScreen.getTouchedList()[i].setTouchedDot();
-//                    }
-//                }
-//            }
 
         }
 
+
     }
-
-
-
-
 }
