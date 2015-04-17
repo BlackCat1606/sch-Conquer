@@ -91,21 +91,23 @@ public class DotsServer extends DotsServerClientParent{
 
             this.runtimeStopwatch.startMeasurement();
 
-            boolean result = this.dotsGame.doMove(dotsInteraction);
+            boolean interactionIsValid = this.dotsGame.doMove(dotsInteraction);
 
             // if the client made the move and it is an invalid move, we need to cancel the displayed touch on the client
-            if (dotsInteraction.getPlayerId() == 1 ) {
+            if (dotsInteraction.getPlayerId() == 1 && !interactionIsValid) {
+
+
 
                 DotsInteraction cancelCurrentInteraction = DotsInteraction.getInvalidResponseInteractionInstance(dotsInteraction);
                 DotsMessageInteraction cancelCurrentInteractionMessage = new DotsMessageInteraction(cancelCurrentInteraction);
                 DotsSocketHelper.sendMessageToClient(this.serverSocket, cancelCurrentInteractionMessage);
-//
+
 //                DotsInteractionStates interactionStateToSend = dotsInteraction.getState();
 //
 //                // todo if valid dont send anything
 //
 //                // if it is an invalid move, we send a touch up interaction to tell the client to hide the displayed interaction
-//                if (!result) {
+//                if (!interactionIsValid) {
 //                    interactionStateToSend = DotsInteractionStates.TOUCH_UP;
 //                }
 //
@@ -117,7 +119,7 @@ public class DotsServer extends DotsServerClientParent{
 
 
             // only proceed if its a valid move
-            if (result) {
+            if (interactionIsValid) {
 
                 /**
                  * There are two types of game screen updates:
