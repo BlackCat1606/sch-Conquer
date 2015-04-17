@@ -5,7 +5,7 @@
 
 Based on the popular old-school classic, “Dots," Conquer goes beyond being just a simple digital implementation, the rules are tweaked and players will have to think and strategise on the spot in order to win.
 
-Both players will be presented the same board of 8x8 dots, with the main goal to connect all the dots of the same colour that are adjacent to one another. Once the dots of the same colour has been cleared, points will be awarded based on the length of the selected dots.
+Both players will be presented the same board of 8x8 `Dot`, with the main goal to connect all the dots of the same colour that are adjacent to one another. Once the dots of the same colour has been cleared, points will be awarded based on the length of the selected dots.
 
 The main entertainment aspect of the game that separates “Conquer” from the classic is the ability to see the other player’s move in real-time. Since both players are competing on the same board, the ability to see the other player’s decision allows the element of strategy to come into play. Instead of simply gathering and finding the longest combination of dots first, one can decide to break an opponent’s combination in real-time since the moves of both players will be shown on both their devices.
 
@@ -16,17 +16,87 @@ This report discusses the various decision making and gives an overview of the e
 ## System Requirements and Use Cases
 
 ### Game Requirements Overview
-Use Cases:
-Two Players
-Actor: Player1/Server
-Objective: To connect to Player2 via IP address.
-Pre-Conditions: Android phone must be connected to Wifi.
-Post-conditions:
-Success: Gameplay will start when both parties are successfully  
-                connected.
-Failure: Will not proceed to gameplay. Need to enter a valid IP address.
-Normal Flow: Player1 selects Two Player option. Proceeds to enter Player2’s IP address to connect.
+####Use Cases:
+#####**Requirement ID: Conquer_REQ_UA1 - Single Player Mode**
+######Requirement Description
+Users will be able to start the single player mode when they select the `1 player` option. Once after which, users will be prompted with the loading of the main game screen. The user should remain logged into the single player mode until the game is over.
 
+######Functional Part:
+
+ - Enable the start of single player mode in Conquer
+ - Able to retain the single player mode on the particular Android device used until the user completes the game.
+ - The user can only access Game Features when the single player mode has started.
+######Non-Fuctional Part:
+ - Prompt users with the option to choose between single player mode and multiplayer mode.
+ - Successful selection of single player mode could be immediately followed by the main game screen, where the user will be seamlessly granted access to Game Features.
+ - The time needed to start the single player mode should not be too long (exceed 5 seconds).
+ 
+
+#####**Use Case ID: Conquer_UC_UA1 - Single Player Mode**
+| ID    |         Conquer_UC_UA1                            |
+|----------------|:------------------------------------|
+|Actor:          | Player1/Server                      |
+|Objective:      |To play a game|
+|Trigger:		| Single Player Button|
+|Pre-Conditions: |-|
+|Post-Conditions:|Gameplay will start  |
+|Normal Flow :   |Player1 opens app, selects the "One Player" option. The game will then start.            |
+|Interacts with:| main activity|
+
+
+| Two Players (Multiplayer)    |                                     |
+|----------------|:------------------------------------|
+|Actor:          | Player1/Server                      |
+|Objective:      |To connect to player's via IP address.|
+|Pre-Conditions: |Android phone is connected to a wifi.|
+|Post-Conditions:|Success: Gameplay will start when both parties successfully connects.  |
+|                |Failure: Will not proceed to gameplay, needs to enter a valid IP address |
+|Normal Flow :   |Player1 opens app, selects the "Two Players" option. They will be sent to another screen to input their friend's IP address and they connect.            |
+|Interacts with:| note add specific classes it uses|
+
+
+| Valid Move                     |                                                                            |
+|----------------|:------------------------------------| 
+|Actor:          |Player1/Player2|
+|Objective:      |Select desired circle coloured combination. |
+|Pre-Conditions: |Game is in play and has started.              |
+|Post-Condition: |Success: valid move, all selected colours are the same.|
+|                |Failure: non-valid move, selected coloured circle(s) is/are not the same.                             |
+|Normal Flow:    |During gameplay                      |
+|Interacts with: |                                     |
+
+
+|Move Action                     |                                     |
+|----------------|:------------------------------------|                
+|Actor:          |Player1/Player2                      |
+|Objective:      |Circle combination selection move    |
+|Pre-Condition:  |Game is in play.                     |
+|Post-Condition: |Move has been selected               |
+|Normal Flow:    |The player makes the first selection by touching down on the circle, drags on other neighboring circles until desired selections are selected then lifts finger.|
+|Interact with:  |
+
+|Collision                    |                                                                           |
+|----------------|:------------------------------------| 
+|Actor:          |Player1/Player2                      |
+|Pre-Condition:  |Game is in play and both players are selecting their circles.|
+|Post-Condition: |The move of the slower player that selects the same circle will be denied.|
+|Normal Flow:    |During game play, when one player's selection of circles is the same as the other, this creates a collision or conflict, however because it's first come first serve, the slower player that tries to select this circle will be unable to.|
+|Interacts with: |                         |
+
+|Game Over    |                                                                                      |
+|----------------|:------------------------------------|
+|Actor:       |Player1/Player2 |
+|Objective:   |First player to score 100 points wins|
+|Pre-Condition:|Game is in play|
+|Post-Condition:|One player wins when they accumulate 100 points first. |
+|Normal Flow: | Regular ongoing gameplay.|
+|Interacts with:|                     |
+
+
+![Use Case Diagram](https://www.dropbox.com/s/3e5cxa63qzuwtoq/Dotsflow.png?dl=0)
+
+
+https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables
 
 ### Player Matchmaking
 
@@ -150,9 +220,11 @@ Hence, we will discuss the differences in the game instance as a server or clien
 
 The server contains the `DotsGame` object that app will receive these interactions from both the current player, as well as remotely from the player running the client instance of the app.
 
-Whenever interactions are made by either player, `doMove(interaction)` in `DotsGame` on the server will be called with the corresponding interactions made. 
+Whenever interactions are made by either player, `doMove(interaction)` in `DotsGame` on the server will be called with the corresponding interactions made. This object will process the interaction,  call the appropriate callbacks on the same device, and update the client accordingly. 
 
 #### Client
+
+The client acts simply as a slave and merely sends touches from the player to there server, and updates the screen according to the received messages.
 
 #### Message Sending
 
@@ -178,10 +250,25 @@ while(gameIsRunning) {
 }
 
 ```
+These messages are sent through [AwesomeSockets](https://github.com/skewedlines/AwesomeSockets "AwesomeSockets on GitHub"), a library written to simplify and execute these operations on a higher level.
 
-#### Helper Library
+#### Game Scenario
 
-To simplify sending of messages through sockets, and socket initialization, a helper Java Library [AwesomeSockets](https://github.com/skewedlines/AwesomeSockets "AwesomeSockets on GitHub") was written and used. 
+When a particular game move is made, the following checks and actions are executed.
+
+1. If move is valid, update devices
+2. If the board has been changed, update devices with the new board and score
+3. Check for game over, and update devices
+
+As touches are made on the server, the game objects processes that to determine if it is a valid move, and if so, it will invoke the callback `onValidPlayerInteraction()`, to allow the device to update the screen accordingly. At the same time, it packages and sends this interaction as a `DotsMessageInteraction` to the client, where the listener thread will process it and invoke the same callback to update the screen on the client device.
+
+If these touches are made on the client device, the client will assume that the move is valid and invoke `onValidPlayerInteraction()` to display the touch feedback on the screen immedaitely. The same interaction is sent to the server device, and is picked up by the listener thread and processed to determine if the move is valid. As the client device has assumed the move to be valid, another `DotsMessageInteraction` will have to be sent back to the client if the move is invalid to update the callback and remove the wrongly displayed touch positions on the client device. 
+
+The assumption of valid touches is made to create the illusion of instantaneous synchronisation between the client and server object. The alternative would be to wait for positive response from the server before the client displays the touch feedback on the screen, but such an implementation makes the the game appear to be slow on the client device. Play testing that the delay in showing valid touches on the screen will lead to the player questioning if his moves have been made, and in instances of high network traffic, the game experience might be impeded. 
+
+Consider the case where a particular player makes a `TouchUp` interaction that updates the displayed board. The server device will recognise that the board has been updated, and it will trigger its  `onBoardChanged()` callback with an `List` of points that need to be updated. The score of the players will also be updated in `onScoreUpdated()` on the server device. Following that, the server will package and send a `DotsMessageBoard` and `DotsMessageScore` to the client. The same callbacks will now be triggered on the client device by the listener thread. 
+
+Within the `DotsGame` object, checks will be made to determine if the maximum score limit has been reached, or if there are no longer any valid moves. If the game is over, `onGameOver()` is triggered on the server, and the `DotsMessageGameOver` message is sent to the client to trigger the same callback.
 
 ### Overview Application Activity Diagram
 
@@ -226,13 +313,13 @@ A two-pronged approach was adopted for individual game component level testing. 
  2. Game Screen UI Components
 
 ####Basic Game Logic Testing
-One of the most crucial aspect of game development, the basic game logic testing covers testing from the most fundamental aspect of the game to the complex integration of the front-end android development and the back-end concurrency architecture. The various components of the game architecture were extracted into individual methods, and then tested ⧸⧸with JUnit.⧸⧸⧸⧸with` JUnit`.⧸⧸with JUnit.⧸⧸⧸⧸ The more important logic being tested are listed as follows:
+One of the most crucial aspect of game development, the basic game logic testing covers testing from the most fundamental aspect of the game to the complex integration of the front-end android development and the back-end concurrency architecture. The various components of the game architecture were extracted into individual methods, and then tested with` JUnit`. The more important logic being tested are listed as follows:
 
 - **Testing Board Clearing Method**
 In Conquer, the generation of new randomised coloured dots to replace dots to be cleared have to fulfil the two main criteria; it has to be randomised and the dots to be cleared should follow a cascading logic such that the rows above dots to be cleared should “fall” and cascade accordingly. This test ensures the integrity of the main game logic as it helps to ensure that the newly replaced dots are indeed randomised as well as the fulfilling the cascading requirement.
 
 - **Testing Player Interaction**
-Player interaction plays a rudimentary role in Conquer’s game logic framework. Testing was first carried out in console level, to ensure that the player’s intended input matches and is accurately received and processed by the game logic. Once extensive console level tests were done, the next level of player interaction includes the physical testing of the actual multi gesture finger touch by the player. As the `SurfaceViewDot` class tracks the ⧸⧸x,y⧸⧸⧸⧸`x`,`y`⧸⧸x,y⧸⧸⧸⧸ coordinate of a finger press, it is important to ensure that the three states of finger press is accurately detected by the game logic. The three main states includes `TouchDown`, `TouchMoved`, `TouchUp`. These checks ensure that both the correctness and incorrectness of a player’s intended input is detected, to accurately determine a player’s move.
+Player interaction plays a rudimentary role in Conquer’s game logic framework. Testing was first carried out in console level, to ensure that the player’s intended input matches and is accurately received and processed by the game logic. Once extensive console level tests were done, the next level of player interaction includes the physical testing of the actual multi gesture finger touch by the player. As the `SurfaceViewDot` class tracks the `x`,`y` coordinate of a finger press, it is important to ensure that the three states of finger press is accurately detected by the game logic. The three main states includes `TouchDown`, `TouchMoved`, `TouchUp`. These checks ensure that both the correctness and incorrectness of a player’s intended input is detected, to accurately determine a player’s move.
 
 The tests being described here are non exhaustive and more test have been implemented and carried out to ensure the integrity of the game as a whole.
 ⧸⧸
@@ -307,4 +394,4 @@ In general, when a player holds points below that of the other player or vice ve
 
 
 
-<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":18432,"type":"conflict","selectionEnd":18517,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"},"AFOZL96qS9fdHLLBiA1lribg":{"selectionStart":15272,"type":"conflict","selectionEnd":15319,"discussionIndex":"AFOZL96qS9fdHLLBiA1lribg"},"mAWxxe8l38P6J7SMZZi0b68S":{"selectionStart":16374,"type":"conflict","selectionEnd":16399,"discussionIndex":"mAWxxe8l38P6J7SMZZi0b68S"},"3rXehXqwck6vfCRyFTjN8r4r":{"selectionStart":18432,"type":"conflict","selectionEnd":18517,"discussionIndex":"3rXehXqwck6vfCRyFTjN8r4r"},"w3nCXtktVpvMs1l2bAcSyziy":{"selectionStart":15272,"type":"conflict","selectionEnd":15319,"discussionIndex":"w3nCXtktVpvMs1l2bAcSyziy"},"7WacSW3NAe1gu5oOZbwCKgh1":{"selectionStart":16374,"type":"conflict","selectionEnd":16399,"discussionIndex":"7WacSW3NAe1gu5oOZbwCKgh1"},"uzXjTSkDEkGctURJtmKAFCK1":{"selectionStart":16903,"type":"conflict","selectionEnd":16940,"discussionIndex":"uzXjTSkDEkGctURJtmKAFCK1"},"oEqtj6M0vhPaB2308HxEaXue":{"selectionStart":18432,"type":"conflict","selectionEnd":18517,"discussionIndex":"oEqtj6M0vhPaB2308HxEaXue"}}-->
+<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":25671,"type":"conflict","selectionEnd":25756,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"},"mAWxxe8l38P6J7SMZZi0b68S":{"selectionStart":23631,"type":"conflict","selectionEnd":23638,"discussionIndex":"mAWxxe8l38P6J7SMZZi0b68S"},"3rXehXqwck6vfCRyFTjN8r4r":{"selectionStart":25671,"type":"conflict","selectionEnd":25756,"discussionIndex":"3rXehXqwck6vfCRyFTjN8r4r"},"w3nCXtktVpvMs1l2bAcSyziy":{"selectionStart":22563,"type":"conflict","selectionEnd":22577,"discussionIndex":"w3nCXtktVpvMs1l2bAcSyziy"},"7WacSW3NAe1gu5oOZbwCKgh1":{"selectionStart":23631,"type":"conflict","selectionEnd":23638,"discussionIndex":"7WacSW3NAe1gu5oOZbwCKgh1"},"uzXjTSkDEkGctURJtmKAFCK1":{"selectionStart":24142,"type":"conflict","selectionEnd":24179,"discussionIndex":"uzXjTSkDEkGctURJtmKAFCK1"},"oEqtj6M0vhPaB2308HxEaXue":{"selectionStart":25671,"type":"conflict","selectionEnd":25756,"discussionIndex":"oEqtj6M0vhPaB2308HxEaXue"}}-->
