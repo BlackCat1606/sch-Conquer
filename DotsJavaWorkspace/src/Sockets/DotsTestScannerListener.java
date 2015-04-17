@@ -104,8 +104,7 @@ public class DotsTestScannerListener implements Runnable {
      */
     public static DotsInteraction getInteractionFromScanner(int player, Scanner scanner) {
 
-        // change largest number here to match size of board - 1
-        final String REG_EX = "[0-5][0-5][0-2]";
+        final String REG_EX = "[0-" + (DotsConstants.BOARD_SIZE-1) + "][0-" + (DotsConstants.BOARD_SIZE-1) + "][0-2]";
 
         String playerPointString = "";
         boolean correctInput = false;
