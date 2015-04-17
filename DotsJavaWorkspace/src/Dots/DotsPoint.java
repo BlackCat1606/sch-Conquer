@@ -63,7 +63,9 @@ public class DotsPoint implements Serializable {
 
     public static DotsPoint getArbitraryPoint() {
 
-        int ARBITRARY_INDEX = 17;
+        // Cannot set arbitrary index to be > board size, will throw null pointer exception
+        // due to the way dotViews are accessed with index
+        int ARBITRARY_INDEX = 0;
 
         return new DotsPoint(ARBITRARY_INDEX, ARBITRARY_INDEX);
     }

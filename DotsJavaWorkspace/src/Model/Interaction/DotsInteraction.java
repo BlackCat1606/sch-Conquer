@@ -46,7 +46,7 @@ public class DotsInteraction implements Serializable {
      * @param dotsPoint
      */
     public DotsInteraction(int playerId, DotsInteractionStates state, DotsPoint dotsPoint) {
-        this(playerId, state, dotsPoint, false, true);
+        this(playerId, state, dotsPoint, true, true);
     }
 
 
@@ -117,7 +117,7 @@ public class DotsInteraction implements Serializable {
 
     @Override
     public String toString() {
-        return "Player: " + this.getPlayerId() + " State: " + this.getState() + " Point: " + dotsPoint.toString();
+        return "Player: " + this.getPlayerId() + " State: " + this.getState() + " Point: " + dotsPoint.toString() + " clearAll: " + clearAll + " animate: " + animate;
     }
 
     /**
