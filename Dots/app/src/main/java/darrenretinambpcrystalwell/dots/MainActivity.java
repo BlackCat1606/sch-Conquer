@@ -9,9 +9,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.os.Handler;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
+
+import java.util.logging.LogRecord;
 
 import AndroidCallback.DotsAndroidCallback;
 import Sockets.DotsServerClientParent;
@@ -30,10 +33,17 @@ public class MainActivity extends ActionBarActivity {
     private DotsAndroidCallback androidCallback;
 
     private Fragment[] fragments;
+    private static final Handler  GARBAGE_COLLECT_HANDLER = new Handler();
+    private static final Runnable GARBAGE_COLLECT_RUNNABLE =
+            new Runnable() { @Override public void run() { System.gc(); } };
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        postGarbageCollect(0);
 
         // Initialize parse
         Parse.enableLocalDatastore(this);
@@ -46,11 +56,22 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    public static void postGarbageCollect(long delay) {
+        GARBAGE_COLLECT_HANDLER.removeCallbacks(GARBAGE_COLLECT_RUNNABLE);
+        if (delay == 0) {
+            System.gc();
+        } else {
+            GARBAGE_COLLECT_HANDLER.postDelayed(GARBAGE_COLLECT_RUNNABLE,delay);
+        }
+
+    }
+
 
     private void setUpFragment(Bundle savedInstanceState) {
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.root_layout) != null) {
+            postGarbageCollect(2000);
 
             // However, if we're being restored from a previous state,
             // then we don't need to do anything and should return or else
@@ -102,11 +123,14 @@ public class MainActivity extends ActionBarActivity {
 
             Fragment fragmentToCreate;
             if (i == 0) {
+                postGarbageCollect(0);
                 fragmentToCreate = MainFragment.newInstance(args[0], args[1]);
             } else if (i == 1) {
+                postGarbageCollect(0);
                 fragmentToCreate = GameFragment.newInstance(args[0], args[1]);
 //                fragmentToCreate = ConnectionFragment.newInstance(args[0], args[1]);
             } else {
+                postGarbageCollect(0);
                 Log.e(TAG, "Unknown Fragment id");
                 return null;
             }

@@ -278,37 +278,86 @@ public class SurfaceViewDots extends RelativeLayout
     public void setTouchedPath(DotsInteraction interaction, DotsScreen dotsScreen) {
 
         Log.d(TAG, "TOUCHPATH: " + interaction.toString());
-        if (interaction.getPlayerId() == 0) {
-            if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
-                int index = interaction.getDotsPoint().y* DotsAndroidConstants.BOARD_SIZE + interaction.getDotsPoint().x;
+//        if (interaction.getPlayerId() == 0) {
+//            if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
+//                int index = interaction.getDotsPoint().y* DotsAndroidConstants.BOARD_SIZE + interaction.getDotsPoint().x;
+//                dotsScreen.getTouchedList()[index].setOne();
+//                dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
+//            } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
+//                for (int i=0; i< dotsScreen.getTouchedList().length;i++) {
+//                    if (dotsScreen.getTouchedList()[i].getColor().equals(DotColor.PLAYER_0)) {
+//                        dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
+//                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
+//                        dotsScreen.getTouchedList()[i].setTouchedDot();
+//                    }
+//                }
+//
+//            }
+//        } else if (interaction.getPlayerId() == 1) {
+//            if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
+//                int index = interaction.getDotsPoint().y*DotsAndroidConstants.BOARD_SIZE + interaction.getDotsPoint().x;
+//                dotsScreen.getTouchedList()[index].setTwo();
+//                dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
+//            } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
+//                for (int i=0; i< dotsScreen.getTouchedList().length;i++) {
+//                    if (dotsScreen.getTouchedList()[i].getColor().equals(DotColor.PLAYER_1)) {
+//                        dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
+//                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
+//                        dotsScreen.getTouchedList()[i].setTouchedDot();
+//                    }
+//                }
+//            }
+//        }
+        boolean animate = interaction.isAnimate();
+        boolean clearAll = interaction.isClearAll();
+
+        int player = interaction.getPlayerId();
+        DotsPoint point = interaction.getDotsPoint();
+        // if not TOUCH_UP, draw the path
+        if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
+            // for player, draw touch path at point
+            int index = point.y*DotsAndroidConstants.BOARD_SIZE + point.x;
+            if (interaction.getPlayerId() == 0) {
                 dotsScreen.getTouchedList()[index].setOne();
-                dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
-            } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
-                for (int i=0; i< dotsScreen.getTouchedList().length;i++) {
-                    if (dotsScreen.getTouchedList()[i].getColor().equals(DotColor.PLAYER_0)) {
+            } else {
+                dotsScreen.getTouchedList()[index].setTwo();
+            }
+            dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
+        } else {
+            DotColor color;
+            if (interaction.getPlayerId() == 0) {
+                color = DotColor.PLAYER_0;
+            } else {
+                color = DotColor.PLAYER_1;
+            }
+            if (!animate && clearAll) {
+                // for player, clear all touched paths without animating
+                for (int i=0; i< dotsScreen.getTouchedList().length;i++){
+                    if (dotsScreen.getTouchedList()[i].getColor().equals(color)) {
                         dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
-                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
                         dotsScreen.getTouchedList()[i].setTouchedDot();
-                        dotsScreen.scoreBoard0.setScore(1);
+                    }
+                }
+            }
+            else if (animate && !clearAll) {
+                for (int i=0; i< dotsScreen.getTouchedList().length;i++){
+                    if (dotsScreen.getTouchedList()[i].getColor().equals(color)) {
+                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
                     }
                 }
 
             }
-        } else if (interaction.getPlayerId() == 1) {
-            if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
-                int index = interaction.getDotsPoint().y*DotsAndroidConstants.BOARD_SIZE + interaction.getDotsPoint().x;
-                dotsScreen.getTouchedList()[index].setTwo();
-                dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
-            } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
-                for (int i=0; i< dotsScreen.getTouchedList().length;i++) {
-                    if (dotsScreen.getTouchedList()[i].getColor().equals(DotColor.PLAYER_1)) {
+            else if (animate && clearAll) {
+                // animate and clear all touch paths for player
+                for (int i=0; i< dotsScreen.getTouchedList().length;i++){
+                    if (dotsScreen.getTouchedList()[i].getColor().equals(color)) {
                         dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
                         Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
                         dotsScreen.getTouchedList()[i].setTouchedDot();
-                        dotsScreen.scoreBoard1.setScore(1);
                     }
                 }
             }
+
         }
 
     }
