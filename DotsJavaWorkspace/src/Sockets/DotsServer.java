@@ -93,20 +93,26 @@ public class DotsServer extends DotsServerClientParent{
 
             boolean result = this.dotsGame.doMove(dotsInteraction);
 
-            // if the client made the move, send a response to the server
-            if (dotsInteraction.getPlayerId() == 1) {
+            // if the client made the move and it is an invalid move, we need to cancel the displayed touch on the client
+            if (dotsInteraction.getPlayerId() == 1 ) {
 
-                DotsInteractionStates interactionStateToSend = dotsInteraction.getState();
-
-                // if it is an invalid move, we send a touch up interaction to tell the client to hide the displayed interaction
-                if (!result) {
-                    interactionStateToSend = DotsInteractionStates.TOUCH_UP;
-                }
-
-                DotsInteraction interactionToSend = new DotsInteraction(dotsInteraction.getPlayerId(), interactionStateToSend, dotsInteraction.getDotsPoint());
-
-                DotsMessageInteraction dotsMessageInteraction = new DotsMessageInteraction(interactionToSend);
-                DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageInteraction);
+                DotsInteraction cancelCurrentInteraction = DotsInteraction.getInvalidResponseInteractionInstance(dotsInteraction);
+                DotsMessageInteraction cancelCurrentInteractionMessage = new DotsMessageInteraction(cancelCurrentInteraction);
+                DotsSocketHelper.sendMessageToClient(this.serverSocket, cancelCurrentInteractionMessage);
+//
+//                DotsInteractionStates interactionStateToSend = dotsInteraction.getState();
+//
+//                // todo if valid dont send anything
+//
+//                // if it is an invalid move, we send a touch up interaction to tell the client to hide the displayed interaction
+//                if (!result) {
+//                    interactionStateToSend = DotsInteractionStates.TOUCH_UP;
+//                }
+//
+//                DotsInteraction interactionToSend = new DotsInteraction(dotsInteraction.getPlayerId(), interactionStateToSend, dotsInteraction.getDotsPoint());
+//
+//                DotsMessageInteraction dotsMessageInteraction = new DotsMessageInteraction(interactionToSend);
+//                DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageInteraction);
             }
 
 
@@ -120,7 +126,6 @@ public class DotsServer extends DotsServerClientParent{
                  */
 
                 // First we deal with the first case where we show interactions on the screen
-
                 updateScreenForTouchInteractions(dotsInteraction);
 
                 // send only valid interactions to the client if the move was made by the server
@@ -144,14 +149,13 @@ public class DotsServer extends DotsServerClientParent{
                 if (playerAffected != -1) {
 
                     // Create an arbitrary touch up interaction to clear all dots
-                    DotsInteraction clearDisplayedInteraction = new DotsInteraction(playerAffected, DotsInteractionStates.TOUCH_UP, new DotsPoint(DotsConstants.CLEAR_DOTS_INDEX,DotsConstants.CLEAR_DOTS_INDEX));
+                    DotsInteraction clearDisplayedInteraction = DotsInteraction.getConflictInteractionInstance(playerAffected);
+//                    DotsInteraction clearDisplayedInteraction = new DotsInteraction(playerAffected, DotsInteractionStates.TOUCH_UP, new DotsPoint(DotsConstants.CLEAR_DOTS_INDEX,DotsConstants.CLEAR_DOTS_INDEX));
 
                     // Clear touches on the screen for the player affected
                     this.updateScreenForTouchInteractions(clearDisplayedInteraction);
 
                     // send the message to the client
-                    // Triggers a touch up for the player affected, which would make the displayed touch on the client invisible as managed by the callback
-                    // on the android side
                     DotsMessageInteraction interactionMessage = new DotsMessageInteraction(clearDisplayedInteraction);
                     DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
 

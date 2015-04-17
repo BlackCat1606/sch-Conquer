@@ -59,4 +59,12 @@ public class DotsPoint implements Serializable {
     public void setColor(DotColor color) {
         this.color = color;
     }
+
+
+    public static DotsPoint getArbitraryPoint() {
+
+        int ARBITRARY_INDEX = 17;
+
+        return new DotsPoint(ARBITRARY_INDEX, ARBITRARY_INDEX);
+    }
 }

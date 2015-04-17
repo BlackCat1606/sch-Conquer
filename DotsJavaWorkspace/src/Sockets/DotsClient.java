@@ -7,6 +7,7 @@ import AndroidCallback.DotsAndroidCallback;
 import Dots.DotsPoint;
 import Latency.RuntimeStopwatch;
 import Model.Interaction.DotsInteraction;
+import Model.Interaction.DotsInteractionStates;
 import Model.Locks.DotsLocks;
 import Model.Messages.*;
 
@@ -125,6 +126,19 @@ public class DotsClient extends DotsServerClientParent {
 
             @Override
             public void onValidPlayerInteraction(DotsInteraction interaction) {
+
+                // skeleton code for android
+                boolean animate = interaction.isAnimate();
+                boolean clearAll = interaction.isClearAll();
+                boolean makeVisible;
+
+                if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
+                    makeVisible = true;
+                } else {
+                    makeVisible = false;
+                }
+
+                // base on the booleans set the touch path appropriately
 
             }
 
