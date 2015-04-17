@@ -282,45 +282,14 @@ public class SurfaceViewDots extends RelativeLayout
     public void setTouchedPath(DotsInteraction interaction, DotsScreen dotsScreen) {
 
         Log.d(TAG, "TOUCHPATH: " + interaction.toString());
-//        if (interaction.getPlayerId() == 0) {
-//            if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
-//                int index = interaction.getDotsPoint().y* DotsAndroidConstants.BOARD_SIZE + interaction.getDotsPoint().x;
-//                dotsScreen.getTouchedList()[index].setOne();
-//                dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
-//            } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
-//                for (int i=0; i< dotsScreen.getTouchedList().length;i++) {
-//                    if (dotsScreen.getTouchedList()[i].getColor().equals(DotColor.PLAYER_0)) {
-//                        dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
-//                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
-//                        dotsScreen.getTouchedList()[i].setTouchedDot();
-//                    }
-//                }
-//
-//            }
-//        } else if (interaction.getPlayerId() == 1) {
-//            if (interaction.getState() != DotsInteractionStates.TOUCH_UP) {
-//                int index = interaction.getDotsPoint().y*DotsAndroidConstants.BOARD_SIZE + interaction.getDotsPoint().x;
-//                dotsScreen.getTouchedList()[index].setTwo();
-//                dotsScreen.getTouchedList()[index].setVisibility(VISIBLE);
-//            } else if (interaction.getState() == DotsInteractionStates.TOUCH_UP) {
-//                for (int i=0; i< dotsScreen.getTouchedList().length;i++) {
-//                    if (dotsScreen.getTouchedList()[i].getColor().equals(DotColor.PLAYER_1)) {
-//                        dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
-//                        Effects.castFadeOutEffect(dotsScreen.getDotList()[i],300,false,false);
-//                        dotsScreen.getTouchedList()[i].setTouchedDot();
-//                    }
-//                }
-//            }
-//        }
-
-
+        // get player ID and the point
         int player = interaction.getPlayerId();
         DotsPoint point = interaction.getDotsPoint();
 
         // get pointers to the corresponding views for the interaction point
         int index = point.y * DotsAndroidConstants.BOARD_SIZE + point.x;
         DotView correspondingTouchSquare = dotsScreen.getTouchedList()[index];
-        DotView correspondingDot = dotsScreen.getDotList()[index];
+//        DotView correspondingDot = dotsScreen.getDotList()[index];
 
         // if it is not a touch up, it we simply draw the interaction on the screen for the
         // correct player
@@ -353,7 +322,6 @@ public class SurfaceViewDots extends RelativeLayout
                 playerColor = DotColor.PLAYER_1;
                 temp = countTwo;
             }
-
 //            // Initialise arrayLists used to store views that need to be updated
 //            ArrayList<DotView> touchSquaresToClear = new ArrayList<>();
 //            ArrayList<DotView> dotsToAnimate = new ArrayList<>();
@@ -414,6 +382,7 @@ public class SurfaceViewDots extends RelativeLayout
             if (!animate && clearAll) {
                 // for player, clear all touched paths without animating
                 for (int i = 0; i < dotsScreen.getTouchedList().length; i++) {
+                    // check for all the DotView && set back to TouchedDot
                     if (dotsScreen.getTouchedList()[i].getColor().equals(playerColor)) {
                         dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
                         dotsScreen.getTouchedList()[i].setTouchedDot();
@@ -422,28 +391,26 @@ public class SurfaceViewDots extends RelativeLayout
             } else if (animate && clearAll) {
                 // to animate and to clear the touched path
                 for (int i = 0; i < dotsScreen.getTouchedList().length; i++) {
-                    // if it is not a single touch
+                    // if it is not a single touch, legal move
                     if (temp > 1) {
                         if (dotsScreen.getTouchedList()[i].getColor().equals(playerColor)) {
                             dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
                             Effects.castFadeOutEffect(dotsScreen.getDotList()[i], 300, false, false);
                             dotsScreen.getTouchedList()[i].setTouchedDot();
                         }
-                    } else {
+                    }
+                    // if it is a single highlighted path, clearAll without Animating
+                    else {
                         dotsScreen.getTouchedList()[i].setVisibility(INVISIBLE);
                         dotsScreen.getTouchedList()[i].setTouchedDot();
                     }
 
                 }
-                // reset counter to determine if it is a single press
+                // reset counter again for the next set of moves by player
                 temp = 0;
                 countOne = 0;
                 countTwo = 0;
-
             }
-
         }
-
-
     }
 }
