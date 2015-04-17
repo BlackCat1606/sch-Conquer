@@ -274,11 +274,78 @@ Within the `DotsGame` object, checks will be made to determine if the maximum sc
 
 ### Overall Game Logic
 
-### Game Components
-####Theme
-Conquer planets in space by fighting against your opponent
-####Victory condition: Victory points 
-The first player to reach 100 dots wins the game
+###Game Screen Components
+
+The game screen provides the main graphical user interface where the player will interact with the game. The main game screen is initialised by the DotScreen class in which the various sub game screen components are also initialised. Each of the components can also be represented by a class and each class has a paired functionality with the main game logic class. The main components of the game screen can be seen below.
+
+
+###Game Component Classes
+
+
+####Helper Class
+
+Helper classes are a special set of classes where its main functionality is to assist in providing some functionality, which is not linked to the goal of the main application classes in which it is used. The main motivation behind the implementation of helper class is to fully utilise object-oriented programming in Java. The helper classes found in Conquer are listed below:
+
+BitmapImporter
+ScreenDimensions
+Effects
+
+BitmapImporter
+
+BitmapImporter takes in Images from the Resource folder and resizes it down to a memory acceptable level with the main intention of reducing and preventing OOM as mentioned above. With the BitmapImporter helper class, all ImageView objects are scaled to a smaller size to ensure that the images in placed do not take up too much memory.
+
+BitmapImporter takes in images in the resources folder and resizes it down according to the reqWidth and reqHeight. The result is a smaller bitmap that will be used and placed in the dotsScreen.
+
+
+ScreenDimensions
+
+As there is a great variety of android hardware manufacturer, it is logical that there will be many different screen sizes. Therefore it is important to ensure that the various game screen will fit and look the same in all of the different screen sizes. ScreenDimensions is a helper class that contains getters that returns the width, height and pixel density of the android screen. 
+
+getHeight
+getWidth
+getDensity
+
+Effects
+
+Effects is a special helper class that contains all the various methods that produces different effects. Having the entire effects in a helper class allows easy access and implementation of the various different effects throughout the game architecture. Effects also uses Handler for the following purposes: (1) to schedule messages and runnable to be executed at some point in the future, (2) to enqueue an action to be performed on a different thread and (3) it is thread safe.
+
+
+
+
+Some of the effects implemented include:
+castFadeInEffect
+castFadeOutEffect
+
+The effects take in 4 arguments and can be applied to any view, with the ability to tweak the extend of fading and the duration of the effect.
+
+Sub Game Components
+
+####`DotView`
+
+DotView is a parent class that extends ImageView. Following the concept of polymorphism, DotView is further extended into several different Children classes for the different dot types found in Conquer to allow easy switching of dots within the game.
+
+ - BlueDotView 
+ - RedDotView 
+ - GreenDotView 
+ - OneDotVIew 
+ - TouchedDotView
+ - TwoDotView 
+ - YellowDotView
+
+As Conquer requires the drawing of multiple images on the main game screen, a getDrawable method is implemented to ensure efficiency and to reduce possible Out Of Memory (OOM) situations. As such, the getDrawable method decodes the Images and sizes it down and returns a smaller bitmap that improves and reduces memory allocation.
+
+ScoreBoard
+
+ScoreBoard serves as an indication and announcement to the player of the current scores of the player in Single Player mode and of both players in Multiplayer mode.
+These indications are conveyed via a TextView which is dynamically changing as the game progresses and as actions and moves are made by the players involved. 
+
+The class diagram below details the attributes and the methods associated with this class.
+
+DotsScreen
+
+DotsScreen is the heart of the main game itself. It is the initialiser of the main 8 x 8 board of dot and sets the dot in placed according to the device screen dimensions with the help of the helper class, ScreenDimensions. All the main sub game components found in the main game screen are initialised within DotsScreen. Apart from the main 8 x 8 board, DotsScreen also initialises and sets the ScoreBoard together with the Header for the players, Score and Enemy. 
+
+DotsScreen also contains an UpdateScreen method whereby it receives an ArrayList<DotsPoint> and updates the current board with the updated board. UpdateScreen therefore links the game logic with the DotsScreen to ensure that the correct display of dot is reflected to the players.
 ### Interaction between Classes
 
 ### Detailed Class Diagrams
@@ -322,8 +389,7 @@ In Conquer, the generation of new randomised coloured dots to replace dots to be
 Player interaction plays a rudimentary role in Conquer’s game logic framework. Testing was first carried out in console level, to ensure that the player’s intended input matches and is accurately received and processed by the game logic. Once extensive console level tests were done, the next level of player interaction includes the physical testing of the actual multi gesture finger touch by the player. As the `SurfaceViewDot` class tracks the `x`,`y` coordinate of a finger press, it is important to ensure that the three states of finger press is accurately detected by the game logic. The three main states includes `TouchDown`, `TouchMoved`, `TouchUp`. These checks ensure that both the correctness and incorrectness of a player’s intended input is detected, to accurately determine a player’s move.
 
 The tests being described here are non exhaustive and more test have been implemented and carried out to ensure the integrity of the game as a whole.
-⧸⧸
-####Application⧸⧸####Application⧸⧸ Level Testing
+####Application Level Testing
 
 The next category of component level testing accounts for the various UI sub game components on the main Game Screen and its expected exhibited behaviour. This portion of testing helps to validate further the integrity of the messages being sent and processed by the concurrency architecture in placed. The test fundamental role is to check the correctness of messages sent and received and also the corresponding results are reflected to the player correctly. The following details are some of the sub game screen UI components tested:
 
@@ -394,4 +460,4 @@ In general, when a player holds points below that of the other player or vice ve
 
 
 
-<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":25671,"type":"conflict","selectionEnd":25756,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"},"mAWxxe8l38P6J7SMZZi0b68S":{"selectionStart":23631,"type":"conflict","selectionEnd":23638,"discussionIndex":"mAWxxe8l38P6J7SMZZi0b68S"},"3rXehXqwck6vfCRyFTjN8r4r":{"selectionStart":25671,"type":"conflict","selectionEnd":25756,"discussionIndex":"3rXehXqwck6vfCRyFTjN8r4r"},"w3nCXtktVpvMs1l2bAcSyziy":{"selectionStart":22563,"type":"conflict","selectionEnd":22577,"discussionIndex":"w3nCXtktVpvMs1l2bAcSyziy"},"7WacSW3NAe1gu5oOZbwCKgh1":{"selectionStart":23631,"type":"conflict","selectionEnd":23638,"discussionIndex":"7WacSW3NAe1gu5oOZbwCKgh1"},"uzXjTSkDEkGctURJtmKAFCK1":{"selectionStart":24142,"type":"conflict","selectionEnd":24179,"discussionIndex":"uzXjTSkDEkGctURJtmKAFCK1"},"oEqtj6M0vhPaB2308HxEaXue":{"selectionStart":25671,"type":"conflict","selectionEnd":25756,"discussionIndex":"oEqtj6M0vhPaB2308HxEaXue"}}-->
+<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":30013,"type":"conflict","selectionEnd":30098,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"},"mAWxxe8l38P6J7SMZZi0b68S":{"selectionStart":27995,"type":"conflict","selectionEnd":28002,"discussionIndex":"mAWxxe8l38P6J7SMZZi0b68S"},"3rXehXqwck6vfCRyFTjN8r4r":{"selectionStart":30013,"type":"conflict","selectionEnd":30098,"discussionIndex":"3rXehXqwck6vfCRyFTjN8r4r"},"w3nCXtktVpvMs1l2bAcSyziy":{"selectionStart":26927,"type":"conflict","selectionEnd":26941,"discussionIndex":"w3nCXtktVpvMs1l2bAcSyziy"},"7WacSW3NAe1gu5oOZbwCKgh1":{"selectionStart":27995,"type":"conflict","selectionEnd":28002,"discussionIndex":"7WacSW3NAe1gu5oOZbwCKgh1","commentList":[{"content":"darren"}]},"uzXjTSkDEkGctURJtmKAFCK1":{"selectionStart":28506,"type":"conflict","selectionEnd":28521,"discussionIndex":"uzXjTSkDEkGctURJtmKAFCK1","commentList":[{"content":"darren"}]},"oEqtj6M0vhPaB2308HxEaXue":{"selectionStart":30013,"type":"conflict","selectionEnd":30098,"discussionIndex":"oEqtj6M0vhPaB2308HxEaXue"}}-->
