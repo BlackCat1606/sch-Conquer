@@ -46,7 +46,7 @@ public class DotsInteraction implements Serializable {
      * @param dotsPoint
      */
     public DotsInteraction(int playerId, DotsInteractionStates state, DotsPoint dotsPoint) {
-        this(playerId, state, dotsPoint, true, true);
+        this(playerId, state, dotsPoint, true, false);
     }
 
 
@@ -92,6 +92,12 @@ public class DotsInteraction implements Serializable {
         // state = touchUp
 
         return new DotsInteraction(interaction.getPlayerId(), DotsInteractionStates.TOUCH_UP, interaction.getDotsPoint(), false, false);
+
+    }
+
+    public static DotsInteraction getUpdateBoardInteraction(DotsInteraction interaction) {
+
+        return new DotsInteraction(interaction.getPlayerId(), interaction.getState(), interaction.getDotsPoint(), true, true);
 
     }
 
