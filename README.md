@@ -1,9 +1,9 @@
 # Conquer
 
 ## Introduction
-“Conquer” is a fast-paced real-time multiplayer puzzle game that combines the elements of competition, strategy and logical thinking that pushes the players to achieve a score of 100 first. Each game for “Conquer” can be played individually or up to a maximum of 2 players at any time.
+**“Conquer”** is a fast-paced real-time multiplayer puzzle game that combines the elements of competition, strategy and logical thinking that pushes the players to achieve a score of 100 first. Each game for “Conquer” can be played individually or up to a maximum of 2 players at any time.
 
-Based on the popular old-school classic, “Dots," Conquer goes beyond being just a simple digital implementation, the rules are tweaked and players will have to think and strategise on the spot in order to win.
+Based on the popular old-school classic, “Connect the Dots," Conquer goes beyond being just a simple digital implementation, the rules are tweaked and players will have to think and strategise on the spot in order to win.
 
 Both players will be presented the same board of 8x8 `Dot`, with the main goal to connect all the dots of the same colour that are adjacent to one another. Once the dots of the same colour has been cleared, points will be awarded based on the length of the selected dots.
 
@@ -95,9 +95,6 @@ Users will be able to start the single player mode when they select the `1 playe
 
 ![Use Case Diagram](https://www.dropbox.com/s/3e5cxa63qzuwtoq/Dotsflow.png?dl=0)
 
-
-https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables
-
 ### Player Matchmaking
 
 #### Implementation
@@ -116,7 +113,7 @@ A possible issue with this implementation is that matchmaking is done on a seque
 
 ### Game Mechanics
 
-Conquer has a simple game play: players are presented with a 8x8 board of coloured dots, where the players will then try to link as many dots of the same colour as possible. The game then ends when either player hits 100 dots connected. Conquer has an even simpler game mechanic: to stop the other player from clearing dots while clearing more dots themselves real-time. This would make players competitive, and by giving the players this option to stop the opponent from reaching 100, the players could try to stop the opponent by interrupting their path of movement, or simply clearing more dots fast enough themselves.
+Conquer has a simple game play: players are presented with a 8x8 board of coloured `dot` where the players will then try to link as many dots of the same colour as possible. The game then ends when either player hits 100 dots connected. Conquer has an even simpler game mechanic: to stop the other player from clearing dots while clearing more dots themselves real-time. This would make players competitive, and by giving the players this option to stop the opponent from reaching 100, the players could try to stop the opponent by interrupting their path of movement, or simply clearing more dots fast enough themselves.
 
 ## System Design
 
@@ -274,9 +271,23 @@ Within the `DotsGame` object, checks will be made to determine if the maximum sc
 
 ### Overall Game Logic
 
+Following Objected-Orientated Programming principles, the game logic is divided across three objects. 
+
+#### DotsGame
+
+`DotsGame` a container for the entire game instance, and is the sole object on which `doMove(interaction)` is called with an interaction. This object will translate the interaction into an `x` and `y` index and trigger `DotsLogic`, and it also handles conflict resolution between two players.
+
+#### DotsLogic
+
+`DotsLogic` performs is a class that performs checks on the board, and is called from `DotsGame`. It holds helper methods to check for adjacency and validity of moves made on the `DotsBoard`.
+
+#### DotsBoard
+
+`DotsBoard` is an object that represents the game board, which is stored in a two-dimensional array. It contains methods that deal with updating the board itself, such as `clearDots(ArrayList<DotsPoint> dotsPointList)`, which clears the points in the argument and cascades tiles above down to fill the empty spaces.
+
 ###Game Screen Components
 
-The game screen provides the main graphical user interface where the player will interact with the game. The main game screen is initialised by the DotScreen class in which the various sub game screen components are also initialised. Each of the components can also be represented by a class and each class has a paired functionality with the main game logic class. The main components of the game screen can be seen below.
+The game screen provides the main graphical user interface where the player will interact with the game. The main game screen is initialised by the` DotScreen` class in which the various sub game screen components are also initialised. Each of the components can also be represented by a class and each class has a paired functionality with the main game logic class. The main components of the game screen can be seen below.
 
 
 ###Game Component Classes
@@ -286,66 +297,66 @@ The game screen provides the main graphical user interface where the player will
 
 Helper classes are a special set of classes where its main functionality is to assist in providing some functionality, which is not linked to the goal of the main application classes in which it is used. The main motivation behind the implementation of helper class is to fully utilise object-oriented programming in Java. The helper classes found in Conquer are listed below:
 
-BitmapImporter
-ScreenDimensions
-Effects
+- `BitmapImporter`
+- `ScreenDimensions`
+- `Effects`
 
-BitmapImporter
+#####BitmapImporter
 
-BitmapImporter takes in Images from the Resource folder and resizes it down to a memory acceptable level with the main intention of reducing and preventing OOM as mentioned above. With the BitmapImporter helper class, all ImageView objects are scaled to a smaller size to ensure that the images in placed do not take up too much memory.
+`BitmapImporter` takes in Images from the Resource folder and resizes it down to a memory acceptable level with the main intention of reducing and preventing OOM as mentioned above. With the `BitmapImporter` helper class, all ImageView objects are scaled to a smaller size to ensure that the images in placed do not take up too much memory.
 
-BitmapImporter takes in images in the resources folder and resizes it down according to the reqWidth and reqHeight. The result is a smaller bitmap that will be used and placed in the dotsScreen.
-
-
-ScreenDimensions
-
-As there is a great variety of android hardware manufacturer, it is logical that there will be many different screen sizes. Therefore it is important to ensure that the various game screen will fit and look the same in all of the different screen sizes. ScreenDimensions is a helper class that contains getters that returns the width, height and pixel density of the android screen. 
-
-getHeight
-getWidth
-getDensity
-
-Effects
-
-Effects is a special helper class that contains all the various methods that produces different effects. Having the entire effects in a helper class allows easy access and implementation of the various different effects throughout the game architecture. Effects also uses Handler for the following purposes: (1) to schedule messages and runnable to be executed at some point in the future, (2) to enqueue an action to be performed on a different thread and (3) it is thread safe.
+`BitmapImporter` takes in images in the resources folder and resizes it down according to the `reqWidth` and `reqHeight`. The result is a smaller `bitmap` that will be used and placed in the dotsScreen.
 
 
+#####ScreenDimensions
 
+As there is a great variety of android hardware manufacturer, it is logical that there will be many different screen sizes. Therefore it is important to ensure that the various game screen will fit and look the same in all of the different screen sizes. `ScreenDimensions` is a helper class that contains getters that returns the width, height and pixel density of the android screen. 
+
+- `getHeight`
+- `getWidth`
+- `getDensity`
+
+#####Effects
+
+`Effects` is a special helper class that contains all the various methods that produces different effects. Having the entire effects in a helper class allows easy access and implementation of the various different effects throughout the game architecture. `Effects` also uses `Handler` for the following purposes: (1) to schedule messages and `runnable` to be executed at some point in the future, (2) to enqueue an action to be performed on a different thread and (3) it is thread safe.
 
 Some of the effects implemented include:
-castFadeInEffect
-castFadeOutEffect
+
+ - `castFadeInEffect`
+ - `castFadeOutEffect`
 
 The effects take in 4 arguments and can be applied to any view, with the ability to tweak the extend of fading and the duration of the effect.
 
-Sub Game Components
+####Sub Game Components
 
-####`DotView`
+#####DotView
 
-DotView is a parent class that extends ImageView. Following the concept of polymorphism, DotView is further extended into several different Children classes for the different dot types found in Conquer to allow easy switching of dots within the game.
+`DotView` is a parent class that extends `ImageView`. Following the concept of polymorphism, `DotView` is further extended into several different Children classes for the different `dot` types found in Conquer to allow easy switching of dots within the game.
 
- - BlueDotView 
- - RedDotView 
- - GreenDotView 
- - OneDotVIew 
- - TouchedDotView
- - TwoDotView 
- - YellowDotView
+ - `BlueDotView` 
+ - `RedDotView` 
+ - `GreenDotView` 
+ - `OneDotView` 
+ - `TouchedDotView`
+ - `TwoDotView` 
+ - `YellowDotView`
 
-As Conquer requires the drawing of multiple images on the main game screen, a getDrawable method is implemented to ensure efficiency and to reduce possible Out Of Memory (OOM) situations. As such, the getDrawable method decodes the Images and sizes it down and returns a smaller bitmap that improves and reduces memory allocation.
+As Conquer requires the drawing of multiple images on the main game screen, a `getDrawable` method is implemented to ensure efficiency and to reduce possible Out Of Memory (OOM) situations. As such, the `getDrawable` method decodes the Images and sizes it down and returns a smaller bitmap that improves and reduces memory allocation.
 
-ScoreBoard
+#####ScoreBoard
 
-ScoreBoard serves as an indication and announcement to the player of the current scores of the player in Single Player mode and of both players in Multiplayer mode.
-These indications are conveyed via a TextView which is dynamically changing as the game progresses and as actions and moves are made by the players involved. 
+`ScoreBoard` serves as an indication and announcement to the player of the current scores of the player in Single Player mode and of both players in Multiplayer mode.
+
+These indications are conveyed via a `TextView` which is dynamically changing as the game progresses and as actions and moves are made by the players involved. 
 
 The class diagram below details the attributes and the methods associated with this class.
 
-DotsScreen
+#####DotsScreen
 
-DotsScreen is the heart of the main game itself. It is the initialiser of the main 8 x 8 board of dot and sets the dot in placed according to the device screen dimensions with the help of the helper class, ScreenDimensions. All the main sub game components found in the main game screen are initialised within DotsScreen. Apart from the main 8 x 8 board, DotsScreen also initialises and sets the ScoreBoard together with the Header for the players, Score and Enemy. 
+`DotsScreen` is the heart of the main game itself. It is the initialiser of the main 8 x 8 board of `dot` and sets the `dot` in placed according to the device screen dimensions with the help of the helper class, `ScreenDimensions`. All the main sub game components found in the main game screen are initialised within `DotsScreen`. Apart from the main 8 x 8 board, `DotsScreen` also initialises and sets the `ScoreBoard` together with the Header for the players, Score and Enemy. 
 
-DotsScreen also contains an UpdateScreen method whereby it receives an ArrayList<DotsPoint> and updates the current board with the updated board. UpdateScreen therefore links the game logic with the DotsScreen to ensure that the correct display of dot is reflected to the players.
+`DotsScreen` also contains an `UpdateScreen` method whereby it receives an ArrayList<DotsPoint> and updates the current board with the updated board. `UpdateScreen` therefore links the game logic with the `DotsScreen` to ensure that the correct display of `dot` is reflected to the players.
+
 ### Interaction between Classes
 
 ### Detailed Class Diagrams
@@ -397,7 +408,7 @@ The next category of component level testing accounts for the various UI sub gam
 The number of points received by each player should reflect the main game logic’s point system as well as the actual intended moves of the player. This test ensures that the arithmetic logic used in the point system is implemented accurately as well as the legal moves made by the players.
 
 - **Verify correctness of multiplayer input**
-Since both players will be able to see each other’s input touch in real time on their respective android device, it is important to ensure that the board reflects the actual real time input of each player. This test ensures that both players moves are visible and testes for the efficiency and time lag of the board to display both players’ highlighted moves in real time. Efficiency testing is carried out and verified through the logs in android studio to ensure an accurate display of players moves as well as an optimised concurrency architecture in ⧸⧸⧸⧸placed.⧸⧸placed.⧸⧸Testing⧸⧸⧸⧸⧸⧸⧸⧸⧸⧸placed.⧸⧸⧸⧸placed.⧸⧸placed.⧸⧸Testing⧸⧸⧸⧸⧸⧸⧸⧸⧸⧸
+Since both players will be able to see each other’s input touch in real time on their respective android device, it is important to ensure that the board reflects the actual real time input of each player. This test ensures that both players moves are visible and testes for the efficiency and time lag of the board to display both players’ highlighted moves in real time. Efficiency testing is carried out and verified through the logs in android studio to ensure an accurate display of players moves as well as an optimised concurrency architecture in placed.
 
 
 ###Summary
@@ -447,17 +458,18 @@ However, consider the case where `player0` lifts his finger from the screen befo
 In general, when a player holds points below that of the other player or vice versa, if the points below are cleared first, the points held above will be deemed to be invalid and a cancellation message will be sent to remove the visual reflection of the touch on the screen for the player whom once held the touches.
 
 
-
-
 ## Additional Features
 
 ### Animations
 
 ### Instructions
+An **Rules** section was added to the Application. Instructions can be accessed from the Main Screen by tapping the “Rules” button found on the bottom center of the main game screen.
+
+These game instructions serve as a “Instruction” page by providing detailed description to first time players the fundamentals of the gameplay. In the future, an interactive tutorial could be implemented instead, for more effective learning to take place.
+
 
 ## Conclusion
 
+Game development proved to be a a tedious and complicated process due to the extent of the complexity and variety of the android platforms available. Apart from the various avoidance and implementation methods that have been utilised to tackle thread safety issues, this project emphasises on the implementation of the concept of modularity and organisating the various sub components when dealing with complex systems. From the macro level of identifying the various system requirements, down to the implicit design of the various sub components in the game architecture, breaking the entire game architecture down into various sub components resulted in a better controlled and refined way of code implementation that allowed easy updatability and bug-fixing. Conclusively, Conquer could be considered an overall successful implementation of an all-time old school classic with new gaming mechanics that will attract new players.
 
-
-
-<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":30013,"type":"conflict","selectionEnd":30098,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"},"mAWxxe8l38P6J7SMZZi0b68S":{"selectionStart":27995,"type":"conflict","selectionEnd":28002,"discussionIndex":"mAWxxe8l38P6J7SMZZi0b68S"},"3rXehXqwck6vfCRyFTjN8r4r":{"selectionStart":30013,"type":"conflict","selectionEnd":30098,"discussionIndex":"3rXehXqwck6vfCRyFTjN8r4r"},"w3nCXtktVpvMs1l2bAcSyziy":{"selectionStart":26927,"type":"conflict","selectionEnd":26941,"discussionIndex":"w3nCXtktVpvMs1l2bAcSyziy"},"7WacSW3NAe1gu5oOZbwCKgh1":{"selectionStart":27995,"type":"conflict","selectionEnd":28002,"discussionIndex":"7WacSW3NAe1gu5oOZbwCKgh1","commentList":[{"content":"darren"}]},"uzXjTSkDEkGctURJtmKAFCK1":{"selectionStart":28506,"type":"conflict","selectionEnd":28521,"discussionIndex":"uzXjTSkDEkGctURJtmKAFCK1","commentList":[{"content":"darren"}]},"oEqtj6M0vhPaB2308HxEaXue":{"selectionStart":30013,"type":"conflict","selectionEnd":30098,"discussionIndex":"oEqtj6M0vhPaB2308HxEaXue"}}-->
+<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":31057,"type":"conflict","selectionEnd":31050,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"},"mAWxxe8l38P6J7SMZZi0b68S":{"selectionStart":29032,"type":"conflict","selectionEnd":29039,"discussionIndex":"mAWxxe8l38P6J7SMZZi0b68S"},"3rXehXqwck6vfCRyFTjN8r4r":{"selectionStart":31057,"type":"conflict","selectionEnd":31050,"discussionIndex":"3rXehXqwck6vfCRyFTjN8r4r"},"w3nCXtktVpvMs1l2bAcSyziy":{"selectionStart":27964,"type":"conflict","selectionEnd":27978,"discussionIndex":"w3nCXtktVpvMs1l2bAcSyziy"},"7WacSW3NAe1gu5oOZbwCKgh1":{"selectionStart":29032,"type":"conflict","selectionEnd":29039,"discussionIndex":"7WacSW3NAe1gu5oOZbwCKgh1","commentList":[{"content":"darren"}]},"uzXjTSkDEkGctURJtmKAFCK1":{"selectionStart":29543,"type":"conflict","selectionEnd":29558,"discussionIndex":"uzXjTSkDEkGctURJtmKAFCK1","commentList":[{"content":"darren"}]},"oEqtj6M0vhPaB2308HxEaXue":{"selectionStart":31057,"type":"conflict","selectionEnd":31050,"discussionIndex":"oEqtj6M0vhPaB2308HxEaXue"}}-->
