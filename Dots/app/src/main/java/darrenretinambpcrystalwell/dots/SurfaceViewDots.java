@@ -5,21 +5,17 @@ import android.graphics.Bitmap;
 import android.view.MotionEvent;
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import Constants.DotsConstants;
 import Dots.DotColor;
 import Dots.DotsPoint;
 import Model.Interaction.DotsInteraction;
 import Model.Interaction.DotsInteractionStates;
 import Sockets.DotsClient;
-import Sockets.DotsServer;
 import Sockets.DotsServerClientParent;
 
 
@@ -42,7 +38,7 @@ public class SurfaceViewDots extends RelativeLayout
     Context                              context;
     private static final float           SCREEN_WIDTH_PERCENTAGE = .8f;
     private static final float           SCREEN_Y_PERCENTAGE     = .2f;
-    float                                dotWidth;
+    float touchThreshold;
     private final int                    PLAYER_ID;
     private final float[][][]            correspondingDotCoordinates;
     private final DotsServerClientParent dotsServerClientParent;
@@ -80,8 +76,8 @@ public class SurfaceViewDots extends RelativeLayout
         this.relativeLayout              = relativeLayout;
         this.dotsServerClientParent      = dotsServerClientParent;
         this.correspondingDotCoordinates = correspondingDotCoordinates;
-        this.dotWidth                    = SCREEN_WIDTH_PERCENTAGE * ScreenDimensions.getWidth(context)
-                / DotsAndroidConstants.BOARD_SIZE;
+        this.touchThreshold = (float) (SCREEN_WIDTH_PERCENTAGE * ScreenDimensions.getWidth(context)
+                / DotsAndroidConstants.BOARD_SIZE * 1.5);
         LayoutParams layoutParams        = new LayoutParams(ScreenDimensions.getWidth(context),
                 ScreenDimensions.getHeight(context));
 
@@ -245,7 +241,7 @@ public class SurfaceViewDots extends RelativeLayout
 
         double distance = Math.hypot((touchedX - refX), (touchedY - refY));
 
-        if (distance < dotWidth/2.0) {
+        if (distance < touchThreshold /2.0) {
             return true;
         } else {
             return false;
