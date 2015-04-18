@@ -96,25 +96,10 @@ public class DotsServer extends DotsServerClientParent{
             // if the client made the move and it is an invalid move, we need to cancel the displayed touch on the client
             if (dotsInteraction.getPlayerId() == 1 && !interactionIsValid) {
 
-
-
                 DotsInteraction cancelCurrentInteraction = DotsInteraction.getInvalidResponseInteractionInstance(dotsInteraction);
                 DotsMessageInteraction cancelCurrentInteractionMessage = new DotsMessageInteraction(cancelCurrentInteraction);
                 DotsSocketHelper.sendMessageToClient(this.serverSocket, cancelCurrentInteractionMessage);
 
-//                DotsInteractionStates interactionStateToSend = dotsInteraction.getState();
-//
-//                // todo if valid dont send anything
-//
-//                // if it is an invalid move, we send a touch up interaction to tell the client to hide the displayed interaction
-//                if (!interactionIsValid) {
-//                    interactionStateToSend = DotsInteractionStates.TOUCH_UP;
-//                }
-//
-//                DotsInteraction interactionToSend = new DotsInteraction(dotsInteraction.getPlayerId(), interactionStateToSend, dotsInteraction.getDotsPoint());
-//
-//                DotsMessageInteraction dotsMessageInteraction = new DotsMessageInteraction(interactionToSend);
-//                DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageInteraction);
             }
 
 
@@ -127,24 +112,51 @@ public class DotsServer extends DotsServerClientParent{
                  * 2. Update the entire board when elements are cleared
                  */
 
-                // First we deal with the first case where we show interactions on the screen
-                updateScreenForTouchInteractions(dotsInteraction);
+                DotsInteraction interactionToUpdate;
+                boolean shouldSendInteractionToClient = false;
 
-                // send only valid interactions to the client if the move was made by the server
-                if (dotsInteraction.getPlayerId() == 0) {
-                    // sends the interaction to the client
-                    DotsMessageInteraction interactionMessage = new DotsMessageInteraction(dotsInteraction);
+                // if the board needs updating
+                if (this.dotsLocks.getChangedDots() != null) {
+
+                    // update the board state, case (2)
+                    this.updateBoard();
+
+                    // package the interaction with the correct animation and clearAll parameters
+                    interactionToUpdate = DotsInteraction.getUpdateBoardInteraction(dotsInteraction);
+                    shouldSendInteractionToClient = true;
+
+                } else {
+
+                    // if board does not need updating
+
+                    if (dotsInteraction.getPlayerId() == 0) {
+                        // send valid moves made by the server to client
+                        shouldSendInteractionToClient = true;
+                    } else {
+
+                        // if the move was made by the client, we want to send a touch_up response to the client
+                        if (dotsInteraction.getState() == DotsInteractionStates.TOUCH_UP) {
+                            shouldSendInteractionToClient = true;
+                        }
+
+                    }
+
+                    // no need to update board, the valid interaction remains the same as the input parameter
+                    interactionToUpdate = dotsInteraction;
+
+                }
+
+                // case(1) update the touch path
+
+                if (shouldSendInteractionToClient) {
+                    // send the interation to the client
+                    DotsMessageInteraction interactionMessage = new DotsMessageInteraction(interactionToUpdate);
                     DotsSocketHelper.sendMessageToClient(this.serverSocket, interactionMessage);
                 }
 
+                // update the screen
+                this.updateScreenForTouchInteractions(interactionToUpdate);
 
-                // finally, we check if the board needs to be updated
-                // dotsGame will automatically update this variable if the board is changed
-                if (this.dotsLocks.getChangedDots() != null) {
-
-                    this.updateBoard();
-
-                }
 
                 // if getPlayerAffected is not -1, a player has been affected
                 int playerAffected = this.dotsLocks.getPlayerAffected();
@@ -152,7 +164,6 @@ public class DotsServer extends DotsServerClientParent{
 
                     // Create an arbitrary touch up interaction to clear all dots
                     DotsInteraction clearDisplayedInteraction = DotsInteraction.getConflictInteractionInstance(playerAffected);
-//                    DotsInteraction clearDisplayedInteraction = new DotsInteraction(playerAffected, DotsInteractionStates.TOUCH_UP, new DotsPoint(DotsConstants.CLEAR_DOTS_INDEX,DotsConstants.CLEAR_DOTS_INDEX));
 
                     // Clear touches on the screen for the player affected
                     this.updateScreenForTouchInteractions(clearDisplayedInteraction);

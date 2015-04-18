@@ -90,9 +90,14 @@ public class DotsClient extends DotsServerClientParent {
      */
     private void updateScreenForTouchInteractions(DotsInteraction dotsInteraction) {
 
-        // debug method to print valid interaction
-        System.out.println("DRAW on screen touch interaction: " + dotsInteraction.toString());
-        this.getAndroidCallback().onValidPlayerInteraction(dotsInteraction);
+        // as the method is called from the same device, we ignore touch_Up interactions. Touch up interactions are
+        // processed in the server and sent to the client, as the server has to package the interactions to indicate
+        // if need to clearAll and animate
+        if (dotsInteraction.getState() != DotsInteractionStates.TOUCH_UP) {
+            this.getAndroidCallback().onValidPlayerInteraction(dotsInteraction);
+
+        }
+
 
     }
 
