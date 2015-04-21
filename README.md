@@ -1,6 +1,8 @@
 # Conquer
-
+[TOC]
+	
 ## Introduction
+
 **“Conquer”** is a fast-paced real-time multiplayer puzzle game that combines the elements of competition, strategy and logical thinking that pushes the players to achieve a score of 100 first. Each game for “Conquer” can be played individually or up to a maximum of 2 players at any time.
 
 Based on the popular old-school classic, “Connect the Dots," Conquer goes beyond being just a simple digital implementation, the rules are tweaked and players will have to think and strategise on the spot in order to win.
@@ -16,8 +18,11 @@ This report discusses the various decision making and gives an overview of the e
 ## System Requirements and Use Cases
 
 ### Game Requirements Overview
+
 ####Use Cases:
+
 #####**Requirement ID: Conquer_REQ_UA1 - Single Player Mode**
+
 ######Requirement Description
 Users will be able to start the single player mode when they select the `1 player` option. Once after which, users will be prompted with the loading of the main game screen. The user should remain logged into the single player mode until the game is over.
 
@@ -113,7 +118,7 @@ A possible issue with this implementation is that matchmaking is done on a seque
 
 ### Game Mechanics
 
-Conquer has a simple game play: players are presented with a 8x8 board of coloured `dot` where the players will then try to link as many dots of the same colour as possible. The game then ends when either player hits 100 dots connected. Conquer has an even simpler game mechanic: to stop the other player from clearing dots while clearing more dots themselves real-time. This would make players competitive, and by giving the players this option to stop the opponent from reaching 100, the players could try to stop the opponent by interrupting their path of movement, or simply clearing more dots fast enough themselves.
+Conquer has a simple game play: players are presented with a 8x8 board of coloured `dot` where the players will then try to link as many dots of the same colour as possible. The game then ends when either player hits 100 `dot` connected. Conquer has an even simpler game mechanic: to stop the other player from clearing dots while clearing more `dot` themselves real-time. This would make players competitive, and by giving the players this option to stop the opponent from reaching 100, the players could try to stop the opponent by interrupting their path of movement, or simply clearing more dots fast enough themselves.
 
 ## System Design
 
@@ -300,12 +305,15 @@ Helper classes are a special set of classes where its main functionality is to a
 - `BitmapImporter`
 - `ScreenDimensions`
 - `Effects`
+- `GIFDecode`
+- `GIFRun`
 
 #####BitmapImporter
 
 `BitmapImporter` takes in Images from the Resource folder and resizes it down to a memory acceptable level with the main intention of reducing and preventing OOM as mentioned above. With the `BitmapImporter` helper class, all ImageView objects are scaled to a smaller size to ensure that the images in placed do not take up too much memory.
 
 `BitmapImporter` takes in images in the resources folder and resizes it down according to the `reqWidth` and `reqHeight`. The result is a smaller `bitmap` that will be used and placed in the dotsScreen.
+
 
 
 #####ScreenDimensions
@@ -327,6 +335,20 @@ Some of the effects implemented include:
 
 The effects take in 4 arguments and can be applied to any view, with the ability to tweak the extend of fading and the duration of the effect.
 
+`Effects` also implements a special method `clearAllAnimations` method that ensures that there are no overlapping of effects applied to the same object. The simplified code below shows how this method is implemented.
+
+```java
+private static void clearAllAnimations(View view) {
+	if (animationRunnables.containsKey(view) == animations.get(view);
+	for (int i = runnables.size()-1; i > -1; --i) {
+	// stop and remove TweenRunnable
+	}
+}
+```
+
+#####GIFRun and GIFDecode
+
+In order to implement an effective animated background that runs separately from the main game screen,  two classes, `GIFDecode` and `GIFRun` are implemented. `GIFDecode` takes in a 	`GIF` images implemented in a `SurfaceView` and splits the images into frames and sizes it according to the android device screen dimensions. `GIFRun` implements `Runnable` and `Callback` and loads the frame from `GIFDecode` through the method `LoadGiff` and runs the frame in sequential order to animate the `GIF`. These two methods can be used throughout the different fragments of the game architecture and helps to give an overall enhancement to the visual aspect of the game, making it more immersive without hindering on performance and memory allocation.
 ####Sub Game Components
 
 #####DotView
@@ -353,33 +375,72 @@ The class diagram below details the attributes and the methods associated with t
 
 #####DotsScreen
 
-`DotsScreen` is the heart of the main game itself. It is the initialiser of the main 8 x 8 board of `dot` and sets the `dot` in placed according to the device screen dimensions with the help of the helper class, `ScreenDimensions`. All the main sub game components found in the main game screen are initialised within `DotsScreen`. Apart from the main 8 x 8 board, `DotsScreen` also initialises and sets the `ScoreBoard` together with the Header for the players, Score and Enemy. 
+`DotsScreen` is the heart of the main game itself. It is the initialiser of the main `8 x 8` board of `dot` and sets the `dot` in placed according to the device screen dimensions with the help of the helper class, `ScreenDimensions`. All the main sub game components found in the main game screen are initialised within `DotsScreen`. Apart from the main `8 x 8` board, `DotsScreen` also initialises and sets the `ScoreBoard` together with the Header for the players, Score and Enemy. 
 
-`DotsScreen` also contains an `UpdateScreen` method whereby it receives an ArrayList<DotsPoint> and updates the current board with the updated board. `UpdateScreen` therefore links the game logic with the `DotsScreen` to ensure that the correct display of `dot` is reflected to the players.
+`DotsScreen` also contains an `UpdateScreen` method whereby it receives an ArrayList< DotsPoint > and updates the current board with the updated board. `UpdateScreen` therefore links the game logic with the `DotsScreen` to ensure that the correct display of `dot` is reflected to the players.
+
 
 ### Interaction between Classes
 
 ### Detailed Class Diagrams
 ####Game classes
 DotsGameTask class
-![DotsGameTask class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Game/DotsGameTask.png?_subject_uid=132339545&w=AABCO8lnWwtB7mJrgq0vh6F33QlicVAOzte6F0M0UXWa9g)
+![DotsGameTask](http://i.imgur.com/NFR6VhW.png)
 
 ####Fragment classes
 MainFragment class
-![MainFragment class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Fragments/MainFragment.png?_subject_uid=132339545&w=AAApIr2H13-AidZljDsKUzDI8tcKMbda_XGEg-R4KI1vTg)
+![MainFragment](http://i.imgur.com/hm1OLX7.png)
 
 GameOverFragment class
-![GameOverFragment class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Fragments/GameOverFragment.png?_subject_uid=132339545&w=AACSF4KtnpvL9S-SRGbcdduoP6Zk9SZQAsMfyfTkHD_8mQ)
+![GameOverFragment](http://i.imgur.com/iJkeYqn.png)
 
 FragmentTransactionHelper class
-![FragmentTransactionHelper class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Fragments/FragmentTransactionHelper.png?_subject_uid=132339545&w=AAAJKr7UKOg3txM9rzuZj9iVdsKAeXQUHKJU_srVoDnisg)
+![FragmentTransactionHelper](http://i.imgur.com/iurY21P.png)
 
 ConnectionFragment class
-![ConnectionFragment class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Fragments/ConnectionFragment.jpg?_subject_uid=132339545&w=AACx_o8ci6P9ZF8o2_ri9uUETqouR1aDea3CnMmKNrigcA)
+![ConnectionFragment](http://i.imgur.com/xzZlxow.jpg)
 
 GameFragment class
-![GameFragment class](https://dl-web.dropbox.com/get/Dots/planets/diagrams/Fragments/GameFragment.png?_subject_uid=132339545&w=AACv3EePZDnOH7xGq_1bxV4UCEB2xyXDUgW5JAzria9eDA)
+![GameFragment](http://i.imgur.com/vZZxUSp.png)
 
+BitmapImporter class
+![BitmapImporterClass](http://i.imgur.com/Y5VeNk2.png)
+
+DotsAndroidConstants
+![DotsAndroidConstants](http://i.imgur.com/N07Tq66.png)
+
+Class diagram between DotView, DotsScreen and ScoreBoard
+![Dots](http://i.imgur.com/mECiDKZ.png)
+
+Class diagram between DotView, and the respective dot's view (Blue, green, one, purple, red, touched, two, yellow)
+![DotsView](http://i.imgur.com/6JHyHIi.png)
+
+Effects
+![Effects](http://i.imgur.com/FzKXyNU.png)
+
+GIFDecode
+![GIFDecode](http://i.imgur.com/Yt7NxwS.png)
+
+MainActivity
+![MainActivity](http://i.imgur.com/DtBYxo4.png)
+
+MainScreen
+![MainScreen](http://i.imgur.com/6A0ttjM.png)
+
+ScoreBoard
+![ScoreBoard](http://i.imgur.com/RZhE2eP.png)
+
+Screen
+![Screen](http://i.imgur.com/iTev4dN.png)
+
+ScreenDimensions
+![ScreenDimensions](http://i.imgur.com/lsPklcx.png)
+
+ScreenType
+![ScreenType](http://i.imgur.com/C8pXuhf.png)
+
+SurfaceViewDots
+![SurfaceViewDots](http://i.imgur.com/Rrv5G5H.png)
 
 ## System Testing
 As explored earlier, the overall game structure of Conquer is extremely complex, consisting of a variety of interactions between the various front-end android development classes with the game logic and as well as the concurrency architecture. Therefore, it is extremely important that testing must be carried out at both an individual game component level and on an overall application level. The following sections will discuss how the various testing of Conquer were carried out at these specified levels.
@@ -394,7 +455,7 @@ A two-pronged approach was adopted for individual game component level testing. 
 One of the most crucial aspect of game development, the basic game logic testing covers testing from the most fundamental aspect of the game to the complex integration of the front-end android development and the back-end concurrency architecture. The various components of the game architecture were extracted into individual methods, and then tested with` JUnit`. The more important logic being tested are listed as follows:
 
 - **Testing Board Clearing Method**
-In Conquer, the generation of new randomised coloured dots to replace dots to be cleared have to fulfil the two main criteria; it has to be randomised and the dots to be cleared should follow a cascading logic such that the rows above dots to be cleared should “fall” and cascade accordingly. This test ensures the integrity of the main game logic as it helps to ensure that the newly replaced dots are indeed randomised as well as the fulfilling the cascading requirement.
+In Conquer, the generation of new randomised coloured `dot` to replace `dot` to be cleared have to fulfil the two main criteria; it has to be randomised and the `dot` to be cleared should follow a cascading logic such that the rows above `dot` to be cleared should “fall” and cascade accordingly. This test ensures the integrity of the main game logic as it helps to ensure that the newly replaced `dot` are indeed randomised as well as the fulfilling the cascading requirement.
 
 - **Testing Player Interaction**
 Player interaction plays a rudimentary role in Conquer’s game logic framework. Testing was first carried out in console level, to ensure that the player’s intended input matches and is accurately received and processed by the game logic. Once extensive console level tests were done, the next level of player interaction includes the physical testing of the actual multi gesture finger touch by the player. As the `SurfaceViewDot` class tracks the `x`,`y` coordinate of a finger press, it is important to ensure that the three states of finger press is accurately detected by the game logic. The three main states includes `TouchDown`, `TouchMoved`, `TouchUp`. These checks ensure that both the correctness and incorrectness of a player’s intended input is detected, to accurately determine a player’s move.
@@ -402,7 +463,7 @@ Player interaction plays a rudimentary role in Conquer’s game logic framework.
 The tests being described here are non exhaustive and more test have been implemented and carried out to ensure the integrity of the game as a whole.
 ####Application Level Testing
 
-The next category of component level testing accounts for the various UI sub game components on the main Game Screen and its expected exhibited behaviour. This portion of testing helps to validate further the integrity of the messages being sent and processed by the concurrency architecture in placed. The test fundamental role is to check the correctness of messages sent and received and also the corresponding results are reflected to the player correctly. The following details are some of the sub game screen UI components tested:
+The next category of component level testing accounts for the various UI sub game components on the main `DotsScreen` and its expected exhibited behaviour. This portion of testing helps to validate further the integrity of the messages being sent and processed by the concurrency architecture in placed. The test fundamental role is to check the correctness of messages sent and received and also the corresponding results are reflected to the player correctly. The following details are some of the sub game screen UI components tested:
 
 - **Verify the correctness of points updated**
 The number of points received by each player should reflect the main game logic’s point system as well as the actual intended moves of the player. This test ensures that the arithmetic logic used in the point system is implemented accurately as well as the legal moves made by the players.
@@ -410,8 +471,13 @@ The number of points received by each player should reflect the main game logic�
 - **Verify correctness of multiplayer input**
 Since both players will be able to see each other’s input touch in real time on their respective android device, it is important to ensure that the board reflects the actual real time input of each player. This test ensures that both players moves are visible and testes for the efficiency and time lag of the board to display both players’ highlighted moves in real time. Efficiency testing is carried out and verified through the logs in android studio to ensure an accurate display of players moves as well as an optimised concurrency architecture in placed.
 
+- **Verify the correctness of exiting conditions**
+		Both the `1 player` mode and the `2 player` mode have been tested to check if the game terminates when the limit score is set. For the single player mode, once the player has received a high score of 100, the game immediately switches to the win screen. Several testing ensures that the logic in placed is accurate. Once the `1 player` mode has been tested successfully, the `2 player` mode requires additional testing to ensure that the exiting condition of the first player reaching `100` is met. Both devices should exit at about the same time and this level of application testing accounts for the lag and real-time update of the `ScoreBoard` in both phones.
+
 
 ###Summary
+Splitting the testing process for the entire system into specific components made for more efficient testing. Often, the lower level issues pertaining to code were detected with Game Component Level testing. This minimised the occurrences of the application crashing due to unforeseen bugs when testing moved on to the Application level. Furthermore, it allowed application level testing to be focused on issues that would not have been detected at the Game Component level of testing. 
+
 
 ## Ensuring Thread Safety
 
@@ -463,7 +529,7 @@ In general, when a player holds points below that of the other player or vice ve
 ### Animations
 
 ### Instructions
-An **Rules** section was added to the Application. Instructions can be accessed from the Main Screen by tapping the “Rules” button found on the bottom center of the main game screen.
+A **Rules** section was added to the Application. Instructions can be accessed from the Main Screen by tapping the “Rules” button found on the bottom center of the main game screen.
 
 These game instructions serve as a “Instruction” page by providing detailed description to first time players the fundamentals of the gameplay. In the future, an interactive tutorial could be implemented instead, for more effective learning to take place.
 
@@ -472,4 +538,3 @@ These game instructions serve as a “Instruction” page by providing detailed 
 
 Game development proved to be a a tedious and complicated process due to the extent of the complexity and variety of the android platforms available. Apart from the various avoidance and implementation methods that have been utilised to tackle thread safety issues, this project emphasises on the implementation of the concept of modularity and organisating the various sub components when dealing with complex systems. From the macro level of identifying the various system requirements, down to the implicit design of the various sub components in the game architecture, breaking the entire game architecture down into various sub components resulted in a better controlled and refined way of code implementation that allowed easy updatability and bug-fixing. Conclusively, Conquer could be considered an overall successful implementation of an all-time old school classic with new gaming mechanics that will attract new players.
 
-<!--se_discussion_list:{"Yno8yn1ZF175BVOmLgRtxito":{"selectionStart":31057,"type":"conflict","selectionEnd":31050,"discussionIndex":"Yno8yn1ZF175BVOmLgRtxito"},"mAWxxe8l38P6J7SMZZi0b68S":{"selectionStart":29032,"type":"conflict","selectionEnd":29039,"discussionIndex":"mAWxxe8l38P6J7SMZZi0b68S"},"3rXehXqwck6vfCRyFTjN8r4r":{"selectionStart":31057,"type":"conflict","selectionEnd":31050,"discussionIndex":"3rXehXqwck6vfCRyFTjN8r4r"},"w3nCXtktVpvMs1l2bAcSyziy":{"selectionStart":27964,"type":"conflict","selectionEnd":27978,"discussionIndex":"w3nCXtktVpvMs1l2bAcSyziy"},"7WacSW3NAe1gu5oOZbwCKgh1":{"selectionStart":29032,"type":"conflict","selectionEnd":29039,"discussionIndex":"7WacSW3NAe1gu5oOZbwCKgh1","commentList":[{"content":"darren"}]},"uzXjTSkDEkGctURJtmKAFCK1":{"selectionStart":29543,"type":"conflict","selectionEnd":29558,"discussionIndex":"uzXjTSkDEkGctURJtmKAFCK1","commentList":[{"content":"darren"}]},"oEqtj6M0vhPaB2308HxEaXue":{"selectionStart":31057,"type":"conflict","selectionEnd":31050,"discussionIndex":"oEqtj6M0vhPaB2308HxEaXue"}}-->
