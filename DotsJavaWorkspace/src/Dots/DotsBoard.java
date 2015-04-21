@@ -41,7 +41,6 @@ public class DotsBoard implements Serializable {
     }
 
 
-
     /**
      * Randomly assigns different colored dots to board
      *
@@ -89,11 +88,11 @@ public class DotsBoard implements Serializable {
 
     /**
      * Method to clear and cascade new dots down when an arrayList of points is entered
-     *
+     * <p/>
      * Clearing of dots will trigger an update of the dotsLocks for the dots which need updating
      *
      * @param dotsPointList points to be removed from the boardArray. Does not check for validity of move, should have
-     *                  already been in DotsLogic before calling this
+     *                      already been in DotsLogic before calling this
      */
     public void clearDots(ArrayList<DotsPoint> dotsPointList) {
         // Mark points for deletion
@@ -151,9 +150,6 @@ public class DotsBoard implements Serializable {
         for (DotsPoint dotsPoint : dotsPointList) {
             setElement(dotsPoint, null);
         }
-
-//        System.out.println("Points marked for deletion");
-//        System.out.println(this.toString());
     }
 
     /**
@@ -169,6 +165,7 @@ public class DotsBoard implements Serializable {
     /**
      * Based on the input dots which are cleared, this method creates and populates an ArrayList of affected dots,
      * namely dots which are cleared and those which are above them, and puts it in the dotsLocks container
+     *
      * @param clearedPoints points which are cleared from interaction or whatnot
      */
     private void updateChangedPoints(ArrayList<DotsPoint> clearedPoints) {
@@ -245,6 +242,7 @@ public class DotsBoard implements Serializable {
 
     /**
      * Static Method to print board nicely from other classes
+     *
      * @param inputBoard Dot[][] array
      */
     public static void printBoardWithIndex(Dot[][] inputBoard) {
@@ -300,6 +298,7 @@ public class DotsBoard implements Serializable {
 
     /**
      * Makes a copy of the current board and returns it
+     *
      * @return
      */
     public Dot[][] getBoardArray() {
@@ -319,25 +318,5 @@ public class DotsBoard implements Serializable {
         }
 
         return copy;
-
-
     }
-
-    // TODO find out how to generalise this
-//    private String formattedForPrinting(Class[][] inpArray, Class type) {
-//        String result = "";
-//        for (type[] currentRow : boardArray) {
-//            String row = "";
-//            for (Dot dot : currentRow) {
-//                if (dot == null) {
-//                    row += 0 + " ";
-//                } else {
-//                    row += dot + " ";
-//                }
-//            }
-//
-//            result += row + "\n";
-//        }
-//        return result;
-//    }
 }

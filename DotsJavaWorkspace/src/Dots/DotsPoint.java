@@ -25,11 +25,19 @@ public class DotsPoint implements Serializable {
 
     }
 
+    // constructor with color only for sending to client
     public DotsPoint(int x, int y, DotColor color) {
         this.x = x;
         this.y = y;
         this.color = color;
     }
+
+//    // copies the point
+//    public DotsPoint(DotsPoint dotsPoint) {
+//        this.x = dotsPoint.x;
+//        this.y = dotsPoint.y;
+//        this.color = dotsPoint.color;
+//    }
 
     @Override
     public String toString() {
@@ -58,6 +66,11 @@ public class DotsPoint implements Serializable {
 
     public void setColor(DotColor color) {
         this.color = color;
+    }
+
+    public DotsPoint transform(int[] transform) {
+
+        return new DotsPoint(this.x + transform[0], this.y+ transform[1], this.color);
     }
 
 

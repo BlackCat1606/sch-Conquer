@@ -10,6 +10,7 @@ import java.io.Serializable;
 public class Dot implements Serializable {
 
     public final DotColor color;
+    public final DotPowerUp powerUp;
 
 
     /**
@@ -17,18 +18,28 @@ public class Dot implements Serializable {
      */
     public Dot() {
         this.color = DotColor.randomColor();
+        this.powerUp = DotPowerUp.randomPowerUp();
     }
+//
+//    /**
+//     * Creates a dot of a certain color
+//     * @param color DotColor Enum
+//     */
+//    public Dot(DotColor color) {
+//        this.color = color;
+//    }
+//
 
-    /**
-     * Creates a dot of a certain color
-     * @param color DotColor Enum
-     */
-    public Dot(DotColor color) {
-        this.color = color;
-    }
 
     @Override
     public String toString() {
-        return color.toString();
+        // todo remove debug
+
+        String powerUp = "";
+        if (this.powerUp == DotPowerUp.BOMB) {
+            powerUp = ".";
+        }
+
+        return color.toString() + powerUp;
     }
 }

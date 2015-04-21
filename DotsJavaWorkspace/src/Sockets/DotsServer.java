@@ -222,11 +222,7 @@ public class DotsServer extends DotsServerClientParent{
 
         ArrayList<DotsPoint> changedDots = this.dotsLocks.getChangedDots();
 //
-//        if (changedDots == null) {
-//            return;
-//        }
-
-        // debug
+        this.dotsGame.getDotsBoard().printWithIndex();
 
         this.getAndroidCallback().onBoardChanged(changedDots);
 
@@ -388,16 +384,6 @@ class DotsServerClientListener implements Runnable {
 
             // process the interaction
             DotsInteraction receivedInteraction = ((DotsMessageInteraction) message).getDotsInteraction();
-
-            // doMove will automatically obtain a lock and notify the main thread in the dotsGame thread
-//            boolean response = this.dotsGame.doMove(receivedInteraction);
-
-//
-//
-//            // Package and send a response to the client
-//            DotsMessageResponse dotsMessageResponse = new DotsMessageResponse(response);
-//            DotsSocketHelper.sendMessageToClient(this.serverSocket, dotsMessageResponse);
-
             this.dotsServerClientParent.doInteraction(receivedInteraction);
 
 

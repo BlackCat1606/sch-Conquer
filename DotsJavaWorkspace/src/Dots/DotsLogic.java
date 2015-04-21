@@ -15,9 +15,12 @@ public class DotsLogic {
     private final DotsBoard board;
     private final DotsLocks dotsLocks;
 
+    private ArrayList<DotsPoint> additionalPointsAffected;
+
     public DotsLogic(DotsBoard board, DotsLocks dotsLocks) {
         this.board = board;
         this.dotsLocks = dotsLocks;
+        this.additionalPointsAffected = new ArrayList<DotsPoint>();
     }
 
     /**
@@ -26,6 +29,9 @@ public class DotsLogic {
      * @return 0 if board does not need to be updated, or the number of points cleared
      */
     public int moveCompleted(ArrayList<DotsPoint> inputMoves) {
+
+        // refresh the additional points
+        this.additionalPointsAffected = new ArrayList<DotsPoint>();
 
         int dotsCleared = 0;
 
@@ -38,9 +44,32 @@ public class DotsLogic {
 
         if (needToUpdateBoard) {
 
-            board.clearDots(inputMoves);
 
-            dotsCleared = inputMoves.size();
+            // copy the points to clear
+            ArrayList<DotsPoint> pointsToClear = new ArrayList<DotsPoint>(inputMoves);
+
+            // check for powerups
+            ArrayList<DotsPoint> bombPointsToClear = new ArrayList<DotsPoint>();
+
+            for (DotsPoint point : inputMoves) {
+                Dot correspondingDot = this.board.getElement(point);
+
+                if (correspondingDot.powerUp == DotPowerUp.BOMB) {
+                    bombPointsToClear.add(point);
+                } else if (correspondingDot.powerUp == DotPowerUp.FREEZE) {
+                    //todo update locks with duration
+                }
+            }
+
+
+
+            ArrayList<DotsPoint> affectedPointsForBomb = getAffectedPointsForBombs(bombPointsToClear);
+            this.additionalPointsAffected.addAll(affectedPointsForBomb);
+            pointsToClear.addAll(affectedPointsForBomb);
+
+            board.clearDots(pointsToClear);
+
+            dotsCleared = pointsToClear.size();
 
             // Every time we update the board, perform a check for a remaining legal move
             // and update the locks
@@ -48,6 +77,72 @@ public class DotsLogic {
         }
 
         return dotsCleared;
+    }
+
+    /**
+     *
+     * @param bombPoints
+     * @return does not include the bomb points, only extras
+     */
+    private ArrayList<DotsPoint> getAffectedPointsForBombs(ArrayList<DotsPoint> bombPoints) {
+
+
+        ArrayList<DotsPoint> affectedPoints = new ArrayList<DotsPoint>();
+
+        int[][] directions = new int[][]{
+                new int[]{-1,-1}, new int[]{0,-1}, new int[]{1, -1},
+                new int[]{-1, 0}, new int[]{1, 0},
+                new int[]{-1, 1}, new int[]{0,1}, new int[]{1,1}
+        };
+
+
+        // generate up down left right and put it into tempstore
+        ArrayList<DotsPoint> temporaryStore = new ArrayList<DotsPoint>();
+        for (DotsPoint bombPoint: bombPoints) {
+
+            for (int[] dir: directions) {
+
+                DotsPoint transformedPoint = bombPoint.transform(dir);
+                temporaryStore.add(transformedPoint);
+
+            }
+        }
+
+        // check if points in temporaryStore are in the board, and if so add it to affected points
+        for (DotsPoint point: temporaryStore) {
+            if (checkPointInBoard(point)) {
+                affectedPoints.add(point);
+            }
+        }
+
+        return affectedPoints;
+    }
+
+
+    private boolean checkPointInBoard(DotsPoint point) {
+
+        int boardSize = this.board.getBoardArray().length;
+
+
+        if (point.x < 0) {
+            // left
+            return false;
+        } else if (point.y < 0) {
+            // top
+            return false;
+        } else if (point.x >= boardSize) {
+            // right
+            return false;
+        } else if (point.y >= boardSize) {
+            // bottom
+            return false;
+        }
+
+        return true;
+    }
+
+    public ArrayList<DotsPoint> getAdditionalPointsAffected() {
+        return additionalPointsAffected;
     }
 
 

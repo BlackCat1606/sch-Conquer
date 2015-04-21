@@ -117,7 +117,7 @@ public class DotsGame {
             int noOfDotsCleared = this.dotsLogic.moveCompleted(this.playerMoves[player]);
             this.scoreChanged(player, noOfDotsCleared);
 
-            System.out.println("Dots cleared: " + noOfDotsCleared);
+
             if (noOfDotsCleared != 0) {
                 needToUpdateBoard = true;
 //            needToUpdateBoard = this.dotsLogic.moveCompleted(this.playerMoves[player]);
@@ -134,6 +134,12 @@ public class DotsGame {
 
             // if the board is changed, notify lock
             if (needToUpdateBoard) {
+
+
+                ArrayList<DotsPoint> additionalAffected = this.dotsLogic.getAdditionalPointsAffected();
+                if (additionalAffected.size() > 0) {
+                    this.playerMoves[player].addAll(additionalAffected);
+                }
 
                 /*
                 If the current interaction contains points below than that of the other player, we want to trigger a
@@ -248,8 +254,9 @@ public class DotsGame {
 
         // Sum of natural numbers
         // 1 + 2 + ... noOfDotsCleared
-        return noOfDotsCleared * (noOfDotsCleared + 1) / 2;
+//        return noOfDotsCleared * (noOfDotsCleared + 1) / 2;
 
+        return noOfDotsCleared;
     }
 
     /**

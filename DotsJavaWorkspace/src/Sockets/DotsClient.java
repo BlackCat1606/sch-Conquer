@@ -116,8 +116,8 @@ public class DotsClient extends DotsServerClientParent {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException {
 
-        final String SERVER_ADDRESS = "10.12.17.172";
-//        final String SERVER_ADDRESS = "127.0.0.1";
+//        final String SERVER_ADDRESS = "10.12.17.172";
+        final String SERVER_ADDRESS = "127.0.0.1";
 
         // Initialise the client
         DotsClient dotsClient = new DotsClient(SERVER_ADDRESS, DotsConstants.CLIENT_PORT);
