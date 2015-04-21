@@ -20,6 +20,7 @@ import AndroidCallback.DotsAndroidCallback;
 import Sockets.DotsServerClientParent;
 import darrenretinambpcrystalwell.Fragments.GameFragment;
 import darrenretinambpcrystalwell.Fragments.MainFragment;
+import darrenretinambpcrystalwell.Fragments.RulesFragment;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -129,6 +130,9 @@ public class MainActivity extends ActionBarActivity {
                 postGarbageCollect(0);
                 fragmentToCreate = GameFragment.newInstance(args[0], args[1]);
 //                fragmentToCreate = ConnectionFragment.newInstance(args[0], args[1]);
+            } else if (i == 2) {
+                postGarbageCollect(0);
+                fragmentToCreate = RulesFragment.newInstance(args[0], args[1]);
             } else {
                 postGarbageCollect(0);
                 Log.e(TAG, "Unknown Fragment id");
