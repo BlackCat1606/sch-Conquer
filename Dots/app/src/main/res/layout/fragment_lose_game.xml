@@ -37,7 +37,7 @@
             android:layout_gravity="center"/>
     <ImageButton
             android:layout_width="180dp"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:padding="5dp"
@@ -46,7 +46,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:id="@+id/playAgain"
-            android:src="@drawable/btn_playagain_normal"
-            android:background="@android:color/transparent"
+            android:background="@drawable/playagain"
             android:layout_gravity="center_horizontal|bottom"/>
 </FrameLayout>
