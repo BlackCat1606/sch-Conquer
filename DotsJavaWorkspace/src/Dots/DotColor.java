@@ -40,8 +40,6 @@ public enum DotColor {
         }
     }
 
-
-
     private static final List<DotColor> VALUES =
             Collections.unmodifiableList(Arrays.asList(values()));
     private static final int SIZE = VALUES.size();
