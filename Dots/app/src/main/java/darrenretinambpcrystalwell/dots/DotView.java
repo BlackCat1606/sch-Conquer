@@ -26,7 +26,7 @@ import Dots.DotColor;
  */
 class DotView extends ImageView {
     float x, y;
-//    private String color;
+    // private String color;
     private DotColor color;
     private Drawable red;
     private Drawable green;
@@ -36,6 +36,19 @@ class DotView extends ImageView {
     private Drawable purple;
     private Drawable one;
     private Drawable two;
+
+    // Added new sprites for power ups
+    private Drawable icered;
+    private Drawable icegreen;
+    private Drawable iceblue;
+    private Drawable iceyellow;
+    private Drawable icepurple;
+    private Drawable firered;
+    private Drawable firegreen;
+    private Drawable fireblue;
+    private Drawable fireyellow;
+    private Drawable firepurple;
+
 
     /**
      * Constructor
@@ -56,6 +69,19 @@ class DotView extends ImageView {
         toucheddot  = getDrawable(R.drawable.toucheddot);
         one         = getDrawable(R.drawable.onetoucheddot);
         two         = getDrawable(R.drawable.twotoucheddot);
+
+        icered      = getDrawable(R.drawable.icereddot);
+        iceblue     = getDrawable(R.drawable.icebluedot);
+        icegreen    = getDrawable(R.drawable.icegreendot);
+        iceyellow   = getDrawable(R.drawable.iceyellowdot);
+        icepurple   = getDrawable(R.drawable.iceclearerpurpled);
+
+        firered     = getDrawable(R.drawable.firereddot);
+        fireblue    = getDrawable(R.drawable.firebluedot);
+        firegreen   = getDrawable(R.drawable.firegreendot);
+        fireyellow  = getDrawable(R.drawable.fireyellowdot);
+        firepurple  = getDrawable(R.drawable.fireclearerpurpleddot);
+
 
         toucheddot.setAlpha(220);
         one.setAlpha(220);
@@ -189,6 +215,38 @@ class DotView extends ImageView {
         setDrawable(toucheddot);
     }
 
+    public void setIcered() {
+        this.color = DotColor.ICERED;
+    }
+    public void setIcegreen() {
+        this.color = DotColor.ICEGREEN;
+    }
+    public void setIceblue() {
+        this.color = DotColor.ICEBLUE;
+    }
+    public void setIceyellow() {
+        this.color = DotColor.ICEYELLOW;
+    }
+    public void setIcepurple() {
+        this.color = DotColor.ICEPURPLE;
+    }
+
+    public void setFirered() {
+        this.color = DotColor.FIRERED;
+    }
+    public void setFiregreen() {
+        this.color = DotColor.FIREGREEN;
+    }
+    public void setFireblue() {
+        this.color = DotColor.FIREBLUE;
+    }
+    public void setFireyellow() {
+        this.color = DotColor.FIREYELLOW;
+    }
+    public void setFirepurple() {
+        this.color = DotColor.FIREPURPLE;
+    }
+
 }
 
 class RedDotView extends DotView {
@@ -260,10 +318,75 @@ class OneDotView extends DotView {
     }
 }
 
-class TwoDotView extends DotView {
+class IceBlue extends DotView {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public TwoDotView(Context context) {
+    public IceBlue(Context context) {
         super(context);
-        super.setTwo();
+        super.setIceBlue();
+    }
+}
+
+class IceRed extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public IceRed(Context context) {
+        super(context);
+        super.setIceRed();
+    }
+}
+class IceYellow extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public IceYellow(Context context) {
+        super(context);
+        super.setIceYellow();
+    }
+}
+class IceGreen extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public IceGreen(Context context) {
+        super(context);
+        super.setIceGreen();
+    }
+}
+class IcePurple extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public IcePurple(Context context) {
+        super(context);
+        super.setIcePurple();
+    }
+}
+class FireBlue extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public FireBlue(Context context) {
+        super(context);
+        super.setIceBlue();
+    }
+}
+
+class FireRed extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public FireRed(Context context) {
+        super(context);
+        super.setFireRed();
+    }
+}
+class FireYellow extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public FireYellow(Context context) {
+        super(context);
+        super.setFireYellow();
+    }
+}
+class FireGreen extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public FireGreen(Context context) {
+        super(context);
+        super.setFireGreen();
+    }
+}
+class FirePurple extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public FirePurple(Context context) {
+        super(context);
+        super.setFirePurple();
     }
 }
