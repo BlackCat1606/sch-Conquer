@@ -113,9 +113,17 @@ public class MainFragment extends Fragment {
 
         ImageButton startMultiplayerButton = (ImageButton) this.getActivity().findViewById(R.id.start_multi_player_button);
         ImageButton startSinglePlayerButton = (ImageButton) this.getActivity().findViewById(R.id.start_single_player_button);
+        ImageButton rules = (ImageButton) this.getActivity().findViewById(R.id.rules);
 
 
         final Fragment thisFragment = this;
+
+        rules.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransactionHelper.pushFragment(2, thisFragment, new String[]{"0", "0"}, (MainActivity)getActivity(), true);
+            }
+        });
 
         startSinglePlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
