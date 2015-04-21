@@ -132,24 +132,75 @@ class DotView extends ImageView {
     }
 
     // added by jiahao
-    public void setColor(DotColor dotColor) {
+    public void setColor(DotColor dotColor, DotsPowerUp dotsPowerUp) {
 
         switch (dotColor) {
             case RED:
-                setRed();
-                break;
+                if (dotsPowerUp == NONE) {
+                    setRed();
+                    break;
+                }
+                else if (dotsPowerUp == BOMB) {
+                    setFirered();
+                    break;
+                }
+                else if (dotsPowerUp == FREEZE) {
+                    setIcered();
+                    break;
+                }
             case GREEN:
-                setGreen();
-                break;
+                if (dotsPowerUp == NONE) {
+                    setGreen();
+                    break;
+                }
+                else if (dotsPowerUp == BOMB) {
+                    setFiregreen();
+                    break;
+                }
+                else if (dotsPowerUp == FREEZE) {
+                    setIcegreen();
+                    break;
+                }
+
             case BLUE:
-                setBlue();
-                break;
+                if (dotsPowerUp == NONE) {
+                    setBlue();
+                    break;
+                }
+                else if (dotsPowerUp == BOMB) {
+                    setFireblue();
+                    break;
+                }
+                else if (dotsPowerUp == FREEZE) {
+                    setIceblue();
+                    break;
+                }
             case YELLOW:
-                setYellow();
-                break;
+                if (dotsPowerUp == NONE) {
+                    setYellow();
+                    break;
+                }
+                else if (dotsPowerUp == BOMB) {
+                    setFireyellow();
+                    break;
+                }
+                else if (dotsPowerUp == FREEZE) {
+                    setIceyellow();
+                    break;
+                }
             case PURPLE:
-                setPurple();
-                break;
+                if (dotsPowerUp == NONE) {
+                    setPurple();
+                    break;
+                }
+                else if (dotsPowerUp == BOMB) {
+                    setFirepurple();
+                    break;
+                }
+                else if (dotsPowerUp == FREEZE) {
+                    setIcepurple();
+                    break;
+                }
             case PLAYER_0:
                 setOne();
                 break;
@@ -318,75 +369,75 @@ class OneDotView extends DotView {
     }
 }
 
-class IceBlue extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public IceBlue(Context context) {
-        super(context);
-        super.setIceBlue();
-    }
-}
-
-class IceRed extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public IceRed(Context context) {
-        super(context);
-        super.setIceRed();
-    }
-}
-class IceYellow extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public IceYellow(Context context) {
-        super(context);
-        super.setIceYellow();
-    }
-}
-class IceGreen extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public IceGreen(Context context) {
-        super(context);
-        super.setIceGreen();
-    }
-}
-class IcePurple extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public IcePurple(Context context) {
-        super(context);
-        super.setIcePurple();
-    }
-}
-class FireBlue extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public FireBlue(Context context) {
-        super(context);
-        super.setIceBlue();
-    }
-}
-
-class FireRed extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public FireRed(Context context) {
-        super(context);
-        super.setFireRed();
-    }
-}
-class FireYellow extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public FireYellow(Context context) {
-        super(context);
-        super.setFireYellow();
-    }
-}
-class FireGreen extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public FireGreen(Context context) {
-        super(context);
-        super.setFireGreen();
-    }
-}
-class FirePurple extends DotView {
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public FirePurple(Context context) {
-        super(context);
-        super.setFirePurple();
-    }
-}
+//class IceBlue extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public IceBlue(Context context) {
+//        super(context);
+//        super.setIceBlue();
+//    }
+//}
+//
+//class IceRed extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public IceRed(Context context) {
+//        super(context);
+//        super.setIceRed();
+//    }
+//}
+//class IceYellow extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public IceYellow(Context context) {
+//        super(context);
+//        super.setIceYellow();
+//    }
+//}
+//class IceGreen extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public IceGreen(Context context) {
+//        super(context);
+//        super.setIceGreen();
+//    }
+//}
+//class IcePurple extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public IcePurple(Context context) {
+//        super(context);
+//        super.setIcePurple();
+//    }
+//}
+//class FireBlue extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public FireBlue(Context context) {
+//        super(context);
+//        super.setIceBlue();
+//    }
+//}
+//
+//class FireRed extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public FireRed(Context context) {
+//        super(context);
+//        super.setFireRed();
+//    }
+//}
+//class FireYellow extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public FireYellow(Context context) {
+//        super(context);
+//        super.setFireYellow();
+//    }
+//}
+//class FireGreen extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public FireGreen(Context context) {
+//        super(context);
+//        super.setFireGreen();
+//    }
+//}
+//class FirePurple extends DotView {
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    public FirePurple(Context context) {
+//        super(context);
+//        super.setFirePurple();
+//    }
+//}
