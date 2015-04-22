@@ -49,18 +49,24 @@ public class DotsLogic {
             ArrayList<DotsPoint> pointsToClear = new ArrayList<DotsPoint>(inputMoves);
 
             // check for powerups
-            ArrayList<DotsPoint> bombPointsToClear = new ArrayList<DotsPoint>();
+//            ArrayList<DotsPoint> bombPointsToClear = new ArrayList<DotsPoint>();
+
+            int[] powerUpCount = new int[DotsPowerUpType.NO_OF_POWER_UPS];
+
 
             for (DotsPoint point : inputMoves) {
                 Dot correspondingDot = this.board.getElement(point);
 
-                if (correspondingDot.powerUp == DotPowerUpState.BOMB) {
-                    bombPointsToClear.add(point);
-                } else if (correspondingDot.powerUp == DotPowerUpState.FREEZE) {
-                    //todo update locks with duration
+                if (correspondingDot.powerUp == DotsPowerUpType.BOMB) {
+//                    bombPointsToClear.add(point);
+                    powerUpCount[0]++;
+                } else if (correspondingDot.powerUp == DotsPowerUpType.FREEZE) {
+                    powerUpCount[1]++;
                 }
             }
 
+            // sets the powerup to the lock
+            this.dotsLocks.setPowerUpCount(powerUpCount);
 
             // Commented out to disable bombs
 //            ArrayList<DotsPoint> affectedPointsForBomb = getAffectedPointsForBombs(bombPointsToClear);
@@ -68,7 +74,6 @@ public class DotsLogic {
 //            pointsToClear.addAll(affectedPointsForBomb);
 
             board.clearDots(pointsToClear);
-
             dotsCleared = pointsToClear.size();
 
             // Every time we update the board, perform a check for a remaining legal move
@@ -119,6 +124,11 @@ public class DotsLogic {
     }
 
 
+    /**
+     * Check if point is within the bounds of the board
+     * @param point
+     * @return
+     */
     private boolean checkPointInBoard(DotsPoint point) {
 
         int boardSize = this.board.getBoardArray().length;
@@ -141,10 +151,10 @@ public class DotsLogic {
         return true;
     }
 
+
     public ArrayList<DotsPoint> getAdditionalPointsAffected() {
         return additionalPointsAffected;
     }
-
 
     /**
      * For checking horizontally and vertically adjacent dots only
@@ -257,9 +267,6 @@ public class DotsLogic {
 
             }
         }
-
-
-
 
         System.out.println("NO MOVES LEFT");
         this.board.printWithIndex();

@@ -24,6 +24,9 @@ import java.util.List;
 import AndroidCallback.DotsAndroidCallback;
 import Constants.DotsConstants;
 import Dots.DotsPoint;
+import Dots.DotsPowerUp;
+import Dots.DotsPowerUpState;
+import Dots.DotsPowerUpType;
 import Model.Interaction.DotsInteraction;
 import Model.Interaction.DotsInteractionStates;
 import darrenretinambpcrystalwell.Game.DotsGameTask;
@@ -285,6 +288,44 @@ public class GameFragment extends Fragment {
             @Override
             public void latencyChanged(long l) {
                 Log.d(TAG, "Latency: " + l);
+            }
+
+            @Override
+            public void onPowerUpReceived(final DotsPowerUp dotsPowerUp) {
+                Log.d("POWERUP", dotsPowerUp.toString());
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FragmentTransactionHelper.showToast(dotsPowerUp.toString(), getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
+                    }
+                });
+
+                if (dotsPowerUp.getPowerUpType() == DotsPowerUpType.BOMB) {
+
+                    if (dotsPowerUp.getPowerUpState() == DotsPowerUpState.STARTED) {
+                        surfaceViewDots.setConfused(true);
+//                        setconfused(visible);
+                    } else {
+                        surfaceViewDots.setConfused(false);
+//                        setconfused(invisible);
+                    }
+
+
+                } else if (dotsPowerUp.getPowerUpType()== DotsPowerUpType.FREEZE) {
+
+                    if (dotsPowerUp.getPowerUpState() == DotsPowerUpState.STARTED) {
+                        surfaceViewDots.setTouchEnabled(false);
+//                        setFreeze(visible);
+                    } else {
+                        surfaceViewDots.setTouchEnabled(true);
+//                        setFreeze(invisible);
+                    }
+
+                }
+
+
+
             }
         };
 

@@ -3,15 +3,17 @@ package Dots;
 import java.util.Random;
 
 /**
+ * Enum to keep power up types
+ *
  * Created by JiaHao on 21/4/15.
  */
-public enum DotPowerUpState {
+public enum DotsPowerUpType {
     NONE, BOMB, FREEZE;
 
 
     private static final Random RANDOM = new Random();
 
-    public static DotPowerUpState randomPowerUp() {
+    public static DotsPowerUpType randomPowerUp() {
 
         double[] probability = new double[] {0.8, 0.1, 0.1};
 
@@ -61,4 +63,7 @@ public enum DotPowerUpState {
             System.out.println(randomPowerUp());
         }
     }
+
+    // subtract one as we do not count the NONE type
+    public static final int NO_OF_POWER_UPS = DotsPowerUpType.values().length - 1;
 }

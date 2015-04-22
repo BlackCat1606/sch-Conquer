@@ -1,7 +1,7 @@
 package Model.Locks;
 
-import Dots.Dot;
 import Dots.DotsPoint;
+import Dots.DotsPowerUpType;
 
 import java.util.ArrayList;
 
@@ -16,18 +16,17 @@ public class DotsLocks {
     // Todo not sure why i synchronise methods as well
 //    private boolean boardChanged;
     private boolean gameRunning;
-
     private ArrayList<DotsPoint> changedDots;
-
     private int playerAffected;
-
     private boolean scoreNeedingUpdate;
+    private int[] powerUpCount;
 
     public DotsLocks() {
         // init as true so that the board will print it in the first time it listens for change
 //        this.boardChanged = true;
         this.gameRunning = true;
         this.playerAffected = -1;
+        this.powerUpCount = new int[DotsPowerUpType.NO_OF_POWER_UPS];
     }
 
 //    public synchronized void setBoardChanged(boolean boardChanged) {
@@ -83,4 +82,31 @@ public class DotsLocks {
     }
 
 
+    public void setPowerUpCount(int[] powerUpCount) {
+
+        this.powerUpCount = powerUpCount;
+
+    }
+
+    public int[] getPowerUpCount() {
+        return powerUpCount;
+    }
+
+    /**
+     * Checks if power ups need updating
+     * @return
+     */
+    public boolean powerUpNeedsUpdate() {
+        for (int powerUp : this.powerUpCount) {
+            if (powerUp > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void resetPowerUpCount() {
+        this.powerUpCount = new int[DotsPowerUpType.NO_OF_POWER_UPS];
+    }
 }

@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class Dot implements Serializable {
 
     public final DotColor color;
-    public final DotPowerUpState powerUp;
+    public final DotsPowerUpType powerUp;
 
 
     /**
@@ -18,7 +18,7 @@ public class Dot implements Serializable {
      */
     public Dot() {
         this.color = DotColor.randomColor();
-        this.powerUp = DotPowerUpState.randomPowerUp();
+        this.powerUp = DotsPowerUpType.randomPowerUp();
     }
 //
 //    /**
@@ -36,7 +36,7 @@ public class Dot implements Serializable {
         // todo remove debug
 
         String powerUp = "";
-        if (this.powerUp == DotPowerUpState.BOMB) {
+        if (this.powerUp == DotsPowerUpType.BOMB) {
             powerUp = ".";
         }
 

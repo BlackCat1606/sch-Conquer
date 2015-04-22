@@ -5,6 +5,9 @@ import Constants.DotsConstants;
 
 import AndroidCallback.DotsAndroidCallback;
 import Dots.DotsPoint;
+import Dots.DotsPowerUp;
+import Dots.DotsPowerUpState;
+import Dots.DotsPowerUpType;
 import Latency.RuntimeStopwatch;
 import Model.Interaction.DotsInteraction;
 import Model.Interaction.DotsInteractionStates;
@@ -15,6 +18,8 @@ import Model.Messages.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Primary object to be run by the client for the game
@@ -54,7 +59,7 @@ public class DotsClient extends DotsServerClientParent {
         this.getAndroidCallback().onSocketConnected();
 
         // Init server listener thread
-        DotsClientServerListener dotsServerListener = new DotsClientServerListener(this.clientSocket, dotsLocks, this.getAndroidCallback(), this.runtimeStopwatch);
+        DotsClientServerListener dotsServerListener = new DotsClientServerListener(this);
         Thread listenerThread = new Thread(dotsServerListener);
 
         // start thread to deal with messages from server
@@ -165,9 +170,15 @@ public class DotsClient extends DotsServerClientParent {
                 System.out.println("Score : " + Arrays.toString(score));
             }
 
+
             @Override
             public void latencyChanged(long latency) {
                 System.out.println("Current Latency: " + latency);
+            }
+
+            @Override
+            public void onPowerUpReceived(DotsPowerUp powerUp) {
+                System.out.println("Power Up received: " + powerUp);
             }
         });
 
@@ -182,6 +193,14 @@ public class DotsClient extends DotsServerClientParent {
 
     public DotsLocks getDotsLocks() {
         return dotsLocks;
+    }
+
+    public AwesomeClientSocket getClientSocket() {
+        return clientSocket;
+    }
+
+    public RuntimeStopwatch getRuntimeStopwatch() {
+        return runtimeStopwatch;
     }
 }
 
@@ -198,12 +217,15 @@ class DotsClientServerListener implements Runnable {
     private final DotsAndroidCallback dotsAndroidCallback;
     private final RuntimeStopwatch runtimeStopwatch;
 
-    public DotsClientServerListener(AwesomeClientSocket clientSocket, DotsLocks locks, DotsAndroidCallback dotsAndroidCallback, RuntimeStopwatch runtimeStopwatch) {
-        this.clientSocket = clientSocket;
-        this.locks = locks;
-//        this.responseQueue = responseQueue;
-        this.dotsAndroidCallback = dotsAndroidCallback;
-        this.runtimeStopwatch = runtimeStopwatch;
+    private final DotsClient dotsClient;
+
+    public DotsClientServerListener(DotsClient dotsClient) {
+        this.clientSocket = dotsClient.getClientSocket();
+        this.locks = dotsClient.getDotsLocks();
+        this.dotsAndroidCallback = dotsClient.getAndroidCallback();
+        this.runtimeStopwatch = dotsClient.getRuntimeStopwatch();
+
+        this.dotsClient = dotsClient;
     }
 
     @Override
@@ -273,6 +295,12 @@ class DotsClientServerListener implements Runnable {
 
             int[] score = ((DotsMessageScore) message).getScore();
             this.dotsAndroidCallback.onScoreUpdated(score);
+
+        } else if (message instanceof DotsMessagePowerUp) {
+
+            // start powerup
+            this.dotsClient.updateLocalPowerUpCallback((DotsMessagePowerUp) message);
+
 
         } else {
             System.err.println("Unknown message type: ");

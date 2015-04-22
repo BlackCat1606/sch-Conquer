@@ -1,7 +1,11 @@
 package Sockets;
 
 import AndroidCallback.DotsAndroidCallback;
+import Dots.DotsPowerUp;
+import Dots.DotsPowerUpState;
+import Dots.DotsPowerUpType;
 import Model.Interaction.DotsInteraction;
+import Model.Messages.DotsMessagePowerUp;
 
 import java.io.IOException;
 
@@ -99,5 +103,18 @@ public abstract class DotsServerClientParent {
         }
 
         return winningPlayer;
+    }
+
+    protected void updateLocalPowerUpCallback(DotsMessagePowerUp message) {
+
+        // start powerup
+        final DotsPowerUpType powerUpType = message.getPowerUp();
+
+        DotsPowerUp powerUpStart = new DotsPowerUp(powerUpType, DotsPowerUpState.STARTED);
+        this.getAndroidCallback().onPowerUpReceived(powerUpStart);
+
+        DotsPowerUpTimedTask delayedTask = new DotsPowerUpTimedTask(powerUpType, message.getDuration(), this.getAndroidCallback());
+        delayedTask.start();
+
     }
 }

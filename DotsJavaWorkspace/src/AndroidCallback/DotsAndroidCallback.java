@@ -2,6 +2,7 @@ package AndroidCallback;
 
 import Dots.DotsBoard;
 import Dots.DotsPoint;
+import Dots.DotsPowerUp;
 import Model.Interaction.DotsInteraction;
 
 import java.util.ArrayList;
@@ -24,5 +25,7 @@ public interface DotsAndroidCallback {
     void onScoreUpdated(int[] score);
 
     void latencyChanged(long latency);
+
+    void onPowerUpReceived(DotsPowerUp powerUp);
 
 }
