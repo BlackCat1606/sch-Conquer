@@ -127,10 +127,10 @@ public class DotsScreen {
 
 
         score.setX(x_score);
-        score.setY((screenHeight/9));
+        score.setY(scoreBoard0.getY() - ((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth));
 
         opponent.setX(x_oppo);
-        opponent.setY((screenHeight/9));
+        opponent.setY(scoreBoard1.getY() - ((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth));
 
         dotsLayout.addView(scoreBoard1);
         dotsLayout.addView(scoreBoard0);
@@ -226,7 +226,7 @@ public class DotsScreen {
                         public void run() {
 
                             // update the color
-                            currentDotView.setColor(point.getColor());
+                            currentDotView.setColor(point.getColor(), point.getPowerUp());
 
                             // cast the fade in effect
                             Effects.castFadeInEffect(currentDotView, FADE_DURATION, END_ALPHA, true);
