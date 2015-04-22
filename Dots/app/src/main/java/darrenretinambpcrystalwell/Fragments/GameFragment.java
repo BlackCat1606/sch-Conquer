@@ -30,7 +30,7 @@ import Dots.DotsPowerUpType;
 import Model.Interaction.DotsInteraction;
 import Model.Interaction.DotsInteractionStates;
 import darrenretinambpcrystalwell.Game.DotsGameTask;
-import darrenretinambpcrystalwell.SoundHelper;
+import darrenretinambpcrystalwell.sound.SoundHelper;
 import darrenretinambpcrystalwell.dots.DotsAndroidConstants;
 import darrenretinambpcrystalwell.dots.DotsScreen;
 import darrenretinambpcrystalwell.dots.MainActivity;
@@ -238,30 +238,6 @@ public class GameFragment extends Fragment {
 
             }
 
-//            public void onPowerUpFromOtherPlayer(powerup powerup) {
-//
-//                if (powerup.type == freeze) {
-//
-//                    if (powerup.state == start) {
-//                        surfaceViewDots.setTouchEnabled(false);
-//                        dotsScreen.getFreeze().setVisibility(View.VISIBLE);
-//                    } else {
-//                        surfaceViewDots.setTouchEnabled(true);
-//                        dotsScreen.getFreeze().setVisibility(View.INVISIBLE);
-//                    }
-//                } else if (powerup.type == confuse) {
-//
-//                    if (powerup.state == start) {
-//                        surfaceViewDots.setConfused(true);
-//                        dotsScreen.getConfused().setVisibility(View.VISIBLE);
-//                    } else {
-//                        surfaceViewDots.setConfused(false);
-//                        dotsScreen.getConfused().setVisibility(View.INVISIBLE);
-//                    }
-//                }
-//
-//            }
-
             @Override
             public void onScoreUpdated(final int[] ints) {
                 Log.d(TAG, "Score: " + Arrays.toString(ints));
@@ -343,12 +319,17 @@ public class GameFragment extends Fragment {
 
         DotsInteractionStates state = interaction.getState();
 
-        int soundId = state.ordinal();
+        // only play on touch up, and when stuff is being cleared
+        if (state == DotsInteractionStates.TOUCH_UP && interaction.isAnimate()) {
+
+            int soundId = state.ordinal();
 
 
-        if (interaction.getPlayerId() == this.playerId) {
+            if (interaction.getPlayerId() == this.playerId) {
 
-            soundHelper.playSoundForInteraction(soundId);
+
+                soundHelper.playSoundForInteraction(soundId);
+            }
         }
 
     }
