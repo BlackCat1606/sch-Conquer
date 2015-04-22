@@ -121,17 +121,18 @@ public class DotsScreen {
         ));
 
         confused.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
-                context.getResources(), R.drawable.score,
-                (screenWidth / 2), (screenHeight / 2)
+                context.getResources(), R.drawable.confuse_page,
+                (screenWidth), (screenHeight)
         ));
         freeze.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
-                context.getResources(), R.drawable.score,
-                (screenWidth / 2), (screenHeight / 2)
+                context.getResources(), R.drawable.freeze_page,
+                (screenWidth), (screenHeight)
         ));
 
 
-        freeze.setLayoutParams(new ViewGroup.LayoutParams((int) (screenWidth/2), (int) (screenHeight/2)));
-        confused.setLayoutParams(new ViewGroup.LayoutParams((int) (screenWidth/2), (int) (screenHeight/2)));
+        freeze.setLayoutParams(new ViewGroup.LayoutParams((int) (screenWidth), (int) (screenHeight)));
+
+        confused.setLayoutParams(new ViewGroup.LayoutParams((int) (screenWidth), (int) (screenHeight)));
         score.setLayoutParams(new ViewGroup.LayoutParams((int) (scoreWidth), (int) scoreHeight));
         opponent.setLayoutParams(new ViewGroup.LayoutParams((int) (scoreWidth), (int) scoreHeight));
 
@@ -155,8 +156,6 @@ public class DotsScreen {
         opponent.setX(x_oppo);
         opponent.setY(scoreBoard1.getY() - ((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth));
 
-        confused.setX((screenWidth/2) - (screenWidth/4));
-        confused.setY((screenHeight/2) - (screenHeight/4));
 
 
         dotsLayout.addView(scoreBoard1);

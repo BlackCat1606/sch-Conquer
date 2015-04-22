@@ -36,6 +36,7 @@ import darrenretinambpcrystalwell.dots.DotsScreen;
 import darrenretinambpcrystalwell.dots.MainActivity;
 import darrenretinambpcrystalwell.dots.R;
 import darrenretinambpcrystalwell.dots.SurfaceViewDots;
+import darrenretinambpcrystalwell.dots.GifRun;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -106,8 +107,8 @@ public class GameFragment extends Fragment {
         super.onStart();
 
         SurfaceView v = (SurfaceView) this.getActivity().findViewById(R.id.surfaceView);
-//        GifRun gifRun = new GifRun(this.getActivity());
-//        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
+        GifRun gifRun = new GifRun(this.getActivity());
+        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
 
 
     }
