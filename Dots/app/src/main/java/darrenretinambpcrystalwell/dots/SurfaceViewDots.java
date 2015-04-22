@@ -125,7 +125,6 @@ public class SurfaceViewDots extends RelativeLayout
     public boolean onTouch(View v, MotionEvent event) {
 
         // if game is not started yet, we just return to avoid nullpointer exceptions
-        Log.d(TAG, "confused " + this.confused);
         if (!this.dotsServerClientParent.isGameStarted()) {
             return false;
         }
@@ -239,6 +238,8 @@ public class SurfaceViewDots extends RelativeLayout
                 if (touchedLocationCloseEnoughToReference(touchedX, touchedY, currentDotViewX, currentDotViewY)) {
 
                     DotsPoint pointToReturn;
+
+                    // if we are confused, swap the touched points
                     if (!confused) {
                         pointToReturn = new DotsPoint(i, j);
 
