@@ -31,7 +31,7 @@ public class SurfaceViewDots extends RelativeLayout
         implements View.OnTouchListener {
 
     private static final String         TAG = "SurfaceViewDots";
-    DotsInteractionStates               interactionState;
+
 
     // Standard Variables call
     RelativeLayout                       relativeLayout;
@@ -60,6 +60,9 @@ public class SurfaceViewDots extends RelativeLayout
             = Bitmap.createBitmap(1,1, Bitmap.Config.ARGB_8888);
     private boolean touchEnabled;
     private boolean confused = true;
+    private float[] previousActualTouchCoordinate;
+
+    private final float dotWidth;
 
     /**
      * Standard Initialising Constructor
@@ -79,13 +82,16 @@ public class SurfaceViewDots extends RelativeLayout
         this.relativeLayout              = relativeLayout;
         this.dotsServerClientParent      = dotsServerClientParent;
         this.correspondingDotCoordinates = correspondingDotCoordinates;
-        this.touchThreshold = (float) (SCREEN_WIDTH_PERCENTAGE * ScreenDimensions.getWidth(context)
-                / DotsAndroidConstants.BOARD_SIZE * 1.5);
+        this.dotWidth = (float) (SCREEN_WIDTH_PERCENTAGE * ScreenDimensions.getWidth(context)
+                / DotsAndroidConstants.BOARD_SIZE);
+
+        this.touchThreshold = this.dotWidth* 1.5f;
+
         LayoutParams layoutParams        = new LayoutParams(ScreenDimensions.getWidth(context),
                 ScreenDimensions.getHeight(context));
 
         this.touchEnabled = true;
-        this.confused = false;
+        this.confused = true;
         setLayoutParams(layoutParams);
 
         relativeLayout.addView(this);
@@ -110,10 +116,95 @@ public class SurfaceViewDots extends RelativeLayout
     }
 
     public void setConfused(boolean confused) {
+        Log.d("POWERUP", "confused set to : " + confused);
         this.confused = confused;
     }
 
     private DotsInteraction previousInteraction;
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+
+        // dont do if game is not started
+        if (!this.dotsServerClientParent.isGameStarted()) {
+            return false;
+        }
+
+        // dont do if touch is not enabled
+        if (!this.touchEnabled) {
+            return false;
+        }
+
+        // maps the event to an interaction state
+        DotsInteractionStates interactionState = this.getInteractionStateFromEvent(event);
+
+        // gets the closest point to the touch that is within a threshold
+        DotsPoint closestPoint = dotPointClosestToTouchedLocation(event.getX(), event.getY());
+
+        // initialize as null first, so we only act upon it if it has been reassigned to a useful interaction to be executed
+        DotsInteraction interactionToDo = null;
+
+        if (closestPoint != null) {
+            // if there is a point detected
+
+            interactionToDo = new DotsInteraction(PLAYER_ID, interactionState, closestPoint);
+
+            // Compare the detected point to the previous interaction stored
+
+            // first check to see if the previous interaction has been assigned
+            if (this.previousInteraction != null) {
+
+                // and if its the same as the current point, we simply return to avoid doing the same
+                // interaction multiple times
+                if (interactionToDo.compareWith(this.previousInteraction)) {
+                    return true;
+                }
+            }
+
+        } else {
+
+            // if there is no closest point, we still want to do interaction if the interaction state is a touch up.
+            if (interactionState == DotsInteractionStates.TOUCH_UP) {
+                interactionToDo = new DotsInteraction(PLAYER_ID, interactionState, this.previousInteraction.getDotsPoint());
+            }
+        }
+
+        // only save previous interaction and act on it if it has been reassigned
+
+        if (interactionToDo != null) {
+
+            this.previousInteraction = interactionToDo;
+            this.doPlayerInteraction(interactionToDo);
+
+        }
+
+        // return true to mean that we have consumed the current listener
+        return true;
+    }
+
+    /**
+     * Helper method to map a motion event to a DotsInteractionState
+     * @param event
+     * @return
+     */
+    private DotsInteractionStates getInteractionStateFromEvent(MotionEvent event) {
+
+        // gets the interaction state
+        DotsInteractionStates interactionState;
+
+        int action = event.getAction();
+
+        if (action == MotionEvent.ACTION_DOWN) {
+            interactionState = DotsInteractionStates.TOUCH_DOWN;
+        } else if (action == MotionEvent.ACTION_MOVE) {
+            interactionState = DotsInteractionStates.TOUCH_MOVE;
+        } else  {
+            interactionState = DotsInteractionStates.TOUCH_UP;
+        }
+
+        return interactionState;
+    }
 
     /**
      * use this to get the input && finger interaction states
@@ -121,97 +212,150 @@ public class SurfaceViewDots extends RelativeLayout
      * @param event
      * @return boolean, of the drag status of the finger
      */
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-
-        // if game is not started yet, we just return to avoid nullpointer exceptions
-        if (!this.dotsServerClientParent.isGameStarted()) {
-            return false;
-        }
-
-        if (!this.touchEnabled) {
-            return false;
-        }
-
-        DotsInteractionStates interactionState;
-
-        int action = event.getAction();
-
-        if (action == MotionEvent.ACTION_DOWN) {
-            interactionState = DotsInteractionStates.TOUCH_DOWN;
-
-        } else if (action == MotionEvent.ACTION_MOVE) {
-            interactionState = DotsInteractionStates.TOUCH_MOVE;
-
-
-        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-            interactionState = DotsInteractionStates.TOUCH_UP;
-
-        } else {
-            Log.d(TAG, "Unhandled motion event: " + action);
-            return false;
-        }
-
-        boolean notActionUp = action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE;
-
-        if (notActionUp) {
-
-            // return if touch location has not moved far away enough so we reduce calculations
-            // We only perform this check if its not a touch up
-            if (touchedLocationCloseEnoughToReference(event.getX(), event.getY(), this.previousDetectedDotCoordinate[0], this.previousDetectedDotCoordinate[1])) {
-                return false;
-            }
-        }
-
-
-        DotsPoint closestPoint = dotPointClosestToTouchedLocation(event.getX(), event.getY());
-
-        DotsInteraction interaction;
+//    @Override
+//    public boolean onTouch(View v, MotionEvent event) {
 //
-        // this part is to deal with touch up, on a strange area of the screen far away from the dotviews
-        if (closestPoint == null) {
-
-            if (interactionState == DotsInteractionStates.TOUCH_UP) {
-                // sends a touch up interaction with the DotPoint of the previous interaction
-                interaction = new DotsInteraction(PLAYER_ID, interactionState, previousInteraction.getDotsPoint());
-
-            } else {
-                return false;
-            }
-        } else {
-            interaction = new DotsInteraction(PLAYER_ID, interactionState, closestPoint);
-            this.previousDetectedDotCoordinate = this.correspondingDotCoordinates[closestPoint.y][closestPoint.x];
-        }
-////        } else {
-////        }
-////
-//////        else {
-//////
-////
-//        if (closestPoint == null) {
+//        // if game is not started yet, we just return to avoid nullpointer exceptions
+//        if (!this.dotsServerClientParent.isGameStarted()) {
 //            return false;
 //        }
-
-
-        // if its a touch up, we want to clear the previous detected dot coordinate
-        if (interactionState == DotsInteractionStates.TOUCH_UP) {
-            this.previousDetectedDotCoordinate = new float[] {
-                    (float)9999, (float)9999
-            };
-        }
-
-        if (interaction.compareWith(this.previousInteraction)) {
-            return false;
-        }
-
-        this.doPlayerInteraction(interaction);
-
-        // saves the current interaction
-        this.previousInteraction = interaction;
-
-        return true;
-
-    }
+//
+//        if (!this.touchEnabled) {
+//            return false;
+//        }
+//
+//        DotsInteractionStates interactionState;
+//
+//        int action = event.getAction();
+//
+//        if (action == MotionEvent.ACTION_DOWN) {
+//            interactionState = DotsInteractionStates.TOUCH_DOWN;
+//
+//        } else if (action == MotionEvent.ACTION_MOVE) {
+//            interactionState = DotsInteractionStates.TOUCH_MOVE;
+//
+//
+//        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+//            interactionState = DotsInteractionStates.TOUCH_UP;
+//
+//        } else {
+//            Log.d(TAG, "Unhandled motion event: " + action);
+//            return false;
+//        }
+//
+//        boolean notActionUp = action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE;
+//
+//        if (notActionUp) {
+//
+//            // return if touch location has not moved far away enough so we reduce calculations
+//            // We only perform this check if its not a touch up
+//            if (this.previousDetectedDotCoordinate != null) {
+//                if (touchedLocationCloseEnoughToReference(event.getX(), event.getY(), this.previousDetectedDotCoordinate[0], this.previousDetectedDotCoordinate[1])) {
+//                    return false;
+//                }
+//
+//            }
+//        }
+//
+//        // changes the touch if you are confused
+//        float changedTouchedX;
+//        float changedTouchedY;
+//        if (!this.confused || interactionState == DotsInteractionStates.TOUCH_DOWN) {
+//            changedTouchedX = event.getX();
+//            changedTouchedY = event.getY();
+//
+//        } else {
+//
+//            // transform the point
+//
+//            // distance between touchpoint and previous detected dot
+//            float previousYDistance = this.previousDetectedDotCoordinate[1] - this.previousActualTouchCoordinate[1];
+//            float currentYDistance = this.previousDetectedDotCoordinate[1] - event.getY();
+//
+//            float previousXDistance = this.previousDetectedDotCoordinate[0] - this.previousActualTouchCoordinate[0];
+//            float currentXDistance = this.previousDetectedDotCoordinate[0] - event.getX();
+//
+//            int actualTouchHasGoneUp;
+//            if (previousYDistance < currentYDistance) {
+//                actualTouchHasGoneUp = 1;
+//                changedTouchedY = this.previousDetectedDotCoordinate[1] + this.dotWidth;
+//            } else if (previousYDistance > currentYDistance) {
+//                actualTouchHasGoneUp = -1;
+//                changedTouchedY = this.previousDetectedDotCoordinate[1] - this.dotWidth;
+//            } else {
+//                actualTouchHasGoneUp = 0;
+//                changedTouchedY = this.previousDetectedDotCoordinate[1];
+//            }
+//
+//            int actualTouchHasGoneLeft;
+//            if (previousXDistance < currentXDistance) {
+//                actualTouchHasGoneLeft = 1;
+//                changedTouchedX = this.previousDetectedDotCoordinate[0] + this.dotWidth;
+//            } else if (previousXDistance > currentXDistance) {
+//                actualTouchHasGoneLeft = -1;
+//                changedTouchedX = this.previousDetectedDotCoordinate[0] - this.dotWidth;
+//            } else {
+//                actualTouchHasGoneLeft = 0;
+//                changedTouchedX = this.previousDetectedDotCoordinate[0];
+//            }
+//
+//        }
+//
+//
+//        // point that will be used
+//        DotsPoint closestPoint = dotPointClosestToTouchedLocation(changedTouchedX, changedTouchedY);
+//
+//        // may not be used depending on confusion
+//        DotsPoint touchedPoint = dotPointClosestToTouchedLocation(event.getX(), event.getY());
+//
+//        DotsInteraction interaction;
+////
+//        // this part is to deal with touch up, on a strange area of the screen far away from the dotviews
+//        if (closestPoint == null) {
+//
+//            if (interactionState == DotsInteractionStates.TOUCH_UP) {
+//                // sends a touch up interaction with the DotPoint of the previous interaction
+//                interaction = new DotsInteraction(PLAYER_ID, interactionState, previousInteraction.getDotsPoint());
+//
+//            } else {
+//                return false;
+//            }
+//        } else {
+//            interaction = new DotsInteraction(PLAYER_ID, interactionState, closestPoint);
+//            this.previousDetectedDotCoordinate = this.correspondingDotCoordinates[closestPoint.y][closestPoint.x];
+//            this.previousActualTouchCoordinate = this.correspondingDotCoordinates[touchedPoint.y][touchedPoint.x];
+//        }
+//////        } else {
+//////        }
+//////
+////////        else {
+////////
+//////
+////        if (closestPoint == null) {
+////            return false;
+////        }
+//
+//
+//        // if its a touch up, we want to clear the previous detected dot coordinate
+//        if (interactionState == DotsInteractionStates.TOUCH_UP) {
+////            this.previousDetectedDotCoordinate = new float[] {
+////                    (float)9999, (float)9999
+////            };
+//            this.previousDetectedDotCoordinate = null;
+//        }
+//
+//        if (interaction.compareWith(this.previousInteraction)) {
+//            return false;
+//        }
+//
+//        this.doPlayerInteraction(interaction);
+//
+//        // saves the current interaction
+//        this.previousInteraction = interaction;
+//
+//        return true;
+//
+//    }
 
 
     private float[] previousDetectedDotCoordinate = new float[2];
@@ -240,12 +384,12 @@ public class SurfaceViewDots extends RelativeLayout
                     DotsPoint pointToReturn;
 
                     // if we are confused, swap the touched points
-                    if (!confused) {
+//                    if (!confused) {
                         pointToReturn = new DotsPoint(i, j);
 
-                    } else {
-                        pointToReturn = new DotsPoint(j, i);
-                    }
+//                    } else {
+//                        pointToReturn = new DotsPoint(j, i);
+//                    }
 
                     return pointToReturn;
                 }
@@ -282,7 +426,7 @@ public class SurfaceViewDots extends RelativeLayout
     public void doPlayerInteraction(DotsInteraction interaction) {
 
         try {
-            Log.d(TAG, interaction.toString());
+            Log.d(TAG, "Doing interaction: " + interaction.toString());
             this.dotsServerClientParent.doInteraction(interaction);
         } catch (IOException e) {
             Log.e(TAG, "Do interaction IO exception: " + e);
