@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import Constants.DotsConstants;
 import Dots.Dot;
@@ -35,6 +39,10 @@ public class DotsScreen {
 
     ImageView               score;
     ImageView               opponent;
+
+
+    ImageView               confused;
+    ImageView               freeze;
 
     // Standard Variables call
     RelativeLayout          relativeLayout;
@@ -78,7 +86,7 @@ public class DotsScreen {
      *
       */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public DotsScreen(RelativeLayout relativeLayout, Context context) {
+    public DotsScreen(RelativeLayout relativeLayout, final Context context) {
         this.context =        context;
         this.relativeLayout = relativeLayout;
 
@@ -100,6 +108,8 @@ public class DotsScreen {
 
         score    = new ImageView(context);
         opponent = new ImageView(context);
+        confused = new ImageView(context);
+        freeze   = new ImageView(context);
         score.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
                 context.getResources(), R.drawable.score,
                 scoreWidth, scoreHeight
@@ -109,6 +119,19 @@ public class DotsScreen {
                 context.getResources(), R.drawable.enemy,
                 scoreWidth, scoreHeight
         ));
+
+        confused.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
+                context.getResources(), R.drawable.score,
+                (screenWidth / 2), (screenHeight / 2)
+        ));
+        freeze.setImageBitmap(BitmapImporter.decodeSampledBitmapFromResource(
+                context.getResources(), R.drawable.score,
+                (screenWidth / 2), (screenHeight / 2)
+        ));
+
+
+        freeze.setLayoutParams(new ViewGroup.LayoutParams((int) (screenWidth/2), (int) (screenHeight/2)));
+        confused.setLayoutParams(new ViewGroup.LayoutParams((int) (screenWidth/2), (int) (screenHeight/2)));
         score.setLayoutParams(new ViewGroup.LayoutParams((int) (scoreWidth), (int) scoreHeight));
         opponent.setLayoutParams(new ViewGroup.LayoutParams((int) (scoreWidth), (int) scoreHeight));
 
@@ -132,10 +155,15 @@ public class DotsScreen {
         opponent.setX(x_oppo);
         opponent.setY(scoreBoard1.getY() - ((1.f - SCREEN_WIDTH_PERCENTAGE) * .5f * screenWidth));
 
+        confused.setX((screenWidth/2) - (screenWidth/4));
+        confused.setY((screenHeight/2) - (screenHeight/4));
+
+
         dotsLayout.addView(scoreBoard1);
         dotsLayout.addView(scoreBoard0);
         dotsLayout.addView(score);
         dotsLayout.addView(opponent);
+
 
         this.dotWidth = SCREEN_WIDTH_PERCENTAGE * screenWidth / numberdotXdot;
 
@@ -175,6 +203,19 @@ public class DotsScreen {
             this.correspondingDotCoordinates[i][j][0] = (float) (x + dotWidth/2.0);
             this.correspondingDotCoordinates[i][j][1] = (float) (y + dotWidth/2.0);
         }
+
+        dotsLayout.addView(confused);
+        confused.setAlpha(200);
+        confused.bringToFront();
+        confused.setVisibility(View.INVISIBLE);
+
+        dotsLayout.addView(freeze);
+        freeze.setAlpha(200);
+        freeze.bringToFront();
+        freeze.setVisibility(View.INVISIBLE);
+
+
+
 
     }
     /**
@@ -258,6 +299,14 @@ public class DotsScreen {
     }
 
     public DotView[] getTouchedList() { return touchList;}
+
+    public ImageView getConfused() {
+        return confused;
+    }
+
+    public ImageView getFreeze() {
+        return freeze;
+    }
 
 
 }
