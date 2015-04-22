@@ -317,19 +317,15 @@ public class GameFragment extends Fragment {
 
     private void playSoundForInteraction(DotsInteraction interaction, SoundHelper soundHelper) {
 
+        Log.d(TAG, interaction.toString());
         DotsInteractionStates state = interaction.getState();
-
         // only play on touch up, and when stuff is being cleared
         if (state == DotsInteractionStates.TOUCH_UP && interaction.isAnimate()) {
 
             int soundId = state.ordinal();
 
+            soundHelper.playSoundForInteraction(soundId);
 
-            if (interaction.getPlayerId() == this.playerId) {
-
-
-                soundHelper.playSoundForInteraction(soundId);
-            }
         }
 
     }
