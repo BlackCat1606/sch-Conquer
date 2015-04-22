@@ -19,6 +19,7 @@ public class DotsConstants {
 
     public static final int SINGLE_PLAYER_PORT = 537823789;
 
-    public static final int POWER_UP_DURATION = 5000;
+    public static final int POWER_UP_BOMB_DURATION = 2000;
+    public static final int POWER_UP_FREEZE_DURATION = 1000;
 
 }

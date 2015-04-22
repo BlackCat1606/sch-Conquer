@@ -233,16 +233,18 @@ public class DotsServer extends DotsServerClientParent{
             if (current > 0) {
 
                 DotsPowerUpType powerUpType;
-
+                long duration;
                 // selects the powerUp type by int
                 if (i == 0) {
                     powerUpType = DotsPowerUpType.BOMB;
+                    duration = DotsConstants.POWER_UP_BOMB_DURATION;
                 } else {
                     powerUpType = DotsPowerUpType.FREEZE;
+                    duration = DotsConstants.POWER_UP_FREEZE_DURATION;
                 }
 
                 // creates a message for the power up with the correct duration
-                DotsMessagePowerUp messagePowerUp = new DotsMessagePowerUp(powerUpType, current*DotsConstants.POWER_UP_DURATION);
+                DotsMessagePowerUp messagePowerUp = new DotsMessagePowerUp(powerUpType, current*duration);
 
                 if (currentPlayer == 0) {
                     // if interaction came from the server, send it to the client
@@ -250,7 +252,6 @@ public class DotsServer extends DotsServerClientParent{
 
                 } else {
                     // if the interaction came from the client, update the server callback
-
                     this.updateLocalPowerUpCallback(messagePowerUp);
                 }
 

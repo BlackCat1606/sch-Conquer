@@ -16,21 +16,8 @@ public class SoundHelper {
         this.context = context;
     }
 
-    public void playBackgroundMusic() {
-
-        int soundId = R.raw.background_music;
-        MediaPlayer player = MediaPlayer.create(this.context, soundId);
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.release();
-            }
-        });
-
-
-        player.setLooping(true);
-        player.start();
-
+    public void playSoundEffectForPowerUp() {
+        playSound(R.raw.power_up_received);
     }
 
     public void playSoundForInteraction(int interaction) {
@@ -55,18 +42,22 @@ public class SoundHelper {
 
         if (soundId != -1) {
 
-            MediaPlayer player = MediaPlayer.create(this.context, soundId);
-            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    mp.release();
-                }
-            });
-
-            player.setVolume(1.0f, 1.0f);
-            player.start();
+            playSound(soundId);
 
         }
+    }
+
+    private void playSound(int soundId) {
+        MediaPlayer player = MediaPlayer.create(this.context, soundId);
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+        });
+
+        player.setVolume(1.0f, 1.0f);
+        player.start();
     }
 
 }

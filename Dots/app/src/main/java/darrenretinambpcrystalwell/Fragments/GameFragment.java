@@ -271,21 +271,37 @@ public class GameFragment extends Fragment {
             public void onPowerUpReceived(final DotsPowerUp dotsPowerUp) {
                 Log.d("POWERUP", dotsPowerUp.toString());
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        FragmentTransactionHelper.showToast(dotsPowerUp.toString(), getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
-                    }
-                });
+                soundHelper.playSoundEffectForPowerUp();
+
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        FragmentTransactionHelper.showToast(dotsPowerUp.toString(), getActivity(), DotsAndroidConstants.SCORE_TOAST_LENGTH);
+//                    }
+//                });
 
                 if (dotsPowerUp.getPowerUpType() == DotsPowerUpType.BOMB) {
 
                     if (dotsPowerUp.getPowerUpState() == DotsPowerUpState.STARTED) {
                         surfaceViewDots.setConfused(true);
-                        dotsScreen.getConfused().setVisibility(View.VISIBLE);
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dotsScreen.getConfused().setVisibility(View.VISIBLE);
+
+                            }
+                        });
+
                     } else {
                         surfaceViewDots.setConfused(false);
-                        dotsScreen.getConfused().setVisibility(View.INVISIBLE);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                dotsScreen.getConfused().setVisibility(View.INVISIBLE);
+                            }
+                        });
                     }
 
 
@@ -293,11 +309,23 @@ public class GameFragment extends Fragment {
 
                     if (dotsPowerUp.getPowerUpState() == DotsPowerUpState.STARTED) {
                         surfaceViewDots.setTouchEnabled(false);
-                        dotsScreen.getFreeze().setVisibility(View.VISIBLE);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                dotsScreen.getFreeze().setVisibility(View.VISIBLE);
+                            }
+                        });
 
                     } else {
                         surfaceViewDots.setTouchEnabled(true);
-                        dotsScreen.getFreeze().setVisibility(View.INVISIBLE);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                dotsScreen.getFreeze().setVisibility(View.INVISIBLE);
+                            }
+                        });
                     }
 
                 }
