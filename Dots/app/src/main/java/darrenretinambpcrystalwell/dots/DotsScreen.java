@@ -194,7 +194,7 @@ public class DotsScreen {
 
             touchList[index] = t;
             dotsLayout.addView(t);
-            t.setVisibility(View.INVISIBLE);
+            t.setVisibility(View.GONE);
 
             dotsList[index] = d;
             dotsLayout.addView(d);
