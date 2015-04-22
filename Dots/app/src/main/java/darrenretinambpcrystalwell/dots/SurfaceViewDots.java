@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import Dots.DotColor;
 import Dots.DotsPoint;
@@ -59,10 +60,9 @@ public class SurfaceViewDots extends RelativeLayout
     private static final Bitmap BLANK_BITMAP
             = Bitmap.createBitmap(1,1, Bitmap.Config.ARGB_8888);
     private boolean touchEnabled;
-    private boolean confused = true;
-    private float[] previousActualTouchCoordinate;
-
+    private boolean confused;
     private final float dotWidth;
+    private float[] previousTouchDownCoordinates;
 
     /**
      * Standard Initialising Constructor
@@ -141,17 +141,27 @@ public class SurfaceViewDots extends RelativeLayout
 
         // maps the event to an interaction state
         DotsInteractionStates interactionState = this.getInteractionStateFromEvent(event);
+        float[] currentTouchCoordinates = new float[]{event.getX(), event.getY()};
+        float[] transformedCoordinates;
+
+        if (confused && interactionState != DotsInteractionStates.TOUCH_DOWN) {
+            // transform the touched coordinates
+            transformedCoordinates = this.transformCoordinatesFromReference(currentTouchCoordinates, this.previousTouchDownCoordinates);
+
+        } else {
+            transformedCoordinates = currentTouchCoordinates;
+        }
 
         // gets the closest point to the touch that is within a threshold
-        DotsPoint closestPoint = dotPointClosestToTouchedLocation(event.getX(), event.getY());
+        DotsPoint selectedPoint = dotPointClosestToTouchedLocation(transformedCoordinates[0], transformedCoordinates[1]);
 
         // initialize as null first, so we only act upon it if it has been reassigned to a useful interaction to be executed
         DotsInteraction interactionToDo = null;
 
-        if (closestPoint != null) {
+        if (selectedPoint != null) {
             // if there is a point detected
 
-            interactionToDo = new DotsInteraction(PLAYER_ID, interactionState, closestPoint);
+            interactionToDo = new DotsInteraction(PLAYER_ID, interactionState, selectedPoint);
 
             // Compare the detected point to the previous interaction stored
 
@@ -165,6 +175,11 @@ public class SurfaceViewDots extends RelativeLayout
                 }
             }
 
+            // saves the touch down coordinate so that we can reference it when we are confused
+            if (interactionState == DotsInteractionStates.TOUCH_DOWN) {
+                this.previousTouchDownCoordinates = this.correspondingDotCoordinates[selectedPoint.y][selectedPoint.x];
+            }
+
         } else {
 
             // if there is no closest point, we still want to do interaction if the interaction state is a touch up.
@@ -174,9 +189,9 @@ public class SurfaceViewDots extends RelativeLayout
         }
 
         // only save previous interaction and act on it if it has been reassigned
-
         if (interactionToDo != null) {
 
+            // save the previous interaction that has been done
             this.previousInteraction = interactionToDo;
             this.doPlayerInteraction(interactionToDo);
 
@@ -213,11 +228,65 @@ public class SurfaceViewDots extends RelativeLayout
     }
 
     /**
-     * use this to get the input && finger interaction states
-     * @param v
-     * @param event
-     * @return boolean, of the drag status of the finger
+     * Transforms coordinates to the opposite direction from the reference
+     * @param currentTouch
+     * @param reference
+     * @return
      */
+    private float[] transformCoordinatesFromReference(float[] currentTouch, float[] reference) {
+
+        float[] result = Arrays.copyOf(reference, reference.length);
+
+        for (int i = 0; i < result.length; i++) {
+
+            float distance = currentTouch[i] - reference[i];
+
+            result[i] -= distance;
+
+        }
+
+        return result;
+    }
+
+//    /**
+//     * Transforms touched points to the opposite direction
+//     * @param currentTouchCoordinates
+//     * @param previousTouchCoordinate
+//     * @param previousSelectedPointCoordinate
+//     * @return
+//     */
+//    private float[] transformCoordinates(float[] currentTouchCoordinates, float[] previousTouchCoordinate, float[] previousSelectedPointCoordinate) {
+//
+//        float[] transformedCoordinates = new float[2];
+//
+//        for (int i = 0; i < 2; i++) {
+//            float previousDistanceFromSelectedPoint = previousSelectedPointCoordinate[i] - previousSelectedPointCoordinate[i];
+//            float currentDistanceFromSelectedPoint = previousSelectedPointCoordinate[i] - currentTouchCoordinates[i];
+//
+//            float differenceInDistance = previousDistanceFromSelectedPoint - currentDistanceFromSelectedPoint;
+//
+//            if (differenceInDistance < 0) {
+//
+//                transformedCoordinates[i] = previousSelectedPointCoordinate[i] + this.dotWidth;
+//
+//            } else if (differenceInDistance > 0) {
+//                transformedCoordinates[i] = previousSelectedPointCoordinate[i] - this.dotWidth;
+//
+//            } else {
+//                transformedCoordinates[i] = previousSelectedPointCoordinate[i];
+//            }
+//        }
+//
+//        return transformedCoordinates;
+//
+//    }
+//
+//    /**
+//     * use this to get the input && finger interaction states
+//     * @param v
+//     * @param event
+//     * @return boolean, of the drag status of the finger
+//     */
 //    @Override
 //    public boolean onTouch(View v, MotionEvent event) {
 //
@@ -362,10 +431,6 @@ public class SurfaceViewDots extends RelativeLayout
 //        return true;
 //
 //    }
-
-
-    private float[] previousDetectedDotCoordinate = new float[2];
-
 
     /**
      * Creates a DotsPoint with the index of the closest dot that falls within the threshold
