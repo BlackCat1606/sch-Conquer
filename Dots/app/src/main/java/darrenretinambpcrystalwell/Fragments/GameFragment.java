@@ -237,23 +237,23 @@ public class GameFragment extends Fragment {
 
 //            public void onPowerUpFromOtherPlayer(powerup powerup) {
 //
-//                if (powerup.type == freeze ) {
+//                if (powerup.type == freeze) {
 //
 //                    if (powerup.state == start) {
 //                        surfaceViewDots.setTouchEnabled(false);
-//                        setFreeze(visible);
+//                        dotsScreen.getFreeze().setVisibility(View.VISIBLE);
 //                    } else {
 //                        surfaceViewDots.setTouchEnabled(true);
-//                        setFreeze(invisible);
+//                        dotsScreen.getFreeze().setVisibility(View.INVISIBLE);
 //                    }
 //                } else if (powerup.type == confuse) {
 //
 //                    if (powerup.state == start) {
 //                        surfaceViewDots.setConfused(true);
-//                        setconfused(visible);
+//                        dotsScreen.getConfused().setVisibility(View.VISIBLE);
 //                    } else {
 //                        surfaceViewDots.setConfused(false);
-//                        setconfused(invisible);
+//                        dotsScreen.getConfused().setVisibility(View.INVISIBLE);
 //                    }
 //                }
 //
