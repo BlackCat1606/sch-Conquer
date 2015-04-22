@@ -9,7 +9,7 @@ public class DotsConstants {
 
     public static final int NO_OF_PLAYERS = 2;
     public static final int BOARD_SIZE = 8;
-    public static final int MAX_SCORE_BEFORE_GAME_OVER = 70;
+    public static final int MAX_SCORE_BEFORE_GAME_OVER = 100;
 
     // Arbitrary value used to create a DotPoint that indicates clearing of displayed interaction
 //    public static final int CLEAR_DOTS_INDEX = 59;
@@ -19,7 +19,7 @@ public class DotsConstants {
 
     public static final int SINGLE_PLAYER_PORT = 537823789;
 
-    public static final int POWER_UP_BOMB_DURATION = 2000;
+    public static final int POWER_UP_BOMB_DURATION = 3000;
     public static final int POWER_UP_FREEZE_DURATION = 1000;
 
 }

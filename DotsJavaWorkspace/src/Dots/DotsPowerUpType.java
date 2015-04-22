@@ -16,7 +16,7 @@ public enum DotsPowerUpType {
     public static DotsPowerUpType randomPowerUp() {
 
         // NONE, BOMB, FREEZE
-        double[] probability = new double[] {0.9, 0.06, 0.04};
+        double[] probability = new double[] {0.80, 0.12, 0.08};
 
         double[] cumulative = new double[probability.length];
 

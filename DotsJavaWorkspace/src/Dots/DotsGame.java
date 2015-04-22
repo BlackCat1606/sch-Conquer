@@ -241,7 +241,7 @@ public class DotsGame {
 
         // if a scores exceeds the maximum constant, set to game over
         for (int score : this.scores) {
-            if (score > DotsConstants.MAX_SCORE_BEFORE_GAME_OVER) {
+            if (score >= DotsConstants.MAX_SCORE_BEFORE_GAME_OVER) {
                 this.dotsLocks.setGameRunning(false);
             }
         }

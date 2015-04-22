@@ -91,7 +91,7 @@ public class SurfaceViewDots extends RelativeLayout
                 ScreenDimensions.getHeight(context));
 
         this.touchEnabled = true;
-        this.confused = true;
+        this.confused = false;
         setLayoutParams(layoutParams);
 
         relativeLayout.addView(this);
