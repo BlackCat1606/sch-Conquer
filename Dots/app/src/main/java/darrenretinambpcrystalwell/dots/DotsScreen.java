@@ -177,7 +177,7 @@ public class DotsScreen {
             int i = index / (int)numberdotXdot;
             int j = index % (int)numberdotXdot;
 
-            DotView d = new RedDotView(context);
+            DotView d = new TransparentDotView(context);
             DotView t = new TouchedDot(context);
 
             float x = dotsXOffset + j * dotWidth;
