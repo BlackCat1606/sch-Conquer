@@ -18,11 +18,17 @@ public class DotsPowerUpTimedTask {
     private final long duration;
     public DotsPowerUpTimedTask(final DotsPowerUpType powerUpType, long duration, final DotsAndroidCallback dotsAndroidCallback) {
         // create timed notification for callback
+
         this.task = new TimerTask() {
             @Override
             public void run() {
-                DotsPowerUp powerUpEnd = new DotsPowerUp(powerUpType, DotsPowerUpState.ENDED);
-                dotsAndroidCallback.onPowerUpReceived(powerUpEnd);
+                try {
+                    DotsPowerUp powerUpEnd = new DotsPowerUp(powerUpType, DotsPowerUpState.ENDED);
+                    dotsAndroidCallback.onPowerUpReceived(powerUpEnd);
+
+                } catch (NullPointerException e) {
+                    // game ended before timer task could notify
+                }
             }
         };
 
