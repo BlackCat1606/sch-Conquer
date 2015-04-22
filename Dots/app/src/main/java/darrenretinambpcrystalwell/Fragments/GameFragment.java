@@ -282,10 +282,10 @@ public class GameFragment extends Fragment {
 
                     if (dotsPowerUp.getPowerUpState() == DotsPowerUpState.STARTED) {
                         surfaceViewDots.setConfused(true);
-//                        setconfused(visible);
+                        dotsScreen.getConfused().setVisibility(View.VISIBLE);
                     } else {
                         surfaceViewDots.setConfused(false);
-//                        setconfused(invisible);
+                        dotsScreen.getConfused().setVisibility(View.INVISIBLE);
                     }
 
 
@@ -293,10 +293,11 @@ public class GameFragment extends Fragment {
 
                     if (dotsPowerUp.getPowerUpState() == DotsPowerUpState.STARTED) {
                         surfaceViewDots.setTouchEnabled(false);
-//                        setFreeze(visible);
+                        dotsScreen.getFreeze().setVisibility(View.VISIBLE);
+
                     } else {
                         surfaceViewDots.setTouchEnabled(true);
-//                        setFreeze(invisible);
+                        dotsScreen.getFreeze().setVisibility(View.INVISIBLE);
                     }
 
                 }
