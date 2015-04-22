@@ -1,7 +1,7 @@
 package darrenretinambpcrystalwell.dots;
 
 
-import android.os.StrictMode;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,15 +12,14 @@ import android.view.View;
 import android.os.Handler;
 
 import com.parse.Parse;
-import com.parse.ParseObject;
-
-import java.util.logging.LogRecord;
 
 import AndroidCallback.DotsAndroidCallback;
 import Sockets.DotsServerClientParent;
 import darrenretinambpcrystalwell.Fragments.GameFragment;
 import darrenretinambpcrystalwell.Fragments.MainFragment;
 import darrenretinambpcrystalwell.Fragments.RulesFragment;
+import darrenretinambpcrystalwell.sound.SoundHelper;
+import darrenretinambpcrystalwell.sound.SoundService;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -55,6 +54,23 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         setUpFragment(savedInstanceState);
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // play background music
+        Intent objIntent = new Intent(this, SoundService.class);
+        startService(objIntent);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Intent objIntent = new Intent(this, SoundService.class);
+        stopService(objIntent);
     }
 
     public static void postGarbageCollect(long delay) {
@@ -142,9 +158,7 @@ public class MainActivity extends ActionBarActivity {
 
             this.fragments[i] = fragmentToCreate;
 
-
         return this.fragments[i];
-
 
     }
 
@@ -175,7 +189,4 @@ public class MainActivity extends ActionBarActivity {
 //        Effects.castFadeOutEffect(dotsScreen.getDotList()[24], 500, false, false);
 //        Effects.castFadeOutEffect(dotsScreen.getDotList()[25], 500, false, false);
     }
-
-
-
 }
