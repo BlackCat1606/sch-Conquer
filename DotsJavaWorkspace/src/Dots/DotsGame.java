@@ -135,7 +135,8 @@ public class DotsGame {
             // if the board is changed, notify lock
             if (needToUpdateBoard) {
 
-
+                // get additional points that are affected from bombs
+                // currently does nothing, as bombs are disabled within DotsLogic
                 ArrayList<DotsPoint> additionalAffected = this.dotsLogic.getAdditionalPointsAffected();
                 if (additionalAffected.size() > 0) {
                     this.playerMoves[player].addAll(additionalAffected);

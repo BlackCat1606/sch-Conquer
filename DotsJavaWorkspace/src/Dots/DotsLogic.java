@@ -54,18 +54,18 @@ public class DotsLogic {
             for (DotsPoint point : inputMoves) {
                 Dot correspondingDot = this.board.getElement(point);
 
-                if (correspondingDot.powerUp == DotPowerUp.BOMB) {
+                if (correspondingDot.powerUp == DotPowerUpState.BOMB) {
                     bombPointsToClear.add(point);
-                } else if (correspondingDot.powerUp == DotPowerUp.FREEZE) {
+                } else if (correspondingDot.powerUp == DotPowerUpState.FREEZE) {
                     //todo update locks with duration
                 }
             }
 
 
-
-            ArrayList<DotsPoint> affectedPointsForBomb = getAffectedPointsForBombs(bombPointsToClear);
-            this.additionalPointsAffected.addAll(affectedPointsForBomb);
-            pointsToClear.addAll(affectedPointsForBomb);
+            // Commented out to disable bombs
+//            ArrayList<DotsPoint> affectedPointsForBomb = getAffectedPointsForBombs(bombPointsToClear);
+//            this.additionalPointsAffected.addAll(affectedPointsForBomb);
+//            pointsToClear.addAll(affectedPointsForBomb);
 
             board.clearDots(pointsToClear);
 

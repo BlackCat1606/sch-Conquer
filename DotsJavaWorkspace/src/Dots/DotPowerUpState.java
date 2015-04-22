@@ -1,20 +1,17 @@
 package Dots;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 /**
  * Created by JiaHao on 21/4/15.
  */
-public enum DotPowerUp {
+public enum DotPowerUpState {
     NONE, BOMB, FREEZE;
 
 
     private static final Random RANDOM = new Random();
 
-    public static DotPowerUp randomPowerUp() {
+    public static DotPowerUpState randomPowerUp() {
 
         double[] probability = new double[] {0.8, 0.1, 0.1};
 

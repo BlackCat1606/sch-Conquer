@@ -16,7 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.*;
 
 import Dots.DotColor;
-import Dots.DotPowerUp;
+import Dots.DotPowerUpState;
 
 
 /**
@@ -134,72 +134,72 @@ class DotView extends ImageView {
     }
 
     // added by jiahao
-    public void setColor(DotColor dotColor, DotPowerUp dotsPowerUp) {
+    public void setColor(DotColor dotColor, DotPowerUpState dotsPowerUp) {
 
         switch (dotColor) {
             case RED:
-                if (dotsPowerUp == DotPowerUp.BOMB) {
+                if (dotsPowerUp == DotPowerUpState.BOMB) {
                     setFirered();
                     break;
                 }
-                else if (dotsPowerUp == DotPowerUp.FREEZE) {
+                else if (dotsPowerUp == DotPowerUpState.FREEZE) {
                     setIcered();
                     break;
                 }
-                else if (dotsPowerUp == DotPowerUp.NONE || dotsPowerUp == null) {
+                else if (dotsPowerUp == DotPowerUpState.NONE || dotsPowerUp == null) {
                     setRed();
                     break;
                 }
             case GREEN:
-                if (dotsPowerUp == DotPowerUp.BOMB) {
+                if (dotsPowerUp == DotPowerUpState.BOMB) {
                     setFiregreen();
                     break;
                 }
-                else if (dotsPowerUp == DotPowerUp.FREEZE) {
+                else if (dotsPowerUp == DotPowerUpState.FREEZE) {
                     setIcegreen();
                     break;
                 }
-                else if (dotsPowerUp == DotPowerUp.NONE || dotsPowerUp == null) {
+                else if (dotsPowerUp == DotPowerUpState.NONE || dotsPowerUp == null) {
                     setGreen();
                     break;
                 }
 
             case BLUE:
-                if (dotsPowerUp == DotPowerUp.BOMB) {
+                if (dotsPowerUp == DotPowerUpState.BOMB) {
                     setFireblue();
                     break;
                 }
-                else if (dotsPowerUp == DotPowerUp.FREEZE) {
+                else if (dotsPowerUp == DotPowerUpState.FREEZE) {
                     setIceblue();
                     break;
                 }
-                else if (dotsPowerUp == DotPowerUp.NONE || dotsPowerUp == null) {
+                else if (dotsPowerUp == DotPowerUpState.NONE || dotsPowerUp == null) {
                     setBlue();
                     break;
                 }
             case YELLOW:
-                if (dotsPowerUp == DotPowerUp.BOMB) {
+                if (dotsPowerUp == DotPowerUpState.BOMB) {
                     setFireyellow();
                     break;
                 }
-                else if (dotsPowerUp == DotPowerUp.FREEZE) {
+                else if (dotsPowerUp == DotPowerUpState.FREEZE) {
                     setIceyellow();
                     break;
                 }
-                else if (dotsPowerUp == DotPowerUp.NONE || dotsPowerUp == null) {
+                else if (dotsPowerUp == DotPowerUpState.NONE || dotsPowerUp == null) {
                     setYellow();
                     break;
                 }
             case PURPLE:
-                if (dotsPowerUp == DotPowerUp.BOMB) {
+                if (dotsPowerUp == DotPowerUpState.BOMB) {
                     setFirepurple();
                     break;
                 }
-                else if (dotsPowerUp == DotPowerUp.FREEZE) {
+                else if (dotsPowerUp == DotPowerUpState.FREEZE) {
                     setIcepurple();
                     break;
                 }
-                else if (dotsPowerUp == DotPowerUp.NONE || dotsPowerUp == null) {
+                else if (dotsPowerUp == DotPowerUpState.NONE || dotsPowerUp == null) {
                     setPurple();
                     break;
                 }

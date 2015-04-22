@@ -202,7 +202,7 @@ public class DotsBoard implements Serializable {
             for (int i = 0; i < yMax + 1; i++) {
 
                 DotColor color = this.getBoard()[i][xIndex].color;
-                DotPowerUp powerUp = this.getBoard()[i][xIndex].powerUp;
+                DotPowerUpState powerUp = this.getBoard()[i][xIndex].powerUp;
 
                 System.out.println(powerUp);
                 DotsPoint pointToAdd = new DotsPoint(xIndex, i, color, powerUp);
