@@ -384,7 +384,7 @@ public class SurfaceViewDots extends RelativeLayout
 
             // make touch squares that need to be cleared invisible
             for (DotView touchSquareToClear : touchSquaresToClear) {
-                touchSquareToClear.setVisibility(GONE);
+                touchSquareToClear.setVisibility(INVISIBLE);
                 touchSquareToClear.setTouchedDot();
 
             }
