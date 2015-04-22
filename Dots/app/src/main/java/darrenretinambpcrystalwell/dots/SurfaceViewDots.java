@@ -126,15 +126,18 @@ public class SurfaceViewDots extends RelativeLayout
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        // dont do if game is not started
+        // don't do if game is not started
         if (!this.dotsServerClientParent.isGameStarted()) {
+            // return false here to not consume the event
             return false;
         }
 
-        // dont do if touch is not enabled
+        // don't do if touch is not enabled
         if (!this.touchEnabled) {
+            // return false here to not consume the event
             return false;
         }
+
 
         // maps the event to an interaction state
         DotsInteractionStates interactionState = this.getInteractionStateFromEvent(event);
@@ -180,6 +183,9 @@ public class SurfaceViewDots extends RelativeLayout
         }
 
         // return true to mean that we have consumed the current listener
+        // consuming the event means we have used up the event, and touches moved will trigger a new event
+        // if we do not consume, a touch down will only be able to be refreshed upon lifting and touching down the screen again,
+        // and no touches will be taken except for the touch down.
         return true;
     }
 
