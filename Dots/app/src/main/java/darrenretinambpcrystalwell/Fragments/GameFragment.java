@@ -1,7 +1,5 @@
 package darrenretinambpcrystalwell.Fragments;
 
-import android.app.ActionBar;
-import android.content.Context;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -12,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -26,7 +23,6 @@ import java.util.List;
 
 import AndroidCallback.DotsAndroidCallback;
 import Constants.DotsConstants;
-import Dots.DotsBoard;
 import Dots.DotsPoint;
 import Model.Interaction.DotsInteraction;
 import Model.Interaction.DotsInteractionStates;
@@ -35,12 +31,8 @@ import darrenretinambpcrystalwell.SoundHelper;
 import darrenretinambpcrystalwell.dots.DotsAndroidConstants;
 import darrenretinambpcrystalwell.dots.DotsScreen;
 import darrenretinambpcrystalwell.dots.MainActivity;
-import darrenretinambpcrystalwell.dots.MainScreen;
 import darrenretinambpcrystalwell.dots.R;
-import darrenretinambpcrystalwell.dots.ScoreBoard;
 import darrenretinambpcrystalwell.dots.SurfaceViewDots;
-import darrenretinambpcrystalwell.dots.GifRun;
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -243,6 +235,29 @@ public class GameFragment extends Fragment {
 
             }
 
+//            public void onPowerUpFromOtherPlayer(powerup powerup) {
+//
+//                if (powerup.type == freeze ) {
+//
+//                    if (powerup.state == start) {
+//                        surfaceViewDots.setTouchEnabled(false);
+//                        setFreeze(visible);
+//                    } else {
+//                        surfaceViewDots.setTouchEnabled(true);
+//                        setFreeze(invisible);
+//                    }
+//                } else if (powerup.type == confuse) {
+//
+//                    if (powerup.state == start) {
+//                        surfaceViewDots.setConfused(true);
+//                        setconfused(visible);
+//                    } else {
+//                        surfaceViewDots.setConfused(false);
+//                        setconfused(invisible);
+//                    }
+//                }
+//
+//            }
 
             @Override
             public void onScoreUpdated(final int[] ints) {
