@@ -59,7 +59,7 @@ public class SurfaceViewDots extends RelativeLayout
     private static final Bitmap BLANK_BITMAP
             = Bitmap.createBitmap(1,1, Bitmap.Config.ARGB_8888);
     private boolean touchEnabled;
-    private boolean confused;
+    private boolean confused = true;
 
     /**
      * Standard Initialising Constructor
@@ -124,8 +124,8 @@ public class SurfaceViewDots extends RelativeLayout
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-
         // if game is not started yet, we just return to avoid nullpointer exceptions
+        Log.d(TAG, "confused " + this.confused);
         if (!this.dotsServerClientParent.isGameStarted()) {
             return false;
         }
@@ -165,14 +165,7 @@ public class SurfaceViewDots extends RelativeLayout
         }
 
 
-        DotsPoint closestPoint;
-
-        if (!this.confused) {
-            closestPoint = dotPointClosestToTouchedLocation(event.getX(), event.getY());
-
-        } else {
-            closestPoint = dotPointClosestToTouchedLocation(event.getY(), event.getX());
-        }
+        DotsPoint closestPoint = dotPointClosestToTouchedLocation(event.getX(), event.getY());
 
         DotsInteraction interaction;
 //
@@ -244,7 +237,16 @@ public class SurfaceViewDots extends RelativeLayout
                 float currentDotViewY = correspondingDotCoordinates[j][i][1];
 
                 if (touchedLocationCloseEnoughToReference(touchedX, touchedY, currentDotViewX, currentDotViewY)) {
-                    return new DotsPoint(i, j);
+
+                    DotsPoint pointToReturn;
+                    if (!confused) {
+                        pointToReturn = new DotsPoint(i, j);
+
+                    } else {
+                        pointToReturn = new DotsPoint(j, i);
+                    }
+
+                    return pointToReturn;
                 }
             }
         }
