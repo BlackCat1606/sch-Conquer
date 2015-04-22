@@ -204,14 +204,14 @@ public class DotsScreen {
         }
 
         dotsLayout.addView(confused);
+        dotsLayout.addView(freeze);
         confused.setAlpha(200);
         confused.bringToFront();
-        confused.setVisibility(View.INVISIBLE);
 
-        dotsLayout.addView(freeze);
         freeze.setAlpha(200);
         freeze.bringToFront();
-        freeze.setVisibility(View.INVISIBLE);
+        freeze.setVisibility(View.GONE);
+        confused.setVisibility(View.GONE);
 
 
 
