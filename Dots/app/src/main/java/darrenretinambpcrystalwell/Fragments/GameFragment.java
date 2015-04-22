@@ -299,7 +299,7 @@ public class GameFragment extends Fragment {
                             @Override
                             public void run() {
 
-                                dotsScreen.getConfused().setVisibility(View.INVISIBLE);
+                                dotsScreen.getConfused().setVisibility(View.GONE);
                             }
                         });
                     }
@@ -323,7 +323,7 @@ public class GameFragment extends Fragment {
                             @Override
                             public void run() {
 
-                                dotsScreen.getFreeze().setVisibility(View.INVISIBLE);
+                                dotsScreen.getFreeze().setVisibility(View.GONE);
                             }
                         });
                     }
