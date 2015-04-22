@@ -26,6 +26,7 @@ public class DotsLocks {
 //        this.boardChanged = true;
         this.gameRunning = true;
         this.playerAffected = -1;
+        this.powerUpCount = new int[DotsPowerUpType.NO_OF_POWER_UPS];
     }
 
 //    public synchronized void setBoardChanged(boolean boardChanged) {

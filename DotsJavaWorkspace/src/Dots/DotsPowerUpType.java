@@ -64,5 +64,6 @@ public enum DotsPowerUpType {
         }
     }
 
-    public static final int NO_OF_POWER_UPS = DotsPowerUpType.values().length;
+    // subtract one as we do not count the NONE type
+    public static final int NO_OF_POWER_UPS = DotsPowerUpType.values().length - 1;
 }

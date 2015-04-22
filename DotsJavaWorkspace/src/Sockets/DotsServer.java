@@ -91,10 +91,12 @@ public class DotsServer extends DotsServerClientParent{
 
             this.runtimeStopwatch.startMeasurement();
 
+            int playerId = dotsInteraction.getPlayerId();
+
             boolean interactionIsValid = this.dotsGame.doMove(dotsInteraction);
 
             // if the client made the move and it is an invalid move, we need to cancel the displayed touch on the client
-            if (dotsInteraction.getPlayerId() == 1 && !interactionIsValid) {
+            if (playerId == 1 && !interactionIsValid) {
 
                 DotsInteraction cancelCurrentInteraction = DotsInteraction.getInvalidResponseInteractionInstance(dotsInteraction);
                 DotsMessageInteraction cancelCurrentInteractionMessage = new DotsMessageInteraction(cancelCurrentInteraction);
@@ -129,7 +131,7 @@ public class DotsServer extends DotsServerClientParent{
 
                     // if board does not need updating
 
-                    if (dotsInteraction.getPlayerId() == 0) {
+                    if (playerId == 0) {
                         // send valid moves made by the server to client
                         shouldSendInteractionToClient = true;
                     } else {
@@ -159,7 +161,7 @@ public class DotsServer extends DotsServerClientParent{
 
                 if (this.dotsLocks.powerUpNeedsUpdate()) {
 
-                    dealWithPowerUp();
+                    dealWithPowerUp(playerId);
 
                 }
 
@@ -218,9 +220,12 @@ public class DotsServer extends DotsServerClientParent{
         }
     }
 
-    private void dealWithPowerUp() throws IOException {
+    private void dealWithPowerUp(int currentPlayer) throws IOException {
+
+
         int[] powerUpCount = this.dotsLocks.getPowerUpCount();
 
+        // iterate through all possible powerup instances
         for (int i = 0; i < powerUpCount.length; i++) {
 
             int current = powerUpCount[i];
@@ -229,6 +234,7 @@ public class DotsServer extends DotsServerClientParent{
 
                 DotsPowerUpType powerUpType;
 
+                // selects the powerUp type by int
                 if (i == 0) {
                     powerUpType = DotsPowerUpType.BOMB;
                 } else {
@@ -238,11 +244,15 @@ public class DotsServer extends DotsServerClientParent{
                 // creates a message for the power up with the correct duration
                 DotsMessagePowerUp messagePowerUp = new DotsMessagePowerUp(powerUpType, current*DotsConstants.POWER_UP_DURATION);
 
-                // sends it to the client
-                DotsSocketHelper.sendMessageToClient(this.serverSocket, messagePowerUp);
+                if (currentPlayer == 0) {
+                    // if interaction came from the server, send it to the client
+                    DotsSocketHelper.sendMessageToClient(this.serverSocket, messagePowerUp);
 
-                // update callbacks
-                this.updateLocalPowerUpCallback(messagePowerUp);
+                } else {
+                    // if the interaction came from the client, update the server callback
+
+                    this.updateLocalPowerUpCallback(messagePowerUp);
+                }
 
             }
         }

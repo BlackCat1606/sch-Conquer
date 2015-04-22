@@ -13,6 +13,19 @@ public class DotsPowerUp {
         this.powerUpState = powerUpState;
     }
 
+    @Override
+    public String toString() {
+        return powerUpType + " " + powerUpState.toString() ;
+
+    }
+
+    public DotsPowerUpType getPowerUpType() {
+        return powerUpType;
+    }
+
+    public DotsPowerUpState getPowerUpState() {
+        return powerUpState;
+    }
 }
 
 
