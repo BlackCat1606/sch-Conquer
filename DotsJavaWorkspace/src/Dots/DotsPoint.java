@@ -14,7 +14,7 @@ public class DotsPoint implements Serializable {
     public final int y;
 
     private DotColor color;
-    private DotPowerUpState powerUp;
+    private DotsPowerUpType powerUp;
 
     /**
      *
@@ -28,7 +28,7 @@ public class DotsPoint implements Serializable {
     }
 
     // constructor with color only for sending to client
-    public DotsPoint(int x, int y, DotColor color, DotPowerUpState powerUp) {
+    public DotsPoint(int x, int y, DotColor color, DotsPowerUpType powerUp) {
         this.x = x;
         this.y = y;
         this.color = color;
@@ -67,7 +67,7 @@ public class DotsPoint implements Serializable {
         return color;
     }
 
-    public DotPowerUpState getPowerUp() {
+    public DotsPowerUpType getPowerUp() {
         return powerUp;
     }
 

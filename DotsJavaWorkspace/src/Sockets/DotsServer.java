@@ -157,6 +157,12 @@ public class DotsServer extends DotsServerClientParent{
                 // update the screen
                 this.updateScreenForTouchInteractions(interactionToUpdate);
 
+                if (this.dotsLocks.powerUpNeedsUpdate()) {
+
+                    dealWithPowerUp();
+
+                }
+
 
                 // if getPlayerAffected is not -1, a player has been affected
                 int playerAffected = this.dotsLocks.getPlayerAffected();
@@ -211,6 +217,41 @@ public class DotsServer extends DotsServerClientParent{
             System.err.println("Interaction not complete, game is not running!");
         }
     }
+
+    private void dealWithPowerUp() throws IOException {
+        int[] powerUpCount = this.dotsLocks.getPowerUpCount();
+
+        for (int i = 0; i < powerUpCount.length; i++) {
+
+            int current = powerUpCount[i];
+
+            if (current > 0) {
+
+                DotsPowerUpType powerUpType;
+
+                if (i == 0) {
+                    powerUpType = DotsPowerUpType.BOMB;
+                } else {
+                    powerUpType = DotsPowerUpType.FREEZE;
+                }
+
+                // creates a message for the power up with the correct duration
+                DotsMessagePowerUp messagePowerUp = new DotsMessagePowerUp(powerUpType, current*DotsConstants.POWER_UP_DURATION);
+
+                // sends it to the client
+                DotsSocketHelper.sendMessageToClient(this.serverSocket, messagePowerUp);
+
+                // update callbacks
+                this.updateLocalPowerUpCallback(messagePowerUp);
+
+            }
+        }
+
+        this.dotsLocks.resetPowerUpCount();
+
+    }
+
+
 
     /**
      * Updates the board, by doing the callback, and sending the board to the client
@@ -312,6 +353,11 @@ public class DotsServer extends DotsServerClientParent{
             @Override
             public void latencyChanged(long latency) {
                 System.out.println("Current Latency: " + latency);
+            }
+
+            @Override
+            public void onPowerUpReceived(DotsPowerUp powerUp) {
+                System.out.println("Power Up received: " + powerUp);
             }
         });
 
