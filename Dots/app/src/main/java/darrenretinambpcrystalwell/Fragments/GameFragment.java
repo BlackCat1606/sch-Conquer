@@ -108,7 +108,7 @@ public class GameFragment extends Fragment {
 
         SurfaceView v = (SurfaceView) this.getActivity().findViewById(R.id.surfaceView);
         GifRun gifRun = new GifRun(this.getActivity());
-        gifRun.LoadGiff(v, this.getActivity(), R.drawable.my_animated_gif);
+        gifRun.LoadGiff(v, this.getActivity(), R.drawable.star_field_background);
 
 
     }
@@ -300,6 +300,7 @@ public class GameFragment extends Fragment {
                             public void run() {
 
                                 dotsScreen.getConfused().setVisibility(View.INVISIBLE);
+
                             }
                         });
                     }
