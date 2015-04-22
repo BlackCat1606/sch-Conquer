@@ -226,6 +226,13 @@ public class DotsScreen {
                         public void run() {
 
                             // update the color
+                            if (point.getColor() == null) {
+                                Log.d("DOtsscreen", "color null");
+                            }
+
+                            if (point.getPowerUp() == null) {
+                                Log.d("DOtsscreen", "powerup null");
+                            }
                             currentDotView.setColor(point.getColor(), point.getPowerUp());
 
                             // cast the fade in effect

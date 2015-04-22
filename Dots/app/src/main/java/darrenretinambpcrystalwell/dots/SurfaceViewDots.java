@@ -58,6 +58,9 @@ public class SurfaceViewDots extends RelativeLayout
 
     private static final Bitmap BLANK_BITMAP
             = Bitmap.createBitmap(1,1, Bitmap.Config.ARGB_8888);
+    private boolean touchEnabled;
+    private boolean confused;
+
     /**
      * Standard Initialising Constructor
      *
@@ -81,6 +84,8 @@ public class SurfaceViewDots extends RelativeLayout
         LayoutParams layoutParams        = new LayoutParams(ScreenDimensions.getWidth(context),
                 ScreenDimensions.getHeight(context));
 
+        this.touchEnabled = true;
+        this.confused = false;
         setLayoutParams(layoutParams);
 
         relativeLayout.addView(this);
@@ -100,7 +105,13 @@ public class SurfaceViewDots extends RelativeLayout
         this.previousInteraction = new DotsInteraction(this.PLAYER_ID, DotsInteractionStates.TOUCH_UP, new DotsPoint(0,0));
     }
 
+    public void setTouchEnabled(boolean touchEnabled) {
+        this.touchEnabled = touchEnabled;
+    }
 
+    public void setConfused(boolean confused) {
+        this.confused = confused;
+    }
 
     private DotsInteraction previousInteraction;
 
@@ -113,11 +124,15 @@ public class SurfaceViewDots extends RelativeLayout
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
+
         // if game is not started yet, we just return to avoid nullpointer exceptions
         if (!this.dotsServerClientParent.isGameStarted()) {
             return false;
         }
 
+        if (!this.touchEnabled) {
+            return false;
+        }
 
         DotsInteractionStates interactionState;
 
@@ -149,7 +164,15 @@ public class SurfaceViewDots extends RelativeLayout
             }
         }
 
-        DotsPoint closestPoint = dotPointClosestToTouchedLocation(event.getX(), event.getY());
+
+        DotsPoint closestPoint;
+
+        if (!this.confused) {
+            closestPoint = dotPointClosestToTouchedLocation(event.getX(), event.getY());
+
+        } else {
+            closestPoint = dotPointClosestToTouchedLocation(event.getY(), event.getX());
+        }
 
         DotsInteraction interaction;
 //

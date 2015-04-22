@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.Log;
 import android.widget.ImageView;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.*;
 
 import Dots.DotColor;
+import Dots.DotPowerUp;
 
 
 /**
@@ -132,73 +134,73 @@ class DotView extends ImageView {
     }
 
     // added by jiahao
-    public void setColor(DotColor dotColor, DotsPowerUp dotsPowerUp) {
+    public void setColor(DotColor dotColor, DotPowerUp dotsPowerUp) {
 
         switch (dotColor) {
             case RED:
-                if (dotsPowerUp == NONE) {
-                    setRed();
-                    break;
-                }
-                else if (dotsPowerUp == BOMB) {
+                if (dotsPowerUp == DotPowerUp.BOMB) {
                     setFirered();
                     break;
                 }
-                else if (dotsPowerUp == FREEZE) {
+                else if (dotsPowerUp == DotPowerUp.FREEZE) {
                     setIcered();
                     break;
                 }
-            case GREEN:
-                if (dotsPowerUp == NONE) {
-                    setGreen();
+                else if (dotsPowerUp == DotPowerUp.NONE || dotsPowerUp == null) {
+                    setRed();
                     break;
                 }
-                else if (dotsPowerUp == BOMB) {
+            case GREEN:
+                if (dotsPowerUp == DotPowerUp.BOMB) {
                     setFiregreen();
                     break;
                 }
-                else if (dotsPowerUp == FREEZE) {
+                else if (dotsPowerUp == DotPowerUp.FREEZE) {
                     setIcegreen();
+                    break;
+                }
+                else if (dotsPowerUp == DotPowerUp.NONE || dotsPowerUp == null) {
+                    setGreen();
                     break;
                 }
 
             case BLUE:
-                if (dotsPowerUp == NONE) {
-                    setBlue();
-                    break;
-                }
-                else if (dotsPowerUp == BOMB) {
+                if (dotsPowerUp == DotPowerUp.BOMB) {
                     setFireblue();
                     break;
                 }
-                else if (dotsPowerUp == FREEZE) {
+                else if (dotsPowerUp == DotPowerUp.FREEZE) {
                     setIceblue();
                     break;
                 }
-            case YELLOW:
-                if (dotsPowerUp == NONE) {
-                    setYellow();
+                else if (dotsPowerUp == DotPowerUp.NONE || dotsPowerUp == null) {
+                    setBlue();
                     break;
                 }
-                else if (dotsPowerUp == BOMB) {
+            case YELLOW:
+                if (dotsPowerUp == DotPowerUp.BOMB) {
                     setFireyellow();
                     break;
                 }
-                else if (dotsPowerUp == FREEZE) {
+                else if (dotsPowerUp == DotPowerUp.FREEZE) {
                     setIceyellow();
                     break;
                 }
-            case PURPLE:
-                if (dotsPowerUp == NONE) {
-                    setPurple();
+                else if (dotsPowerUp == DotPowerUp.NONE || dotsPowerUp == null) {
+                    setYellow();
                     break;
                 }
-                else if (dotsPowerUp == BOMB) {
+            case PURPLE:
+                if (dotsPowerUp == DotPowerUp.BOMB) {
                     setFirepurple();
                     break;
                 }
-                else if (dotsPowerUp == FREEZE) {
+                else if (dotsPowerUp == DotPowerUp.FREEZE) {
                     setIcepurple();
+                    break;
+                }
+                else if (dotsPowerUp == DotPowerUp.NONE || dotsPowerUp == null) {
+                    setPurple();
                     break;
                 }
             case PLAYER_0:
@@ -267,35 +269,45 @@ class DotView extends ImageView {
     }
 
     public void setIcered() {
-        this.color = DotColor.ICERED;
+        this.color = DotColor.RED;
+        setDrawable(icered);
     }
     public void setIcegreen() {
-        this.color = DotColor.ICEGREEN;
+        this.color = DotColor.GREEN;
+        setDrawable(icegreen);
     }
     public void setIceblue() {
-        this.color = DotColor.ICEBLUE;
+        this.color = DotColor.BLUE;
+        setDrawable(iceblue);
     }
     public void setIceyellow() {
-        this.color = DotColor.ICEYELLOW;
+        this.color = DotColor.YELLOW;
+        setDrawable(iceyellow);
     }
     public void setIcepurple() {
-        this.color = DotColor.ICEPURPLE;
+        this.color = DotColor.PURPLE;
+        setDrawable(icepurple);
     }
 
     public void setFirered() {
-        this.color = DotColor.FIRERED;
+        this.color = DotColor.RED;
+        setDrawable(firered);
     }
     public void setFiregreen() {
-        this.color = DotColor.FIREGREEN;
+        this.color = DotColor.GREEN;
+        setDrawable(firegreen);
     }
     public void setFireblue() {
-        this.color = DotColor.FIREBLUE;
+        this.color = DotColor.BLUE;
+        setDrawable(fireblue);
     }
     public void setFireyellow() {
-        this.color = DotColor.FIREYELLOW;
+        this.color = DotColor.YELLOW;
+        setDrawable(fireyellow);
     }
     public void setFirepurple() {
-        this.color = DotColor.FIREPURPLE;
+        this.color = DotColor.PURPLE;
+        setDrawable(firepurple);
     }
 
 }

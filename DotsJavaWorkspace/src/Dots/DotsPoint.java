@@ -14,6 +14,7 @@ public class DotsPoint implements Serializable {
     public final int y;
 
     private DotColor color;
+    private DotPowerUp powerUp;
 
     /**
      *
@@ -23,13 +24,15 @@ public class DotsPoint implements Serializable {
         this.x = x;
         this.y = y;
 
+
     }
 
     // constructor with color only for sending to client
-    public DotsPoint(int x, int y, DotColor color) {
+    public DotsPoint(int x, int y, DotColor color, DotPowerUp powerUp) {
         this.x = x;
         this.y = y;
         this.color = color;
+        this.powerUp = powerUp;
     }
 
 //    // copies the point
@@ -64,13 +67,17 @@ public class DotsPoint implements Serializable {
         return color;
     }
 
+    public DotPowerUp getPowerUp() {
+        return powerUp;
+    }
+
     public void setColor(DotColor color) {
         this.color = color;
     }
 
     public DotsPoint transform(int[] transform) {
 
-        return new DotsPoint(this.x + transform[0], this.y+ transform[1], this.color);
+        return new DotsPoint(this.x + transform[0], this.y+ transform[1], this.color, this.powerUp);
     }
 
 
