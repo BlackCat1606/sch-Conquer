@@ -111,7 +111,7 @@ public class MainFragment extends Fragment {
         final SmoothProgressBar progressBar = (SmoothProgressBar) this.getActivity().findViewById(R.id.loading_bar);
         progressBar.setVisibility(View.INVISIBLE);
 
-        ImageButton startMultiplayerButton = (ImageButton) this.getActivity().findViewById(R.id.start_multi_player_button);
+        final ImageButton startMultiplayerButton = (ImageButton) this.getActivity().findViewById(R.id.start_multi_player_button);
         ImageButton startSinglePlayerButton = (ImageButton) this.getActivity().findViewById(R.id.start_single_player_button);
         ImageButton rules = (ImageButton) this.getActivity().findViewById(R.id.rules);
 
@@ -136,7 +136,6 @@ public class MainFragment extends Fragment {
         startMultiplayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 // If ip address is null, we assume that player has not connected to wifi
                 if (myIpAddress == null) {
