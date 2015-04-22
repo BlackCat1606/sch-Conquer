@@ -38,6 +38,7 @@ class DotView extends ImageView {
     private Drawable purple;
     private Drawable one;
     private Drawable two;
+    private Drawable transparent;
 
     // Added new sprites for power ups
     private Drawable icered;
@@ -71,6 +72,7 @@ class DotView extends ImageView {
         toucheddot  = getDrawable(R.drawable.toucheddot);
         one         = getDrawable(R.drawable.onetoucheddot);
         two         = getDrawable(R.drawable.twotoucheddot);
+        transparent = getDrawable(R.drawable.transparentdot);
 
         icered      = getDrawable(R.drawable.icereddot);
         iceblue     = getDrawable(R.drawable.icebluedot);
@@ -310,6 +312,10 @@ class DotView extends ImageView {
         setDrawable(firepurple);
     }
 
+    public void setTransparent() {
+        setDrawable(transparent);
+    }
+
 }
 
 class RedDotView extends DotView {
@@ -381,75 +387,11 @@ class OneDotView extends DotView {
     }
 }
 
-//class IceBlue extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public IceBlue(Context context) {
-//        super(context);
-//        super.setIceBlue();
-//    }
-//}
-//
-//class IceRed extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public IceRed(Context context) {
-//        super(context);
-//        super.setIceRed();
-//    }
-//}
-//class IceYellow extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public IceYellow(Context context) {
-//        super(context);
-//        super.setIceYellow();
-//    }
-//}
-//class IceGreen extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public IceGreen(Context context) {
-//        super(context);
-//        super.setIceGreen();
-//    }
-//}
-//class IcePurple extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public IcePurple(Context context) {
-//        super(context);
-//        super.setIcePurple();
-//    }
-//}
-//class FireBlue extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public FireBlue(Context context) {
-//        super(context);
-//        super.setIceBlue();
-//    }
-//}
-//
-//class FireRed extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public FireRed(Context context) {
-//        super(context);
-//        super.setFireRed();
-//    }
-//}
-//class FireYellow extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public FireYellow(Context context) {
-//        super(context);
-//        super.setFireYellow();
-//    }
-//}
-//class FireGreen extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public FireGreen(Context context) {
-//        super(context);
-//        super.setFireGreen();
-//    }
-//}
-//class FirePurple extends DotView {
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    public FirePurple(Context context) {
-//        super(context);
-//        super.setFirePurple();
-//    }
-//}
+class TransparentDotView extends DotView {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public TransparentDotView(Context context) {
+        super(context);
+        super.setTransparent();
+    }
+}
+
