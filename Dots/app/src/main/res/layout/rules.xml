@@ -19,9 +19,6 @@
                         android:adjustViewBounds="true"
                         android:padding="5dp"
                         android:layout_marginTop="30dp"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
                         android:id="@+id/rules"
                         android:src="@drawable/rulesy"
                         android:layout_gravity="center_horizontal|top"/>
@@ -30,11 +27,8 @@
                           android:layout_height="wrap_content"
                           android:scaleType="fitCenter"
                           android:adjustViewBounds="true"
-                          android:padding="5dp"
+                          android:padding="10dp"
                           android:layout_marginTop="100dp"
-                          android:layout_marginBottom="5dp"
-                          android:layout_marginLeft="5dp"
-                          android:layout_marginRight="5dp"
                           android:id="@+id/oneplayerinst"
                           android:src="@drawable/oneplayerinst"
                           android:layout_gravity="center_horizontal|top"/>
@@ -44,14 +38,34 @@
                           android:layout_height="wrap_content"
                           android:scaleType="fitCenter"
                           android:adjustViewBounds="true"
-                          android:padding="5dp"
-                          android:layout_marginTop="390dp"
-                          android:layout_marginBottom="175dp"
-                          android:layout_marginLeft="5dp"
-                          android:layout_marginRight="5dp"
+                          android:padding="10dp"
+                          android:layout_marginTop="580dp"
                           android:id="@+id/twoplayerinst"
                           android:src="@drawable/twoplayerinst"
-                          android:layout_gravity="center"/>
+                          android:layout_gravity="center_horizontal|top"/>
+
+                  <ImageView
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:scaleType="fitCenter"
+                          android:adjustViewBounds="true"
+                          android:padding="10dp"
+                          android:layout_marginTop="1250dp"
+                          android:id="@+id/freeze"
+                          android:src="@drawable/freeze"
+                          android:layout_gravity="center_horizontal|top"/>
+
+                  <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:padding="10dp"
+                        android:layout_marginTop="1850dp"
+                        android:layout_marginBottom="60dp"
+                        android:id="@+id/confusion"
+                        android:src="@drawable/confusion"
+                        android:layout_gravity="center_horizontal|top"/>
 
                   <ImageButton
                           android:layout_width="180dp"
@@ -59,7 +73,7 @@
                           android:scaleType="fitCenter"
                           android:adjustViewBounds="true"
                           android:padding="5dp"
-                          android:layout_marginTop="500dp"
+                          android:layout_marginTop="1500dp"
                           android:layout_marginBottom="10dp"
                           android:layout_marginLeft="5dp"
                           android:layout_marginRight="5dp"
