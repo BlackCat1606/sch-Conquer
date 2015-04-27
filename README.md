@@ -1,4 +1,10 @@
 # Conquer
+
+Darren Ng Wei Hong 1000568
+Goh Jiaho 1000548
+Ho Ivan 1000448
+Tiang Huihui 1000644
+
 [TOC]
 	
 ## Introduction
@@ -36,66 +42,203 @@ Users will be able to start the single player mode when they select the `1 playe
  - Successful selection of single player mode could be immediately followed by the main game screen, where the user will be seamlessly granted access to Game Features.
  - The time needed to start the single player mode should not be too long (exceed 5 seconds).
  
-
+ 
 #####**Use Case ID: Conquer_UC_UA1 - Single Player Mode**
-| ID    |         Conquer_UC_UA1                            |
+| ID | Conquer_UC_UA1|
 |----------------|:------------------------------------|
-|Actor:          | Player1/Server                      |
-|Objective:      |To play a game|
-|Trigger:		| Single Player Button|
+|Actor: | Player1/Server |
+|Objective: |To play a game|
+|Trigger: | Single Player Button|
 |Pre-Conditions: |-|
-|Post-Conditions:|Gameplay will start  |
-|Normal Flow :   |Player1 opens app, selects the "One Player" option. The game will then start.            |
+|Post-Conditions:|Gameplay will start |
+|Normal Flow : |Player1 opens app, selects the "One Player" option. The game will then start.|
 |Interacts with:| main activity|
 
+#####**Requirement ID: Conquer_REQ_UA2_Multiplayer Mode**
 
-| Two Players (Multiplayer)    |                                     |
+######Requirement Description
+Users will be able to start the Multiplayer mode when they select the `2 players` option. Once after which, users will be prompted with the loading of the main game screen. The user should remain logged into the two player mode until the game is over.
+
+######Functional Part:
+- Enable the start of two player mode in Conquer
+- Able to retain the two player mode on the particular Android device used until the users completes the game.
+- The users can only access Game Features when the two player mode has started.
+
+######Non-Functional Part:
+ - Prompt users with the option to choose between single player mode and multiplayer mode.
+ - Successful selection of two player mode could be immediately followed by the main game screen, where the users will be seamlessly granted access to Game Features.
+ - The time needed to start the two player mode should not be too long (exceed 5 seconds).
+ 
+#####**Use Case ID: Conquer_UC_UA2_Multiplayer Mode**
+
+| ID | Conquer_UC_UA2|
 |----------------|:------------------------------------|
-|Actor:          | Player1/Server                      |
-|Objective:      |To connect to player's via IP address.|
+|Actor: | Player1/Server |
+|Objective: |To connect to player's via IP address.|
+|Trigger: |Multiplayer Button
 |Pre-Conditions: |Android phone is connected to a wifi.|
-|Post-Conditions:|Success: Gameplay will start when both parties successfully connects.  |
-|                |Failure: Will not proceed to gameplay, needs to enter a valid IP address |
-|Normal Flow :   |Player1 opens app, selects the "Two Players" option. They will be sent to another screen to input their friend's IP address and they connect.            |
+|Post-Conditions:|Success: Gameplay will start when both parties successfully connects. |
+| |Failure: Will not proceed to gameplay, needs to enter a valid IP address |
+|Normal Flow : |Player1 opens app, selects the "Two Players" option. They will be sent to another screen to input their friend's IP address and they connect. |
 |Interacts with:| note add specific classes it uses|
 
+#####**Requirement ID: Conquer_REQ_UA3_Valid Move**
 
-| Valid Move                     |                                                                            |
+######Requirement Description
+Users will need to be either in the single player mode or two player mode for this function to work. Once after which, users are able to make a move through the touch of the device screen. A valid move will be deteched if the finger of the user falls within a placed `dot`.
+######Functional Part:
+- While users select their combination of `dot`, this function will check for the same color `dot`.
+- Able to allow and compute for valid moves until the game is over.
+- The users can only make a move (valid) when either the `1 player` mode or `2 player` mode has started.
+
+######Non-Functional Part:
+- Users making a valid move should be able to see their `touched path` indicated by the highlighting of the different tiles in the board of `dot`.
+- The feedback for a valid move should be almost instantaneous and in real-time.
+
+#####**Use Case ID: Conquer_UC_UA3_Valid Move**
+
+
+| ID | Conquer_UC_UA3_ValMove|
 |----------------|:------------------------------------| 
-|Actor:          |Player1/Player2|
-|Objective:      |Select desired circle coloured combination. |
-|Pre-Conditions: |Game is in play and has started.              |
+|Actor: |Player1/Player2|
+|Objective: |Select desired circle coloured combination. |
+|Trigger: |Completed selection of circles
+|Pre-Conditions: |Game is in play and has started. |
 |Post-Condition: |Success: valid move, all selected colours are the same.|
-|                |Failure: non-valid move, selected coloured circle(s) is/are not the same.                             |
-|Normal Flow:    |During gameplay                      |
-|Interacts with: |                                     |
+| |Failure: non-valid move, selected coloured circle(s) is/are not the same. |
+|Normal Flow: |During gameplay |
+|Interacts with: | |
 
+#####**Requirement ID: Conquer_REQ_UA4_Move Action**
+######Requirement Description
+Users will need to be either in the single player mode or two player mode for this function to work. Once after which, the users will be able to `touch` the board of `dot` to make a move in the game.
 
-|Move Action                     |                                     |
-|----------------|:------------------------------------|                
-|Actor:          |Player1/Player2                      |
-|Objective:      |Circle combination selection move    |
-|Pre-Condition:  |Game is in play.                     |
-|Post-Condition: |Move has been selected               |
-|Normal Flow:    |The player makes the first selection by touching down on the circle, drags on other neighboring circles until desired selections are selected then lifts finger.|
-|Interact with:  |
+######Functional Part:
+- Users are able to select their combination of `dot`, this function facilitates that action.
 
-|Collision                    |                                                                           |
+######Non-Functional Part:
+- Users making a move should be able to see their `touched path` indicated by the highlighting of the different tiles in the board of `dot`.
+- This process should be very quick requiring almost no time at all when responding to a users action.
+
+#####**Use Case ID: Conquer_UC_UA4_Move Action**
+
+| ID | Conquer_UC_UA4|
 |----------------|:------------------------------------| 
-|Actor:          |Player1/Player2                      |
-|Pre-Condition:  |Game is in play and both players are selecting their circles.|
-|Post-Condition: |The move of the slower player that selects the same circle will be denied.|
-|Normal Flow:    |During game play, when one player's selection of circles is the same as the other, this creates a collision or conflict, however because it's first come first serve, the slower player that tries to select this circle will be unable to.|
-|Interacts with: |                         |
+|Actor: |Player1/Player2 |
+|Objective: |Circle combination selection move |
+|Trigger: |Selection of circles
+|Pre-Condition: |Game is in play. |
+|Post-Condition: |Move has been selected |
+|Normal Flow: |The player makes the first selection by touching down on the circle, drags on other neighboring circles until desired selections are selected then lifts finger.|
+|Interact with: ||
 
-|Game Over    |                                                                                      |
+#####**Requirement ID: Conquer_	REQ_UA4_ Collision**
+
+######Requirement Description
+The User will need to be in the `2 player` mode for this function to work. Once after which, if both users make a `valid move` on a set of `dot` that belongs to the same column concurrently, a `collision` occurs.
+
+######Functional Part:
+- While Users select their combination of `dot`, this function will only be used when both users tries to select the exact same `dot` or if the users are attempting to clear `dot` that belong to the same `col` but different `row`.
+- It will also make the decision of which user has the right to clear the set of touched `dot`.
+
+######Non-Functional  Part:
+- Users should be prompted of the success or the failure of a valid move made due to `collision` by the removal of their touched path and the `scoreboard` remaining the same.
+- This process should be very quick requiring almost no time at all when responding to a user's action.
+
+#####**Use Case ID: Conquer_UC_UA4_Collision**
+
+| ID | Conquer_UC_UA4 |
+|----------------|:------------------------------------| 
+|Actor: |Player1/Player2 |
+|Objective: |Prevent both players from selecting the same circle.|
+|Trigger: |When both players selects the same circle.|
+|Pre-Condition: |Game is in play and both players are selecting their circles.|
+|Post-Condition: |The move of the slower player that selects the same circle will be denied.|
+|Normal Flow: |During game play, when one player's selection of circles is the same as the other, this creates a collision or conflict, however because it's first come first serve, the slower player that tries to select this circle will be unable to.|
+|Interacts with: | |
+
+
+#####**Requirement ID: Conquer_UC_UA5_Game Over**
+
+######Requirement Description
+The User will need to be either in the `1 player` mode or the `2 player` mode for this function to work. Once after which, as long as one player manages to reach the score of 100, both players will be taken to the Game Over screen.
+
+######Functional Part:
+- In either of the two different modes selected, the fastest user that reaches `100 points` will win and both players/ player will be taken to the Game Over screen.
+
+######Non-Functional Part:
+ - Depending on whether the user wins or loses, the game over screen for the winner and loser will be different.
+ - Both users will be provided with the option to `play again` once they have been brought to the win/lose screen.
+ - Navigation to the winning screen and losing screen should be immediate.
+
+#####**Use Case ID: Conquer_UC_UA5_Game Over**
+
+| ID | Conquer_UC_UA5 |
 |----------------|:------------------------------------|
-|Actor:       |Player1/Player2 |
-|Objective:   |First player to score 100 points wins|
+|Actor: |Player1/Player2 |
+|Objective: |First player to score 100 points wins|
+|Trigger: |When the score counter hits 100|
 |Pre-Condition:|Game is in play|
 |Post-Condition:|One player wins when they accumulate 100 points first. |
-|Normal Flow: | Regular ongoing gameplay.|
-|Interacts with:|                     |
+|Normal Flow: | Regular ongoing gameplay|
+|Interacts with:| |
+
+#####**Requirement ID: Conquer_UC_UA6_Confused Power Up Activated**
+
+######Requirement Description
+The users will need to be the `2 player` mode for this function to work. Once after which, if a user manages to execute a `confused` power up, the other player will receive the `confused` state while the player that executed the power up will resume as normal.
+
+######Functional Part:
+- Enable the start of the `confused` state for the other player.
+- Once the player is in the `confused` state, the features of `confused` will be applied to that player while the other player remains normal.
+
+
+######Non-Functional Part:
+ - Depending on whether the user activates the `confused` power up or is affected by it, the users will be brought to different game screens.
+ - The user that is affected, will receive an indication in the form of a `red` overlay with the `confused` header activated. This informs the player that he/she is currently in a `confused` state.
+ - The player remains `confused` until the game screen returns back to normal.
+
+#####**Use Case ID: Conquer_UC_UA6_Confused Power Up Activated**
+
+| ID | Conquer_UC_UA6 |
+|----------------|:------------------------------------|
+|Actor: |Player1/Player2 |
+|Objective: |Player to inflict confused on other player|
+|Trigger: |When a successful `confused` power up dot is cleared|
+|Pre-Condition:|`2 player` game is in play|
+|Post-Condition:|Player inflicting remains normal, while the affected player receives the confused game screen|
+|Normal Flow: | Regular ongoing gameplay|
+|Interacts with:| |
+
+
+#####**Requirement ID: Conquer_UC_UA7_Freeze Power Up Activated**
+
+######Requirement Description
+The users will need to be the `2 player` mode for this function to work. Once after which, if a user manages to execute a `freeze` power up, the other player will receive the `freeze` state while the player that executed the power up will resume as normal.
+
+######Functional Part:
+- Enable the start of the `freeze` state for the other player.
+- Once the player is in the `freeze` state, the features of `freeze` will be applied to that player while the other player remains normal.
+
+
+######Non-Functional Part:
+ - Depending on whether the user activates the `freeze` power up or is affected by it, the users will be brought to different game screens.
+ - The user that is affected, will receive an indication in the form of a `blue` overlay with the `freeze` header activated. This informs the player that he/she is currently in a `freeze` state.
+ - The player remains `freeze` until the game screen returns back to normal.
+ - The player in the `freeze` state will not be able to make any moves for the moment until the state returns back to normal.
+
+#####**Use Case ID: Conquer_UC_UA7_Freeze Power Up Activated**
+
+| ID | Conquer_UC_UA7 |
+|----------------|:------------------------------------|
+|Actor: |Player1/Player2 |
+|Objective: |Player to inflict confused on other player|
+|Trigger: |When a successful `confused` power up dot is cleared|
+|Pre-Condition:|`2 player` game is in play|
+|Post-Condition:|Player inflicting remains normal, while the affected player receives the confused game screen|
+|Normal Flow: | Regular ongoing gameplay|
+|Interacts with:| |
+
 
 
 ![Use Case Diagram](https://www.dropbox.com/s/3e5cxa63qzuwtoq/Dotsflow.png?dl=0)
@@ -295,6 +438,18 @@ Following Objected-Orientated Programming principles, the game logic is divided 
 The game screen provides the main graphical user interface where the player will interact with the game. The main game screen is initialised by the` DotScreen` class in which the various sub game screen components are also initialised. Each of the components can also be represented by a class and each class has a paired functionality with the main game logic class. The main components of the game screen can be seen below.
 
 
+
+
+### Interaction between Classes
+
+Class diagram between DotView, DotsScreen and ScoreBoard
+![Dots](http://i.imgur.com/mECiDKZ.png)
+
+Class diagram between DotView, and the respective dot's view (Blue, green, one, purple, red, touched, two, yellow)
+![DotsView](http://i.imgur.com/6JHyHIi.png)
+
+### Detailed Class Diagrams
+
 ###Game Component Classes
 
 
@@ -314,7 +469,7 @@ Helper classes are a special set of classes where its main functionality is to a
 
 `BitmapImporter` takes in images in the resources folder and resizes it down according to the `reqWidth` and `reqHeight`. The result is a smaller `bitmap` that will be used and placed in the dotsScreen.
 
-
+![BitmapImporterClass](http://i.imgur.com/Y5VeNk2.png)
 
 #####ScreenDimensions
 
@@ -323,6 +478,8 @@ As there is a great variety of android hardware manufacturer, it is logical that
 - `getHeight`
 - `getWidth`
 - `getDensity`
+
+![ScreenDimensions](http://i.imgur.com/lsPklcx.png)
 
 #####Effects
 
@@ -345,6 +502,8 @@ private static void clearAllAnimations(View view) {
 	}
 }
 ```
+
+![Effects](http://i.imgur.com/FzKXyNU.png)
 
 #####GIFRun and GIFDecode
 
@@ -369,9 +528,9 @@ As Conquer requires the drawing of multiple images on the main game screen, a `g
 
 `ScoreBoard` serves as an indication and announcement to the player of the current scores of the player in Single Player mode and of both players in Multiplayer mode.
 
-These indications are conveyed via a `TextView` which is dynamically changing as the game progresses and as actions and moves are made by the players involved. 
+These indications are conveyed via a `TextView` which is dynamically changing as the game progresses and as actions and moves are made by the players involved. The class diagram below details the attributes and the methods associated with this class.
 
-The class diagram below details the attributes and the methods associated with this class.
+![ScoreBoard](http://i.imgur.com/RZhE2eP.png)
 
 #####DotsScreen
 
@@ -379,15 +538,34 @@ The class diagram below details the attributes and the methods associated with t
 
 `DotsScreen` also contains an `UpdateScreen` method whereby it receives an ArrayList< DotsPoint > and updates the current board with the updated board. `UpdateScreen` therefore links the game logic with the `DotsScreen` to ensure that the correct display of `dot` is reflected to the players.
 
+#####SurfaceViewDots
 
-### Interaction between Classes
+`SurfaceViewDots` extends `onTouchListenser` and forms the layer above `DotsScreen` that handles the touch input of the players. Some of the key methods implemented in `SurfaceViewDots` help to identify the state of the finger press of the user as well as the calculation of a valid touch point of the user. These methods include the following:
 
-### Detailed Class Diagrams
+- `onTouch`
+- `doPointClosesToTouchedLocation`
+- `touchedLocationCloseEnoughToReference`
+- `doPlayerInteraction`
+- `setTouchedPath`
+
+![SurfaceViewDots](http://i.imgur.com/Rrv5G5H.png)
+
+On top of the various methods to calculate the interaction of the users, `SurfaceViewDots` is also responsible for the identification of moves by the player through the method `setTouchedPath` as well as the implementation of the effects from `Effects` class.
+
+
+
 ####Game classes
 DotsGameTask class
 ![DotsGameTask](http://i.imgur.com/NFR6VhW.png)
 
 ####Fragment classes
+A [Fragment](http://developer.android.com/guide/components/fragments.html) represents a behavior or a portion of user interface in an Activity. Fragments allow us to modularise the entire activity into sections, which has its own lifecycle and receives its own input events. The following fragment classes are listed below.
+- `MainFragment`
+- `GameOverFragment`
+- `FragmentTransactionHelper`
+- `ConnectionFragment`
+- `GameFragment`
+
 MainFragment class
 ![MainFragment](http://i.imgur.com/hm1OLX7.png)
 
@@ -403,23 +581,8 @@ ConnectionFragment class
 GameFragment class
 ![GameFragment](http://i.imgur.com/vZZxUSp.png)
 
-BitmapImporter class
-![BitmapImporterClass](http://i.imgur.com/Y5VeNk2.png)
-
 DotsAndroidConstants
 ![DotsAndroidConstants](http://i.imgur.com/N07Tq66.png)
-
-Class diagram between DotView, DotsScreen and ScoreBoard
-![Dots](http://i.imgur.com/mECiDKZ.png)
-
-Class diagram between DotView, and the respective dot's view (Blue, green, one, purple, red, touched, two, yellow)
-![DotsView](http://i.imgur.com/6JHyHIi.png)
-
-Effects
-![Effects](http://i.imgur.com/FzKXyNU.png)
-
-GIFDecode
-![GIFDecode](http://i.imgur.com/Yt7NxwS.png)
 
 MainActivity
 ![MainActivity](http://i.imgur.com/DtBYxo4.png)
@@ -427,20 +590,13 @@ MainActivity
 MainScreen
 ![MainScreen](http://i.imgur.com/6A0ttjM.png)
 
-ScoreBoard
-![ScoreBoard](http://i.imgur.com/RZhE2eP.png)
-
 Screen
 ![Screen](http://i.imgur.com/iTev4dN.png)
-
-ScreenDimensions
-![ScreenDimensions](http://i.imgur.com/lsPklcx.png)
 
 ScreenType
 ![ScreenType](http://i.imgur.com/C8pXuhf.png)
 
-SurfaceViewDots
-![SurfaceViewDots](http://i.imgur.com/Rrv5G5H.png)
+
 
 ## System Testing
 As explored earlier, the overall game structure of Conquer is extremely complex, consisting of a variety of interactions between the various front-end android development classes with the game logic and as well as the concurrency architecture. Therefore, it is extremely important that testing must be carried out at both an individual game component level and on an overall application level. The following sections will discuss how the various testing of Conquer were carried out at these specified levels.
